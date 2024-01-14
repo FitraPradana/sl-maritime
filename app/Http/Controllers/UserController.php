@@ -142,4 +142,46 @@ class UserController extends Controller
             throw $th;
         }
     }
+
+
+
+    public function user_has_roles()
+    {
+        return view('user.userHasRoles.view');
+    }
+
+    public function user_has_roles_json()
+    {
+        $userHasRoles = DB::connection('mysql')
+            ->table('users')
+            ->join('model_has_roles','users.id','model_has_roles.model_id')
+            ->join('roles','model_has_roles.role_id','roles.id')
+            ->select('users.*','roles.name as RolesName')
+            ->orderByDesc('users.updated_at')
+            ->get();
+
+        return DataTables::of($userHasRoles)
+        ->addColumn('action', function ($data) {
+            return '
+                <div class="dropdown dropdown-action">
+                    <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_role' . $data->id . '"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_role' . $data->id . '"><i class="fa fa-trash m-r-5"></i> Delete</a>
+                        </div>
+                </div>
+            ';
+            })
+            ->addColumn('RolesName', function ($data) {
+                return $data->RolesName;
+            })
+            ->addColumn('created_at', function ($data) {
+                return Carbon::parse($data->created_at)->format('d M Y H:i:s');
+            })
+            ->addColumn('updated_at', function ($data) {
+                return Carbon::parse($data->updated_at)->format('d M Y H:i:s');
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
 }

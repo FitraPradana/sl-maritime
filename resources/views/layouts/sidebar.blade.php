@@ -54,7 +54,7 @@
                     <a href="#"><i class="las la-anchor"></i> <span> Crewing</span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
                         @can('report1-crewing')
-                            <a class="" href=""> <span>Report Crew</span></a>
+                            <a class="{{ request()->is('crewing/report') ? 'active' : '' }}" href="{{ url('crewing/report') }}"> <span>Report Crew</span></a>
                         @endcan
                     </ul>
                 </li>
@@ -73,8 +73,29 @@
                     </li>
                     @endcan
                     @can('lihat-user')
-                    <li>
-                        <a {{ request()->is('user') ? 'active' : '' }} href="{{ url('user') }}"><i class="la la-user-plus"></i> <span>Users</span></a>
+                    <li class="submenu">
+                        <a href="#"><i class="la la-user-plus"></i> <span> Users</span> <span class="menu-arrow"></span></a>
+                        <ul style="display: none;">
+                            <li><a class="{{ request()->is('user') ? 'active' : '' }}" href="{{ url('user') }}">All Users</a></li>
+                            <li><a class="{{ request()->is('userHasRoles') ? 'active' : '' }}" href="{{ url('userHasRoles') }}">User Has Roles</a></li>
+                        </ul>
+                    </li>
+                    @endcan
+                    @can('lihat-role')
+                    <li class="submenu">
+                        <a href="#"><i class="la la-object-ungroup"></i> <span> Roles</span> <span class="menu-arrow"></span></a>
+                        <ul style="display: none;">
+                            <li><a class="{{ request()->is('role') ? 'active' : '' }}" href="{{ url('role') }}">All Roles</a></li>
+                            <li><a class="{{ request()->is('roleHasPermission') ? 'active' : '' }}" href="{{ url('roleHasPermission') }}">Role has Permission</a></li>
+                        </ul>
+                    </li>
+                    @endcan
+                    @can('lihat-permission')
+                    <li class="submenu">
+                        <a href="#"><i class="la la-object-ungroup"></i> <span> Permission</span> <span class="menu-arrow"></span></a>
+                        <ul style="display: none;">
+                            <li><a class="{{ request()->is('permission') ? 'active' : '' }}" href="{{ url('permission') }}">All Permission</a></li>
+                        </ul>
                     </li>
                     @endcan
                 @endcanany

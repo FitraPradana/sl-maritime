@@ -28,7 +28,7 @@
                         </div>
                     </div>
                     <div class="submit-section">
-                        <button class="btn btn-primary submit-btn-broker" id="BtnSubmitBroker" type="submit">Submit</button>
+                        <button class="btn btn-primary submit-btn-broker" id="BtnSubmitBroker" type="submit">Save</button>
                     </div>
                 </form>
             </div>

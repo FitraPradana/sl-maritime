@@ -21,6 +21,16 @@ class RolePermissionSeeder extends Seeder
         Permission::create(['name'=>'edit-user']);
         Permission::create(['name'=>'hapus-user']);
         Permission::create(['name'=>'lihat-user']);
+        //Role
+        Permission::create(['name'=>'tambah-role']);
+        Permission::create(['name'=>'edit-role']);
+        Permission::create(['name'=>'hapus-role']);
+        Permission::create(['name'=>'lihat-role']);
+        //Permission
+        Permission::create(['name'=>'tambah-permission']);
+        Permission::create(['name'=>'edit-permission']);
+        Permission::create(['name'=>'hapus-permission']);
+        Permission::create(['name'=>'lihat-permission']);
         // Employee
         Permission::create(['name'=>'tambah-employee']);
         Permission::create(['name'=>'edit-employee']);
@@ -67,6 +77,14 @@ class RolePermissionSeeder extends Seeder
         $roleSuperAdmin->givePermissionTo('edit-user');
         $roleSuperAdmin->givePermissionTo('hapus-user');
         $roleSuperAdmin->givePermissionTo('lihat-user');
+        $roleSuperAdmin->givePermissionTo('tambah-role');
+        $roleSuperAdmin->givePermissionTo('edit-role');
+        $roleSuperAdmin->givePermissionTo('hapus-role');
+        $roleSuperAdmin->givePermissionTo('lihat-role');
+        $roleSuperAdmin->givePermissionTo('tambah-permission');
+        $roleSuperAdmin->givePermissionTo('edit-permission');
+        $roleSuperAdmin->givePermissionTo('hapus-permission');
+        $roleSuperAdmin->givePermissionTo('lihat-permission');
         $roleSuperAdmin->givePermissionTo('tambah-employee');
         $roleSuperAdmin->givePermissionTo('edit-employee');
         $roleSuperAdmin->givePermissionTo('hapus-employee');

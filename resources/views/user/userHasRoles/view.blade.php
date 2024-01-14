@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Data Report Crewing')
+@section('title', 'Data User has Permission')
 
 @section('content')
 
@@ -28,27 +28,27 @@
             <div class="page-header">
                 <div class="row align-items-center">
                     <div class="col">
-                        <h3 class="page-title">Report Crewing</h3>
+                        <h3 class="page-title">User has Role</h3>
                         <ul class="breadcrumb">
-                            {{-- <li class="breadcrumb-item"><a href="index.html">Master Administration</a></li> --}}
-                            <li class="breadcrumb-item active">Report Crewing</li>
+                            <li class="breadcrumb-item"><a href="#">Master Administration</a></li>
+                            <li class="breadcrumb-item active">User has Role</li>
                         </ul>
                     </div>
-                    <div class="btn-group">
-                        <a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_insurance"><i
-                                class="fa fa-plus"></i> Add Insurance</a>
-                    </div>
-                    <div class="col-auto float-right ml-auto">
+                    {{-- <div class="btn-group">
+                        <a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_role"><i
+                                class="fa fa-plus"></i> Add Role</a>
+                    </div> --}}
+                    {{-- <div class="col-auto float-right ml-auto">
                         <div class="btn-group">
                             <button type="button" class="btn btn-dark btn-rounded dropdown-toggle" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">Import Insurance</button>
+                                aria-haspopup="true" aria-expanded="false">Import Employee</button>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="#" data-toggle="modal"
                                     data-target="#import_emp">Import</a>
-                                <a class="dropdown-item" href="#">Template Import Insurance</a>
+                                <a class="dropdown-item" href="#">Template Import Employee</a>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                 </div>
             </div>
@@ -67,11 +67,6 @@
                             {{ session('error') }}
                         </div>
                     @endif
-                    {{-- @if ($room->isEmpty())
-                    <div class="alert alert-danger" role="alert">
-                        Data Room Masih KOSONG !!! Harap di Input terlebih dahulu
-                    </div>
-                @endif --}}
 
                     @if (session()->has('failures'))
                         <div class="alert alert-danger" role="alert">
@@ -96,16 +91,14 @@
                         <table id="datatables" class="table table-striped custom-table datatable">
                             <thead>
                                 <tr>
-                                    <th>Action</th>
+                                    {{-- <th>Action</th> --}}
                                     <th>#</th>
-                                    <th>Insurance Type</th>
-                                    <th>Entity</th>
-                                    <th>Inception Date</th>
-                                    <th>Expiry Date</th>
-                                    <th>Broker</th>
-                                    <th>Insurer</th>
-                                    <th>Status</th>
-                                    <th>Remarks</th>
+                                    <th>Username</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Roles</th>
+                                    <th>Created Date</th>
+                                    <th>Updated Date</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -116,17 +109,6 @@
             </div>
         </div>
         <!-- /Page Content -->
-
-
-        <!-- Add insurance Modal -->
-        @include('insurance.add_modal')
-        <!-- /Add insurance Modal -->
-
-        <!-- Add Employee Modal -->
-        {{-- @include('employee.edit_modal') --}}
-        <!-- /Add Employee Modal -->
-
-
     </div>
     <!-- /Page Wrapper -->
 @endsection
@@ -134,7 +116,7 @@
 
 
 @section('under_body')
-    <link rel="stylesheet" href="{{ asset('/') }}template_hrsm/assets/css/select2.min.css">
+    {{-- <link rel="stylesheet" href="{{ asset('/') }}assets/css/select2.min.css"> --}}
     <script type="text/javascript">
         $(function() {
 
@@ -142,51 +124,42 @@
                 processing: true,
                 serverSide: true,
                 destroy: true,
-                ajax: "{{ url('insurance/renewal_monitoring/json') }}",
+                ajax: "{{ url('userHasRoles/json') }}",
                 columns: [
-                    {
-                        data: 'action',
-                        name: 'action',
-                        searchable: false,
-                        sortable: false
-                    },
+                    // {
+                    //     data: 'action',
+                    //     name: 'action',
+                    //     searchable: false,
+                    //     sortable: false
+                    // },
                     {
                         render: function(data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
                         },
                     },
                     {
-                        data: 'typename',
-                        name: 'typename'
+                        data: 'username',
+                        name: 'username'
                     },
                     {
-                        data: 'company',
-                        name: 'company'
+                        data: 'name',
+                        name: 'name'
                     },
                     {
-                        data: 'inceptiondate',
-                        name: 'inceptiondate'
+                        data: 'email',
+                        name: 'email'
                     },
                     {
-                        data: 'expirydate',
-                        name: 'expirydate'
+                        data: 'RolesName',
+                        name: 'RolesName'
                     },
                     {
-                        data: 'brokername',
-                        name: 'brokername'
+                        data: 'created_at',
+                        name: 'created_at'
                     },
                     {
-                        data: 'insurername',
-                        name: 'insurername'
-                    },
-
-                    {
-                        data: 'status',
-                        name: 'status'
-                    },
-                    {
-                        data: 'remark',
-                        name: 'remark'
+                        data: 'updated_at',
+                        name: 'updated_at'
                     },
                 ],
                 dom: 'Bfrtip',

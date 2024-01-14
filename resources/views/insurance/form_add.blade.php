@@ -221,6 +221,30 @@
                     $("#total_amount").prop('readonly', false);
                 }
             });
+
+            $('#BtnSubmitBroker').click(function(){
+                // Ambil data dari formulir
+                var formData = $('#form-broker').serialize();
+                // Kirim data ke server menggunakan Ajax
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ url("insurance/renewal_monitoring/saveBroker") }}',
+                    data: formData,
+                    dataType: 'json',
+                    success: function(response){
+                        Swal.fire({
+                            title: "Data Broker Berhasil ditambahkan!",
+                            text: "You clicked the button!",
+                            icon: "success"
+                        })
+                    },
+                    // error: function(error){
+                    //     // Tangani kesalahan jika ada
+                    //     console.log(error);
+                    //     alert('Terjadi kesalahan saat menyimpan data');
+                    // }
+                });
+            });
         });
 
             function validateTgl()
@@ -278,30 +302,7 @@
 			}
 
 
-            $('#BtnSubmitBroker').click(function(){
-                // Ambil data dari formulir
-                var formData = $('#form-broker').serialize();
 
-                // Kirim data ke server menggunakan Ajax
-                $.ajax({
-                    type: 'POST',
-                    url: '{{ route("insurance.saveBroker") }}',
-                    data: formData,
-                    dataType: 'json',
-                    success: function(response){
-                        Swal.fire({
-                            title: "Good job!",
-                            text: "You clicked the button!",
-                            icon: "success"
-                        })
-                    },
-                    error: function(error){
-                        // Tangani kesalahan jika ada
-                        console.log(error);
-                        alert('Terjadi kesalahan saat menyimpan data');
-                    }
-                });
-            });
 
 		});
     </script>
