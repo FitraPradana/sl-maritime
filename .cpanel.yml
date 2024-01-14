@@ -2,7 +2,7 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/u1578665/public_html/slmaritime.online
-    - export PUBLIC=/home/u1578665/public_html/slmaritime.online/public
+    # - export PUBLIC=/home/u1578665/public_html/slmaritime.online/public
     - /bin/cp -R * $DEPLOYPATH
     - /bin/cp -a * $DEPLOYPATH
     - /bin/cp .env.example $DEPLOYPATH
