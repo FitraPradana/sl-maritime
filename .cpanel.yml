@@ -1,0 +1,15 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/u1578665/public_html/slmaritime.online
+    - export PUBLIC=/home/u1578665/public_html/slmaritime.online/public
+    - /bin/cp -R * $DEPLOYPATH
+    - /bin/cp -a * $DEPLOYPATH
+    - /bin/cp .env.example $DEPLOYPATH
+
+    # - /bin/cp -R ./public/* $PUBLIC
+    # - export DEPLOYPATH=/home/u1578665/
+    # - composer update
+
+    # symbolic link apps to public html
+    # - /bin/ln -s /home/u1578665/public_html/patria-maritime-lines.website/storage/app/public /home/u1578665/public_html/patria-maritime-lines.website/public/storage
