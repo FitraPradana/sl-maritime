@@ -9,7 +9,7 @@ class Role extends Model
 {
     use HasFactory;
 
-    protected $connection = 'sqlsrv';
+    protected $connection = 'mysql';
     protected $table = "roles";
     protected $primaryKey = "id";
     protected $fillable = [

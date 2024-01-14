@@ -47,5 +47,5 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    protected $connection = 'sqlsrv';
+    protected $connection = 'mysql';
 }

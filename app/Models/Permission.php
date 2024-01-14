@@ -9,7 +9,7 @@ class Permission extends Model
 {
     use HasFactory;
 
-    protected $connection = 'sqlsrv';
+    protected $connection = 'mysql';
     protected $table = "permissions";
     protected $primaryKey = "id";
     protected $fillable = [
