@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class SLMInsurance extends Model
+{
+    use HasFactory;
+
+    protected $connection = 'sqlsrv2';
+    protected $table = "tran_insurance_header";
+    protected $primaryKey = "id";
+    protected $fillable = [
+        'policynumber',
+        'oldtransnumber',
+        'insurancetype',
+        'company',
+        'inceptiondate',
+        'expirydate',
+        'durations',
+        'broker',
+        'insurer',
+        'status',
+        'fullypaid',
+        'remark',
+        'deleteflag',
+        'deleteat',
+        'createat',
+        'createby',
+        'updateat',
+        'updateby',
+    ];
+
+    public $timestamps = false;
+}
