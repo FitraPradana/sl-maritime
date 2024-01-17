@@ -20,8 +20,10 @@ return new class extends Migration
             $table->string('insurer')->nullable();
             $table->string('installment_ke')->nullable();
             $table->datetime('duedate')->nullable();
+            $table->datetime('paymentdate')->nullable();
             $table->string('durations')->nullable();
             $table->string('status')->nullable();
+            $table->string('status_payment')->nullable();
             $table->string('remark')->nullable();
             $table->string('deleteflag')->nullable();
             $table->datetime('deleteat')->nullable();

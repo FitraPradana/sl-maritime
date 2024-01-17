@@ -96,15 +96,17 @@
                         <table id="datatables" class="table table-striped custom-table datatable">
                             <thead>
                                 <tr>
-                                    <th>Action</th>
+                                    {{-- <th>Action</th> --}}
                                     <th>#</th>
+                                    <th>Policy Number</th>
                                     <th>Insurance Type</th>
                                     <th>Entity</th>
                                     <th>Installment</th>
                                     <th>Due Date</th>
+                                    <th>Payment Date</th>
                                     <th>Broker</th>
                                     <th>Insurer</th>
-                                    <th>Status</th>
+                                    <th>Payment Status</th>
                                     <th>Remarks</th>
                                     <th>Remark</th>
                                 </tr>
@@ -145,16 +147,20 @@
                 destroy: true,
                 ajax: "{{ url('insurance/payment_monitoring/json') }}",
                 columns: [
-                    {
-                        data: 'action',
-                        name: 'action',
-                        searchable: false,
-                        sortable: false
-                    },
+                    // {
+                    //     data: 'action',
+                    //     name: 'action',
+                    //     searchable: false,
+                    //     sortable: false
+                    // },
                     {
                         render: function(data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
                         },
+                    },
+                    {
+                        data: 'policynumber',
+                        name: 'policynumber'
                     },
                     {
                         data: 'typename',
@@ -171,6 +177,10 @@
                     {
                         data: 'duedate',
                         name: 'duedate'
+                    },
+                    {
+                        data: 'paymentdate',
+                        name: 'paymentdate'
                     },
                     {
                         data: 'brokername',

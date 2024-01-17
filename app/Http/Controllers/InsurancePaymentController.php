@@ -21,6 +21,7 @@ class InsurancePaymentController extends Controller
             ->leftJoin('mst_insurance_broker','tran_insurance_payment.broker','mst_insurance_broker.brokercode')
             ->leftJoin('mst_insurance_insurer','mst_insurance_insurer.insurercode','tran_insurance_payment.insurer')
             ->leftJoin('mst_insurance_type','mst_insurance_type.typecode','tran_insurance_payment.insurancetype')
+            ->leftJoin('tran_insurance_header','tran_insurance_header.id','tran_insurance_payment.tran_insurance_header_id')
             ->orderByDesc('tran_insurance_payment.duedate')
             ->get();
 
@@ -34,9 +35,9 @@ class InsurancePaymentController extends Controller
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_insurance' . $data->id . '"><i class="fa fa-trash m-r-5"></i> Delete</a>
                         </div>
 
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_insurance' . $data->id . '"><i class="fa fa-money m-r-5"></i> Delete</a>
-                </div>
-                            ';
+                        </div>
+                        ';
+                        // <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_insurance' . $data->id . '"><i class="fa fa-money m-r-5"></i> Delete</a>
                 // <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_department"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
             })
             ->addColumn('duedate', function ($data) {
@@ -78,7 +79,21 @@ class InsurancePaymentController extends Controller
                     ';
                 }
             })
-            ->rawColumns(['action','remark_color'])
+            ->editColumn('status', function ($edit_status) {
+                if ($edit_status->status == 'pending') {
+                    return '<span class="badge bg-inverse-danger">PENDING</span>';
+                } elseif ($edit_status->status == 'success') {
+                    return '<span class="badge bg-inverse-success">SUCCESS</span>';
+                }
+            })
+            ->addColumn('paymentdate', function ($paid) {
+                if ($paid->paymentdate == null) {
+                    return '<a class="btn btn-info btn-small" href="#" data-toggle="modal" data-target="#payment_date' . $paid->id . '"><i class="fa fa-money m-r-5"></i>PAID</a>';
+                } else {
+                    return Carbon::parse($paid->paymentdate)->format('d M Y');
+                }
+            })
+            ->rawColumns(['action','remark_color','status','paymentdate'])
             ->make(true);
     }
 }
