@@ -40,7 +40,7 @@ class UserSeeder extends Seeder
             'username' => 'employee',
             'name' => 'Employee',
             'email' => 'employee@sl-maritime.com',
-            'password' => Hash::make('P@ssw0rd2024'),
+            'password' => Hash::make('User@2024'),
         ]);
         $employee->assignRole('Employee');
 
@@ -50,7 +50,7 @@ class UserSeeder extends Seeder
             'username' => 'insurance',
             'name' => 'Insurance',
             'email' => 'insurance@sl-maritime.com',
-            'password' => Hash::make('P@ssw0rd2024'),
+            'password' => Hash::make('User@2024'),
         ]);
         $insurance->assignRole('Insurance');
 
@@ -60,7 +60,7 @@ class UserSeeder extends Seeder
             'username' => 'crewing',
             'name' => 'Crewing',
             'email' => 'crewing@sl-maritime.com',
-            'password' => Hash::make('P@ssw0rd2024'),
+            'password' => Hash::make('User@2024'),
         ]);
         $crewing->assignRole('Crewing');
     }

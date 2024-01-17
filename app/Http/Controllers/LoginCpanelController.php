@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class LoginCpanelController extends Controller
 {
@@ -32,6 +33,8 @@ class LoginCpanelController extends Controller
                     "status" => true,
                     "redirect" => url("Home")
                 ]);
+                // Alert::success('Success', 'Anda Berhasil Login !!!');
+                // return redirect('Home');
             } else {
 
                 return response()->json([

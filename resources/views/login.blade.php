@@ -111,6 +111,11 @@
 
                         if (data.status) {
                             window.location = data.redirect;
+                                Swal.fire({
+                                    title: "Anda Berhasil Login!",
+                                    text: "You clicked the button!",
+                                    icon: "success"
+                                })
                         }else{
                             $(".alert").remove();
                             $.each(data.errors, function (key, val) {
