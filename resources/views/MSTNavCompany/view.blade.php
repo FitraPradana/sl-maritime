@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Data Insurance')
+@section('title', 'Data Company')
 
 @section('content')
 
@@ -28,32 +28,31 @@
             <div class="page-header">
                 <div class="row align-items-center">
                     <div class="col">
-                        <h3 class="page-title">Insurance Renewal Monitoring</h3>
+                        <h3 class="page-title">Company</h3>
                         <ul class="breadcrumb">
-                            {{-- <li class="breadcrumb-item"><a href="index.html">Master Administration</a></li> --}}
-                            <li class="breadcrumb-item active">Renewal Monitoring</li>
+                            <li class="breadcrumb-item"><a href="#">Master Administration</a></li>
+                            <li class="breadcrumb-item active">Company</li>
                         </ul>
                     </div>
                     <div class="btn-group">
-                        <a href="{{ route('insurance.form_add_renewal') }}" class="btn add-btn"><i
-                                class="fa fa-plus"></i> Add Insurance</a>
+                        <a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_nav_company"><i
+                                class="fa fa-plus"></i> Add Company</a>
                     </div>
-                    <div class="col-auto float-right ml-auto">
+                    {{-- <div class="col-auto float-right ml-auto">
                         <div class="btn-group">
                             <button type="button" class="btn btn-dark btn-rounded dropdown-toggle" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">Import Insurance</button>
+                                aria-haspopup="true" aria-expanded="false">Import Employee</button>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="#" data-toggle="modal"
                                     data-target="#import_emp">Import</a>
-                                <a class="dropdown-item" href="#">Template Import Insurance</a>
+                                <a class="dropdown-item" href="#">Template Import Employee</a>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                 </div>
             </div>
             <!-- /Page Header -->
-
 
 
             <div class="row">
@@ -68,11 +67,6 @@
                             {{ session('error') }}
                         </div>
                     @endif
-                    {{-- @if ($room->isEmpty())
-                    <div class="alert alert-danger" role="alert">
-                        Data Room Masih KOSONG !!! Harap di Input terlebih dahulu
-                    </div>
-                @endif --}}
 
                     @if (session()->has('failures'))
                         <div class="alert alert-danger" role="alert">
@@ -97,17 +91,11 @@
                         <table id="datatables" class="table table-striped custom-table datatable">
                             <thead>
                                 <tr>
-                                    <th>Action</th>
+                                    {{-- <th>Action</th> --}}
                                     <th>#</th>
-                                    <th>Policy Number</th>
-                                    <th>Insurance Type</th>
-                                    <th>Entity</th>
-                                    <th>Inception Date</th>
-                                    <th>Expiry Date</th>
-                                    <th>Broker</th>
-                                    <th>Insurer</th>
-                                    <th>Status</th>
-                                    <th>Remarks</th>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th>Description</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -116,17 +104,18 @@
                     </div>
                 </div>
             </div>
-
-
-
-
         </div>
         <!-- /Page Content -->
 
 
-        <!-- Add insurance Modal -->
-        @include('insurance.add_modal')
-        <!-- /Add insurance Modal -->
+        <!-- Add Role Modal -->
+        {{-- @include('role.add_modal') --}}
+        <!-- /Add Role Modal -->
+
+        <!-- Add Role Modal -->
+        {{-- @include('role.edit_modal') --}}
+        <!-- /Add Role Modal -->
+
 
     </div>
     <!-- /Page Wrapper -->
@@ -135,72 +124,38 @@
 
 
 @section('under_body')
-    <link rel="stylesheet" href="{{ asset('/') }}template_hrsm/assets/css/select2.min.css">
+    {{-- <link rel="stylesheet" href="{{ asset('/') }}assets/css/select2.min.css"> --}}
     <script type="text/javascript">
         $(function() {
-
-            // SELECT2
-            $('#ins_type').select2({width: '100%'});
-            $('#entity').select2({width: '100%'});
-            $('#broker').select2({width: '100%'});
 
             $('#datatables').DataTable({
                 processing: true,
                 serverSide: true,
                 destroy: true,
-                ajax: "{{ url('insurance/renewal_monitoring/json') }}",
+                ajax: "{{ url('NavCompany/json') }}",
                 columns: [
-                    {
-                        data: 'action',
-                        name: 'action',
-                        searchable: false,
-                        sortable: false
-                    },
+                    // {
+                    //     data: 'action',
+                    //     name: 'action',
+                    //     searchable: false,
+                    //     sortable: false
+                    // },
                     {
                         render: function(data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
                         },
                     },
                     {
-                        data: 'policynumber',
-                        name: 'policynumber'
+                        data: 'companycode',
+                        name: 'companycode'
                     },
                     {
-                        data: 'typename',
-                        name: 'typename'
+                        data: 'companyname',
+                        name: 'companyname'
                     },
                     {
-                        data: 'company',
-                        name: 'company'
-                    },
-                    {
-                        data: 'inceptiondate',
-                        name: 'inceptiondate'
-                    },
-                    {
-                        data: 'expirydate',
-                        name: 'expirydate'
-                    },
-                    {
-                        data: 'brokername',
-                        name: 'brokername'
-                    },
-                    {
-                        data: 'insurername',
-                        name: 'insurername'
-                    },
-
-                    {
-                        data: 'status',
-                        name: 'status'
-                    },
-                    // {
-                    //     data: 'remark',
-                    //     name: 'remark'
-                    // },
-                    {
-                        data: 'remark_color',
-                        name: 'remark_color'
+                        data: 'companydescription',
+                        name: 'companydescription'
                     },
                 ],
                 dom: 'Bfrtip',
@@ -224,12 +179,7 @@
                     'print'
                 ],
             });
-
-
-
-
         });
-
     </script>
 
 @endsection

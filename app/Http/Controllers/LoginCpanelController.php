@@ -54,5 +54,6 @@ class LoginCpanelController extends Controller
 
         return redirect('/');
     }
+
 }
 

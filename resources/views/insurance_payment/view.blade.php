@@ -34,10 +34,10 @@
                             <li class="breadcrumb-item active">Renewal Monitoring</li>
                         </ul>
                     </div>
-                    <div class="btn-group">
+                    {{-- <div class="btn-group">
                         <a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_payment_insurance"><i
                                 class="fa fa-plus"></i> Add Payment Insurance</a>
-                    </div>
+                    </div> --}}
                     {{-- <div class="col-auto float-right ml-auto">
                         <div class="btn-group">
                             <button type="button" class="btn btn-dark btn-rounded dropdown-toggle" data-toggle="dropdown"

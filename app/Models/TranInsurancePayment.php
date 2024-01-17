@@ -5,8 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SLMInsurancePayment extends Model
+class TranInsurancePayment extends Model
 {
+    use HasFactory;
+
     use HasFactory;
     protected $connection = 'mysql';
     protected $table = "tran_insurance_payment";

@@ -16,12 +16,12 @@ class InsurancePaymentController extends Controller
 
     public function json()
     {
-        $insurancePayment = DB::connection('sqlsrv2')
+        $insurancePayment = DB::connection('mysql')
             ->table('tran_insurance_payment')
             ->leftJoin('mst_insurance_broker','tran_insurance_payment.broker','mst_insurance_broker.brokercode')
             ->leftJoin('mst_insurance_insurer','mst_insurance_insurer.insurercode','tran_insurance_payment.insurer')
             ->leftJoin('mst_insurance_type','mst_insurance_type.typecode','tran_insurance_payment.insurancetype')
-            ->orderByDesc('tran_insurance_payment.createat')
+            ->orderByDesc('tran_insurance_payment.duedate')
             ->get();
 
         return DataTables::of($insurancePayment)
@@ -33,6 +33,8 @@ class InsurancePaymentController extends Controller
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_insurance' . $data->id . '"><i class="fa fa-pencil m-r-5"></i> Edit</a>
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_insurance' . $data->id . '"><i class="fa fa-trash m-r-5"></i> Delete</a>
                         </div>
+
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_insurance' . $data->id . '"><i class="fa fa-money m-r-5"></i> Delete</a>
                 </div>
                             ';
                 // <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_department"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
@@ -41,18 +43,40 @@ class InsurancePaymentController extends Controller
                 return Carbon::parse($data->duedate)->format('d M Y');
             })
             ->addColumn('remark_color', function ($data) {
-                return '
-                <div class="progress progress-lg">
-                    <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <div class="progress progress-lg">
-                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <div class="progress progress-lg">
-                    <div class="progress-bar bg-warning" role="progressbar" style="width: 100%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                ';
-                // if($data->)
+                $today = Carbon::now();
+                $dueDate = Carbon::parse($data->duedate);
+                $selisihHari = $dueDate->diffInDays($today);
+                // $time = Carbon::now()->diff($data->duedate);
+                // $dPrev60_date = date('Y-m-d', strtotime('-60 days', strtotime($today)));
+                // $dPrev31_date = date('Y-m-d', strtotime('-31 days', strtotime($today)));
+                // $dPrev30_date = date('Y-m-d', strtotime('-30 days', strtotime($today)));
+                // $dPrev11_date = date('Y-m-d', strtotime('-11 days', strtotime($today)));
+                // $dPrev10_date = date('Y-m-d', strtotime('-10 days', strtotime($today)));
+                // $dNext10_date = date('Y-m-d', strtotime('+10 days', strtotime($today)));
+                // return '-60Days:'.$dPrev60_date.', -31Days:'.$dPrev31_date.'';
+                // return $selisihHari;
+                if($selisihHari <= 60 AND $selisihHari >= 31){
+                    return '
+                        <div class="progress progress-lg">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+
+                    ';
+                }
+                elseif($selisihHari <= 30 AND $selisihHari >= 11){
+                    return '
+                        <div class="progress progress-lg">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: 100%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    ';
+                }
+                elseif($selisihHari <= 10){
+                    return '
+                        <div class="progress progress-lg">
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    ';
+                }
             })
             ->rawColumns(['action','remark_color'])
             ->make(true);

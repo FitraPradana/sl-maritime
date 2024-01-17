@@ -2,28 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MSTInsuranceBroker;
 use App\Models\SLMBroker;
 use App\Models\SLMInsurance;
+use App\Models\SLMInsurancePayment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
 use Yajra\DataTables\DataTables;
 
 class InsuranceController extends Controller
 {
     public function index()
     {
-        $ins_type = DB::connection('sqlsrv2')->table('mst_insurance_type')->get();
-        $ins_broker = DB::connection('sqlsrv2')->table('mst_insurance_broker')->get();
-        $ins_insurer = DB::connection('sqlsrv2')->table('mst_insurance_insurer')->get();
-        $company = DB::connection('sqlsrv2')->table('ms_nav_companies')->where('companycode', '!=', '---')->get();
+        $ins_type = DB::connection('mysql')->table('mst_insurance_type')->get();
+        $ins_broker = DB::connection('mysql')->table('mst_insurance_broker')->get();
+        $ins_insurer = DB::connection('mysql')->table('mst_insurance_insurer')->get();
+        $company = DB::connection('mysql')->table('ms_nav_companies')->where('companycode', '!=', '---')->get();
         return view('insurance.view', compact('ins_type','ins_broker','ins_insurer','company'));
     }
 
     public function json()
     {
-        $insurance = DB::connection('sqlsrv2')
+        $insurance = DB::connection('mysql')
             ->table('tran_insurance_header')
             ->leftJoin('mst_insurance_broker','tran_insurance_header.broker','mst_insurance_broker.brokercode')
             ->leftJoin('mst_insurance_insurer','mst_insurance_insurer.insurercode','tran_insurance_header.insurer')
@@ -51,35 +54,69 @@ class InsuranceController extends Controller
             ->addColumn('expirydate', function ($data) {
                 return Carbon::parse($data->expirydate)->format('d M Y');
             })
-            ->addColumn('status', function ($data) {
-                return $data->status;
-            })
-            // ->editColumn('status', function ($edit_status) {
-            //     if ($edit_status->status == 'Not Valid') {
-            //         return '<span class="badge bg-inverse-danger">NOT VALID</span>';
-            //     } elseif ($edit_status->status == 'Progress') {
-            //         return '<span class="badge bg-inverse-info">PROGRESS</span>';
-            //     } elseif ($edit_status->status == 'Open') {
-            //         return '<span class="badge bg-inverse-warning">OPEN</span>';
-            //     } elseif ($edit_status->status == 'valid' OR $edit_status->status == 'Valid') {
-            //         return '<span class="badge bg-inverse-success">VALID</span>';
-            //     }
+            // ->addColumn('status', function ($data) {
+            //     return $data->status;
             // })
-            ->rawColumns(['action','status'])
+            ->editColumn('status', function ($edit_status) {
+                if ($edit_status->status == 'not_active') {
+                    return '<span class="badge bg-inverse-danger">NOT ACTIVE</span>';
+                } elseif ($edit_status->status == 'need_action') {
+                    return '<a href="#">NEED ACTION</a>';
+                    // return '<a href="#"><span class="badge bg-inverse-info">NEED ACTION</span></a>';
+                    // return '<span class="badge bg-inverse-info">NEED ACTION</span>';
+                } elseif ($edit_status->status == 'expired') {
+                    return '<span class="badge bg-inverse-warning">EXPIRED</span>';
+                } elseif ($edit_status->status == 'active') {
+                    return '<span class="badge bg-inverse-success">ACTIVE</span>';
+                }
+            })
+            ->addColumn('remark_color', function ($data) {
+                $today = Carbon::now();
+                $dueDate = Carbon::parse($data->expirydate);
+                $selisihHari = $dueDate->diffInDays($today);
+                if($selisihHari <= 60 AND $selisihHari >= 31){
+                    return '
+                        <div class="progress progress-lg">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+
+                    ';
+                }
+                elseif($selisihHari <= 30 AND $selisihHari >= 11){
+                    return '
+                        <div class="progress progress-lg">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: 100%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    ';
+                }
+                elseif($selisihHari <= 10){
+                    return '
+                        <div class="progress progress-lg">
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    ';
+                }
+            })
+            ->rawColumns(['action','status','remark_color'])
             ->make(true);
     }
 
     public function form_add_renewal()
     {
-        $ins_type = DB::connection('sqlsrv2')->table('mst_insurance_type')->get();
-        $ins_broker = DB::connection('sqlsrv2')->table('mst_insurance_broker')->get();
-        $ins_insurer = DB::connection('sqlsrv2')->table('mst_insurance_insurer')->get();
-        $company = DB::connection('sqlsrv2')->table('ms_nav_companies')->where('companycode', '!=', '---')->get();
+        $ins_type = DB::connection('mysql')->table('mst_insurance_type')->get();
+        $ins_broker = DB::connection('mysql')->table('mst_insurance_broker')->get();
+        $ins_insurer = DB::connection('mysql')->table('mst_insurance_insurer')->get();
+        $company = DB::connection('mysql')->table('ms_nav_companies')->where('companycode', '!=', '---')->get();
         return view('insurance.form_add', compact('ins_type','ins_broker','ins_insurer','company'));
     }
 
     public function store(Request $request)
     {
+        // $installment = collect($request->installment);
+        // // $count = count($request->installment);
+        // return $installment;
+
+
         DB::beginTransaction();
         try {
             $validator = Validator::make($request->all(), [
@@ -92,8 +129,9 @@ class InsuranceController extends Controller
                 'broker'                => ['required'],
                 'insurer'               => ['required'],
                 'fully_paid'            => ['required'],
-                'total_amount'          => ['required','numeric'],
+                // 'total_amount'          => ['required','numeric'],
             ]);
+
 
             if ($validator->fails()) {
                 return redirect('insurance/form_add_renewal')
@@ -102,7 +140,7 @@ class InsuranceController extends Controller
             }
 
             // Renewal Insurance
-            SLMInsurance::create([
+            $SLMInsurance = SLMInsurance::create([
                 'policynumber'      => $request->policy_number,
                 'oldtransnumber'    => '',
                 'insurancetype'     => $request->insurance_type,
@@ -115,11 +153,53 @@ class InsuranceController extends Controller
                 'status'            => $request->status,
                 'fullypaid'         => $request->fully_paid,
                 'remark'            => $request->remarks,
-                // 'createat'          => now(),
+                'createat'          => Carbon::now(),
                 'createby'          => auth()->user()->name,
-                // 'updateat'          => now(),
+                'updateat'          => Carbon::now(),
                 'updateby'          => auth()->user()->name,
             ]);
+            $lastInsertid_Insurance = $SLMInsurance->id;
+
+            if($request->fully_paid == "no"){
+                for ($i=0; $i < count($request->installment); $i++) {
+                    SLMInsurancePayment::create([
+                        'tran_insurance_header_id'  => $lastInsertid_Insurance,
+                        'insurancetype'             => $request->insurance_type,
+                        'company'                   => $request->entity,
+                        'broker'                    => $request->broker,
+                        'insurer'                   => $request->insurer,
+                        'installment_ke'            => $request->installment[$i],
+                        'duedate'                   => $request->duedate[$i],
+                        'durations'                 => '0',
+                        'status'                    => 'active',
+                        'remark'                    => $request->remarks,
+                        'createat'                  => Carbon::now(),
+                        'createby'                  => auth()->user()->name,
+                        'updateat'                  => Carbon::now(),
+                        'updateby'                  => auth()->user()->name,
+                    ]);
+                }
+
+            }
+
+            if($request->fully_paid == "yes"){
+                SLMInsurancePayment::create([
+                    'tran_insurance_header_id'  => $lastInsertid_Insurance,
+                    'insurancetype'             => $request->insurance_type,
+                    'company'                   => $request->entity,
+                    'broker'                    => $request->broker,
+                    'insurer'                   => $request->insurer,
+                    'installment_ke'            => 'Fully Paid',
+                    'duedate'                   => Carbon::createFromFormat('m/d/Y', $request->expiry_date)->format('Y-m-d'),
+                    'durations'                 => '0',
+                    'status'                    => 'active',
+                    'remark'                    => $request->remarks,
+                    'createat'                  => Carbon::now(),
+                    'createby'                  => auth()->user()->name,
+                    'updateat'                  => Carbon::now(),
+                    'updateby'                  => auth()->user()->name,
+                ]);
+            }
 
             // Update Status Deposit
             // $member = Member::where('id', $request->member_id)->first();
@@ -130,7 +210,10 @@ class InsuranceController extends Controller
             // Member::find($member->id)->update($dataMember);
 
             DB::commit();
-            return redirect('insurance/renewal_monitoring')->with(['success' => 'Data Renewal Insurance berhasil di Tambahkan !']);
+            // Alert::success('Success', 'Data Renewal insurance telah ditambahkan');
+            toast()->success('Data has been saved successfully!', 'Congrats');
+            // return redirect()->back();
+            return redirect('insurance/renewal_monitoring')->with('success', 'Data Renewal Insurance "'.$request->policy_number.'" berhasil di Tambahkan !');
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
@@ -152,7 +235,7 @@ class InsuranceController extends Controller
         }
 
         // Simpan data ke dalam database
-        $SaveBroker = SLMBroker::create([
+        $SaveBroker = MSTInsuranceBroker::create([
             'brokercode' => $request->input('brokercode'),
             'brokername' => $request->input('brokername'),
             'createat' => Carbon::now(),

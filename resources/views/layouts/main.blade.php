@@ -12,6 +12,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>SLM - @yield('title')</title>
 
+
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('/') }}template_hrsm/assets/img/people.png">
 
@@ -67,6 +68,8 @@
         @yield('loader')
         <!-- Loader -->
 
+        {{-- @notifyCss --}}
+
         <!-- Header -->
         <div class="header">
 
@@ -76,7 +79,7 @@
             <div class="header-left">
                 <a href="#" class="logo">
                     {{-- <img src="{{ asset('/') }}template_hrsm/logo-slm-animasi-3.gif" width="150" height="50" alt=""> --}}
-                    {{-- <img src="{{ asset('/') }}template_hrsm/headernew6_slm.jpg" width="100%" height="100%" alt=""> --}}
+                    <img src="https://www.sl-maritime.com/wp-content/uploads/2021/06/logo.svg" width="100%" height="100%" alt="">
                 </a>
             </div>
             <!-- /Logo -->
@@ -176,6 +179,8 @@
 
     @include('sweetalert::alert')
 
+    {{-- <x-notify::notify />
+    @notifyJs --}}
 
 </body>
 

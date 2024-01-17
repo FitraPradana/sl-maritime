@@ -2,9 +2,16 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BrokerController;
+use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\LoginController as ControllersLoginController;
 use App\Http\Controllers\LoginCpanelController;
+use App\Http\Controllers\MSTInsuranceBrokerController;
+use App\Http\Controllers\MSTInsuranceInsurerController;
+use App\Http\Controllers\MSTInsuranceTypeController;
+use App\Http\Controllers\MSTNavCompanyController;
 use App\Http\Controllers\UserController;
+use App\Imports\MSTNavCompanyImport;
+use App\Models\MSTInsuranceBroker;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -62,7 +69,25 @@ Route::get('/employee', [App\Http\Controllers\EmployeeController::class, 'index'
 Route::get('/employee/json', [App\Http\Controllers\EmployeeController::class, 'json'])->name('employee.json')->middleware('auth');
 
 // MST BROKER INSURANCE
-Route::match(['get', 'post'], 'broker/store', [BrokerController::class, 'store'])->name('broker.store')->middleware('auth');
+Route::get('/Insurance/Broker', [App\Http\Controllers\MSTInsuranceBrokerController::class, 'index'])->middleware('auth');
+Route::get('/Insurance/Broker/json', [App\Http\Controllers\MSTInsuranceBrokerController::class, 'json'])->name('broker.json')->middleware('auth');
+Route::match(['get', 'post'], 'Insurance/Broker/store', [MSTInsuranceBrokerController::class, 'store'])->name('broker.store')->middleware('auth');
+Route::match(['get', 'post'], '/broker_import', [MSTInsuranceBrokerController::class, 'import'])->name('broker.import')->middleware('auth');
+
+// MST TYPE INSURANCE
+Route::get('/Insurance/Type', [App\Http\Controllers\MSTInsuranceTypeController::class, 'index'])->middleware('auth');
+Route::get('/Insurance/Type/json', [App\Http\Controllers\MSTInsuranceTypeController::class, 'json'])->name('insurance_type_json')->middleware('auth');
+Route::match(['get', 'post'], '/insurance_type_import', [MSTInsuranceTypeController::class, 'import'])->name('insurance_type_import')->middleware('auth');
+
+// MST INSURER INSURANCE
+Route::get('/Insurance/Insurer', [App\Http\Controllers\MSTInsuranceInsurerController::class, 'index'])->middleware('auth');
+Route::get('/Insurance/Insurer/json', [App\Http\Controllers\MSTInsuranceInsurerController::class, 'json'])->name('insurer.json')->middleware('auth');
+Route::match(['get', 'post'], '/insurance_insurer_import', [MSTInsuranceInsurerController::class, 'import'])->name('insurance_insurer_import')->middleware('auth');
+
+// MST NAV COMPANY
+Route::get('/NavCompany', [App\Http\Controllers\MSTNavCompanyController::class, 'index'])->middleware('auth');
+Route::get('/NavCompany/json', [App\Http\Controllers\MSTNavCompanyController::class, 'json'])->name('navcompany.json')->middleware('auth');
+Route::match(['get', 'post'], '/nav_company_import', [MSTNavCompanyController::class, 'import'])->name('nav_company_import')->middleware('auth');
 
 // MST TICKETING IT
 Route::get('/ticketing', [App\Http\Controllers\TicketingController::class, 'index'])->name('ticketing.index')->middleware('auth');
@@ -72,7 +97,7 @@ Route::get('/ticketing/json', [App\Http\Controllers\TicketingController::class, 
 Route::get('/insurance/renewal_monitoring', [App\Http\Controllers\InsuranceController::class, 'index'])->name('insurance_renewal_monitoring.index')->middleware('auth');
 Route::get('/insurance/renewal_monitoring/json', [App\Http\Controllers\InsuranceController::class, 'json'])->name('insurance.json')->middleware('auth');
 Route::get('/insurance/form_add_renewal', [App\Http\Controllers\InsuranceController::class, 'form_add_renewal'])->name('insurance.form_add_renewal')->middleware('auth');
-Route::post('/insurance/renewal_monitoring/store', [App\Http\Controllers\InsuranceController::class, 'store'])->name('insurance.store')->middleware('auth');
+Route::match(['get', 'post'], 'insurance/renewal_monitoring/store', [InsuranceController::class, 'store'])->name('insurance.store')->middleware('auth');
 Route::post('/insurance/renewal_monitoring/saveBroker', [App\Http\Controllers\InsuranceController::class, 'saveBroker'])->name('insurance.saveBroker')->middleware('auth');
 
 Route::get('/insurance/payment_monitoring', [App\Http\Controllers\InsurancePaymentController::class, 'index'])->name('insurance_payment_monitoring.index')->middleware('auth');
@@ -85,3 +110,5 @@ Route::get('/crewing/report/json', [App\Http\Controllers\CrewingController::clas
 
 
 
+
+// Route::get('/konek_sql', [App\Http\Controllers\LoginCpanelController::class, 'konek_sql'])->name('konek_sql');

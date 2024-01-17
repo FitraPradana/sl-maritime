@@ -9,7 +9,7 @@ class SLMInsurance extends Model
 {
     use HasFactory;
 
-    protected $connection = 'sqlsrv2';
+    protected $connection = 'mysql';
     protected $table = "tran_insurance_header";
     protected $primaryKey = "id";
     protected $fillable = [

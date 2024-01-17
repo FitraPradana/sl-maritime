@@ -165,6 +165,8 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
         RealRashid\SweetAlert\SweetAlertServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+        Mckenziearts\Notify\LaravelNotifyServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -189,6 +191,7 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
         'Alert' => RealRashid\SweetAlert\Facades\Alert::class,
+        'Excel' =>Maatwebsite\Excel\Facades\Excel::class,
     ])->toArray(),
 
 ];
