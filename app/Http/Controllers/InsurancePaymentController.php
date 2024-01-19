@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TranInsurancePayment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -11,7 +12,8 @@ class InsurancePaymentController extends Controller
 {
     public function index()
     {
-        return view('insurance_payment.view');
+        $insurancePayment = TranInsurancePayment::all();
+        return view('insurance_payment.view', compact('insurancePayment'));
     }
 
     public function json()
@@ -22,6 +24,7 @@ class InsurancePaymentController extends Controller
             ->leftJoin('mst_insurance_insurer','mst_insurance_insurer.insurercode','tran_insurance_payment.insurer')
             ->leftJoin('mst_insurance_type','mst_insurance_type.typecode','tran_insurance_payment.insurancetype')
             ->leftJoin('tran_insurance_header','tran_insurance_header.id','tran_insurance_payment.tran_insurance_header_id')
+            ->select('tran_insurance_payment.*','mst_insurance_broker.brokercode','mst_insurance_broker.brokername','mst_insurance_insurer.insurercode','mst_insurance_insurer.insurername','mst_insurance_type.typecode','mst_insurance_type.typename','tran_insurance_header.policynumber')
             ->orderByDesc('tran_insurance_payment.duedate')
             ->get();
 
@@ -88,12 +91,36 @@ class InsurancePaymentController extends Controller
             })
             ->addColumn('paymentdate', function ($paid) {
                 if ($paid->paymentdate == null) {
-                    return '<a class="btn btn-info btn-small" href="#" data-toggle="modal" data-target="#payment_date' . $paid->id . '"><i class="fa fa-money m-r-5"></i>PAID</a>';
+                    return '<a class="btn btn-info btn-sm" href="#" data-toggle="modal" data-target="#update_payment_date' . $paid->id . '"><i class="fa fa-money m-r-5"></i>PAID</a>';
                 } else {
                     return Carbon::parse($paid->paymentdate)->format('d M Y');
                 }
             })
             ->rawColumns(['action','remark_color','status','paymentdate'])
             ->make(true);
+    }
+
+    public function update_payment_date(Request $request, $id)
+    {
+        DB::beginTransaction();
+
+        try {
+                //Update Payment Date
+                $insurancePayment = TranInsurancePayment::find($id);
+                $insurancePayment->update([
+                    'paymentdate'               => Carbon::createFromFormat('m/d/Y', $request->payment_date)->format('Y-m-d'),
+                    'status'                    => 'success',
+                ]);
+
+            DB::commit();
+            toast()->success('Data has been saved successfully!', 'Congrats');
+            return redirect()->back();
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+
+
     }
 }

@@ -158,7 +158,7 @@
                     <a class="dropdown-item" href="#">My Profile</a>
                     <a class="dropdown-item" href="#">Settings</a>
                     <a class="dropdown-item" href="{{ url('lock-screen') }}">Lock Screen</a>
-                    <a class="dropdown-item" href="{{ url('logout') }}">Logout</a>
+                    <a class="dropdown-item" href="{{ route('cpanel_logout') }}">Logout</a>
                 </div>
             </div>
             <!-- /Mobile Menu -->

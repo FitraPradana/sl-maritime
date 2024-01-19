@@ -60,23 +60,18 @@
                             </div>
 
 
-                            <div class="col-sm-6 col-md-3">
+                            <div class="col-sm-6 col-md-2">
                                 <div class="form-group">
                                     <label>Inception Date <span class="text-danger">*</span></label>
-                                    <div class="cal-icon">
-                                        <input class="form-control datetimepicker" type="text" id="inception_date"
-                                            name="inception_date" onmouseout="" value="{{ old('inception_date') }}"
-                                            required >
-                                    </div>
+                                    <input class="form-control" type="date" id="inception_date"
+                                            name="inception_date" required>
                                 </div>
                             </div>
-                            <div class="col-sm-6 col-md-3">
+                            <div class="col-sm-6 col-md-2">
                                 <div class="form-group">
                                     <label>Expiry Date <span class="text-danger">*</span></label>
-                                    <div class="cal-icon">
-                                        <input class="form-control datetimepicker" type="text" id="expiry_date"
-                                            name="expiry_date" onmouseout="" value="{{ old('expiry_date') }}" required>
-                                    </div>
+                                    <input class="form-control" type="date" id="expiry_date"
+                                            name="expiry_date" required readonly>
                                 </div>
                             </div>
                             <div class="col-sm-6 col-md-2">
@@ -254,9 +249,25 @@
             //     width: 50%
             // });
 
-            // $('#inception_date').change(function() {
-            //     //
-            // )};
+            // Menambahkan event onBlur ke input text
+            $('#inception_date').on('change', function(){
+                // Mengambil nilai tanggal saat ini dari DateTimePicker
+                var currentDate = $(this).val();
+                var newDate = new Date(currentDate);
+
+                // Menambah satu tahun
+                newDate.setFullYear(newDate.getFullYear() + 1);
+
+                // var newDates = dateObject.toISOString().slice(0, 10);
+
+                // Set nilai DateTimePicker dengan tanggal yang telah diubah
+                // $(this).datetimepicker('setDate', newDate);
+                format = $(this).datetimepicker('setDate', newDate);
+                // $('#expiry_date').datepicker({ dateFormat: "mm/dd/yy" }).val(newDate)
+
+                alert(format);
+            });
+
 
 
             // $('#line_amount').keyup(function(){
@@ -272,42 +283,34 @@
 
             // $('#line_amount').mask('#,###.##',{reverse : true });
 
-            $('#BtnSubmitBroker').click(function() {
-                // Ambil data dari formulir
-                var formData = $('#form-broker').serialize();
-                // Kirim data ke server menggunakan Ajax
-                $.ajax({
-                    type: 'POST',
-                    url: '{{ url('insurance/renewal_monitoring/saveBroker') }}',
-                    data: formData,
-                    dataType: 'json',
-                    success: function(response) {
-                        Swal.fire({
-                            title: "Data Broker Berhasil ditambahkan!",
-                            text: "You clicked the button!",
-                            icon: "success"
-                        })
-                    },
-                    error: function(error) {
-                        // Tangani kesalahan jika ada
-                        console.log(error);
-                        alert('Terjadi kesalahan saat menyimpan data');
-                    }
-                });
-            });
+            // $('#BtnSubmitBroker').click(function() {
+            //     // Ambil data dari formulir
+            //     var formData = $('#form-broker').serialize();
+            //     // Kirim data ke server menggunakan Ajax
+            //     $.ajax({
+            //         type: 'POST',
+            //         url: '{{ url('insurance/renewal_monitoring/saveBroker') }}',
+            //         data: formData,
+            //         dataType: 'json',
+            //         success: function(response) {
+            //             $('add_broker').hide();
+            //             Swal.fire({
+            //                 title: "Data Broker Berhasil ditambahkan!",
+            //                 text: "You clicked the button!",
+            //                 icon: "success"
+            //             })
+            //         },
+            //         // error: function(error) {
+            //         //     // Tangani kesalahan jika ada
+            //         //     console.log(error);
+            //         //     alert('Terjadi kesalahan saat menyimpan data');
+            //         // }
+            //     });
+            // });
         });
 
-        function validateTgl() {
-            inception_date_val = $("#inception_date").val()
-            expiry_date_val = $("#expiry_date").val()
-            if (expiry_date_val < inception_date_val) {
-                alert('Expiry Date tidak boleh lebih kecil dari Inception Date ');
-            }
-        }
 
         $(function() {
-            var expiry_date = $("#expiry_date").datetimepicker();
-            var inception_date = $("#inception_date").datetimepicker();
 
             // GLOBAL SETUP
             $.ajaxSetup({
@@ -315,6 +318,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+
 
 
 

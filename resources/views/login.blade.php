@@ -10,7 +10,7 @@
         <title>SLM - Login</title>
 
 		<!-- Favicon -->
-        <link rel="shortcut icon" type="image/x-icon" href="{{ asset('/') }}template_hrsm/assets/img/favicon.png">
+        <link rel="shortcut icon" type="image/x-icon" href="{{ asset('/') }}template_hrsm/assets/img/people.png">
 
 		<!-- Bootstrap CSS -->
         <link rel="stylesheet" href="{{ asset('/') }}template_hrsm/assets/css/bootstrap.min.css">

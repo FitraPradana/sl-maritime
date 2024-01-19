@@ -144,6 +144,7 @@
                 }
             });
 
+
             var table = $('#datatables').DataTable({
                 processing: true,
                 serverSide: true,
@@ -229,10 +230,12 @@
                 ],
             });
 
-            $("#filter_name").keyup(function(){
-                table.draw();
-                console.log($('#filter_name').val())
-            });
+            // $("#filter_name").keyup(function(){
+            //     table.draw();
+            //     console.log($('#filter_name').val())
+            // });
+
+            $('')
 
 
         });

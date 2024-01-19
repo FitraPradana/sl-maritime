@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BrokerController;
 use App\Http\Controllers\InsuranceController;
+use App\Http\Controllers\InsurancePaymentController;
 use App\Http\Controllers\LoginController as ControllersLoginController;
 use App\Http\Controllers\LoginCpanelController;
 use App\Http\Controllers\MSTInsuranceBrokerController;
@@ -102,6 +103,7 @@ Route::post('/insurance/renewal_monitoring/saveBroker', [App\Http\Controllers\In
 
 Route::get('/insurance/payment_monitoring', [App\Http\Controllers\InsurancePaymentController::class, 'index'])->name('insurance_payment_monitoring.index')->middleware('auth');
 Route::get('/insurance/payment_monitoring/json', [App\Http\Controllers\InsurancePaymentController::class, 'json'])->name('insurance_payment_monitoring.json')->middleware('auth');
+Route::match(['get', 'put'], 'insurance/payment_monitoring/update_payment_date/{id}', [InsurancePaymentController::class, 'update_payment_date'])->name('insurance_payment.update_payment_date')->middleware('auth');
 
 // MST CREWING
 Route::get('/crewing/report', [App\Http\Controllers\CrewingController::class, 'crewing_report'])->name('crewing_report')->middleware('auth');

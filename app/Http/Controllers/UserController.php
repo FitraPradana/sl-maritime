@@ -26,27 +26,9 @@ class UserController extends Controller
     public function json(Request $request)
     {
 
-
-
-        // if ($request->isMethod('post')) {
-        //     dd('is post method');
-        // }
-
-        // $user = DB::connection('sqlsrv')
-        //     ->table('users')
-        //     ->orderByDesc('updated_at')
-        //     ->get();
-
         $user = collect(User::all());
-        // $user->when($request->has('filter_name'), function ($q) use ($request) {
-        //     $q->where('name','like', '%'.$request->filter_name.'%');
-        // });
 
-        // $user>when($request->filter_name, function ($query) use ($request) {
-        //     return $query->where('name','like', '%'.$request->filter_name.'%');
-        // });
-
-
+        // if($request->)
 
         return DataTables::of($user)
             ->addColumn('checkbox', function ($data) {

@@ -245,6 +245,9 @@ class InsuranceController extends Controller
             // Tambahkan field lainnya sesuai kebutuhan
         ]);
 
+        // toast()->success('Data has been saved successfully!', 'Congrats');
+        // return redirect()->back();
+
         // Berikan respons
         return response()->json([
             "redirect" => url("insurance/form_add_renewal"),

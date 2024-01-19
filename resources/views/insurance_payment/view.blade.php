@@ -121,9 +121,9 @@
         <!-- /Page Content -->
 
 
-        <!-- Add Employee Modal -->
-        {{-- @include('employee.add_modal') --}}
-        <!-- /Add Employee Modal -->
+        <!-- Update Modal -->
+        @include('insurance_payment.modal_payment_date')
+        <!-- /Update Modal -->
 
         <!-- Add Employee Modal -->
         {{-- @include('employee.edit_modal') --}}
