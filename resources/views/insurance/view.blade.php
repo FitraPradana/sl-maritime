@@ -36,9 +36,9 @@
                     </div>
                     <div class="btn-group">
                         <a href="{{ route('insurance.form_add_renewal') }}" class="btn add-btn"><i
-                                class="fa fa-plus"></i> Add Insurance</a>
+                                class="fa fa-plus"></i> Create Insurance</a>
                     </div>
-                    <div class="col-auto float-right ml-auto">
+                    {{-- <div class="col-auto float-right ml-auto">
                         <div class="btn-group">
                             <button type="button" class="btn btn-dark btn-rounded dropdown-toggle" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">Import Insurance</button>
@@ -48,7 +48,7 @@
                                 <a class="dropdown-item" href="#">Template Import Insurance</a>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                 </div>
             </div>
@@ -97,7 +97,7 @@
                         <table id="datatables" class="table table-striped custom-table datatable">
                             <thead>
                                 <tr>
-                                    <th>Action</th>
+                                    {{-- <th>Action</th> --}}
                                     <th>#</th>
                                     <th>Policy Number</th>
                                     <th>Insurance Type</th>
@@ -150,12 +150,12 @@
                 destroy: true,
                 ajax: "{{ url('insurance/renewal_monitoring/json') }}",
                 columns: [
-                    {
-                        data: 'action',
-                        name: 'action',
-                        searchable: false,
-                        sortable: false
-                    },
+                    // {
+                    //     data: 'action',
+                    //     name: 'action',
+                    //     searchable: false,
+                    //     sortable: false
+                    // },
                     {
                         render: function(data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;

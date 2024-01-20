@@ -6,6 +6,7 @@ use App\Models\MSTInsuranceBroker;
 use App\Models\SLMBroker;
 use App\Models\SLMInsurance;
 use App\Models\SLMInsurancePayment;
+use App\Models\TranInsuranceHeader;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,12 +16,32 @@ use Yajra\DataTables\DataTables;
 
 class InsuranceController extends Controller
 {
+    public function PoliceInsuranceAuto()
+    {
+        $now = Carbon::now();
+        $dateNow = $now->year . $now->month . $now->day;
+        $cek = TranInsuranceHeader::count();
+        if (
+            $cek == 0
+        ) {
+            $urut = 10001;
+            $nomer = 'P-INS/' . $now->year . '/' . $urut;
+        } else {
+            $ambil = TranInsuranceHeader::all()->last();
+            $urut = (int)substr($ambil->policynumber, -5) + 1;
+            $nomer = 'P-INS/' . $now->year . '/' . $urut;
+        }
+
+        return $nomer;
+    }
+
     public function index()
     {
         $ins_type = DB::connection('mysql')->table('mst_insurance_type')->get();
         $ins_broker = DB::connection('mysql')->table('mst_insurance_broker')->get();
         $ins_insurer = DB::connection('mysql')->table('mst_insurance_insurer')->get();
         $company = DB::connection('mysql')->table('ms_nav_companies')->where('companycode', '!=', '---')->get();
+
         return view('insurance.view', compact('ins_type','ins_broker','ins_insurer','company'));
     }
 
@@ -107,7 +128,8 @@ class InsuranceController extends Controller
         $ins_broker = DB::connection('mysql')->table('mst_insurance_broker')->get();
         $ins_insurer = DB::connection('mysql')->table('mst_insurance_insurer')->get();
         $company = DB::connection('mysql')->table('ms_nav_companies')->where('companycode', '!=', '---')->get();
-        return view('insurance.form_add', compact('ins_type','ins_broker','ins_insurer','company'));
+        $PoliceInsuranceAuto = $this->PoliceInsuranceAuto();
+        return view('insurance.form_add', compact('ins_type','ins_broker','ins_insurer','company','PoliceInsuranceAuto'));
     }
 
     public function store(Request $request)
@@ -129,6 +151,7 @@ class InsuranceController extends Controller
                 'broker'                => ['required'],
                 'insurer'               => ['required'],
                 'fully_paid'            => ['required'],
+                'line_amount'           => ['required'],
                 // 'total_amount'          => ['required','numeric'],
             ]);
 
@@ -145,8 +168,9 @@ class InsuranceController extends Controller
                 'oldtransnumber'    => '',
                 'insurancetype'     => $request->insurance_type,
                 'company'           => $request->entity,
-                'inceptiondate'     => Carbon::createFromFormat('m/d/Y', $request->inception_date)->format('Y-m-d'),
-                'expirydate'        => Carbon::createFromFormat('m/d/Y', $request->expiry_date)->format('Y-m-d'),
+                // 'inceptiondate'     => Carbon::createFromFormat('m/d/Y', $request->inception_date)->format('Y-m-d'),
+                'inceptiondate'     => $request->inception_date,
+                'expirydate'        => $request->expiry_date,
                 'durations'         => '0',
                 'broker'            => $request->broker,
                 'insurer'           => $request->insurer,
@@ -169,9 +193,12 @@ class InsuranceController extends Controller
                         'broker'                    => $request->broker,
                         'insurer'                   => $request->insurer,
                         'installment_ke'            => $request->installment[$i],
+                        'amount'                    => $request->line_amount[$i],
+                        'total_amount'              => $request->line_amount[$i],
                         'duedate'                   => $request->duedate[$i],
                         'durations'                 => '0',
                         'status'                    => 'pending',
+                        'status_payment'            => 'pending',
                         'remark'                    => $request->remarks,
                         'createat'                  => Carbon::now(),
                         'createby'                  => auth()->user()->name,
@@ -183,22 +210,28 @@ class InsuranceController extends Controller
             }
 
             if($request->fully_paid == "yes"){
-                SLMInsurancePayment::create([
-                    'tran_insurance_header_id'  => $lastInsertid_Insurance,
-                    'insurancetype'             => $request->insurance_type,
-                    'company'                   => $request->entity,
-                    'broker'                    => $request->broker,
-                    'insurer'                   => $request->insurer,
-                    'installment_ke'            => 'Fully Paid',
-                    'duedate'                   => Carbon::createFromFormat('m/d/Y', $request->expiry_date)->format('Y-m-d'),
-                    'durations'                 => '0',
-                    'status'                    => 'pending',
-                    'remark'                    => $request->remarks,
-                    'createat'                  => Carbon::now(),
-                    'createby'                  => auth()->user()->name,
-                    'updateat'                  => Carbon::now(),
-                    'updateby'                  => auth()->user()->name,
-                ]);
+                for ($i=0; $i < count($request->installment); $i++) {
+                    SLMInsurancePayment::create([
+                        'tran_insurance_header_id'  => $lastInsertid_Insurance,
+                        'insurancetype'             => $request->insurance_type,
+                        'company'                   => $request->entity,
+                        'broker'                    => $request->broker,
+                        'insurer'                   => $request->insurer,
+                        'installment_ke'            => 'Fully Paid',
+                        // 'duedate'                   => Carbon::createFromFormat('m/d/Y', $request->expiry_date)->format('Y-m-d'),
+                        'amount'                    => $request->line_amount[$i],
+                        'total_amount'              => $request->line_amount[$i],
+                        'duedate'                   => $request->duedate[$i],
+                        'durations'                 => '0',
+                        'status'                    => 'pending',
+                        'status_payment'            => 'pending',
+                        'remark'                    => $request->remarks,
+                        'createat'                  => Carbon::now(),
+                        'createby'                  => auth()->user()->name,
+                        'updateat'                  => Carbon::now(),
+                        'updateby'                  => auth()->user()->name,
+                    ]);
+                }
             }
 
             // Update Status Deposit

@@ -20,6 +20,8 @@ class TranInsurancePayment extends Model
         'broker',
         'insurer',
         'installment_ke',
+        'amount',
+        'total_amount',
         'duedate',
         'paymentdate',
         'durations',

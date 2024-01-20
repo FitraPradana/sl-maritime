@@ -6,6 +6,7 @@ use App\Models\TranInsurancePayment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use RealRashid\SweetAlert\Facades\Alert;
 use Yajra\DataTables\DataTables;
 
 class InsurancePaymentController extends Controller
@@ -24,7 +25,7 @@ class InsurancePaymentController extends Controller
             ->leftJoin('mst_insurance_insurer','mst_insurance_insurer.insurercode','tran_insurance_payment.insurer')
             ->leftJoin('mst_insurance_type','mst_insurance_type.typecode','tran_insurance_payment.insurancetype')
             ->leftJoin('tran_insurance_header','tran_insurance_header.id','tran_insurance_payment.tran_insurance_header_id')
-            ->select('tran_insurance_payment.*','mst_insurance_broker.brokercode','mst_insurance_broker.brokername','mst_insurance_insurer.insurercode','mst_insurance_insurer.insurername','mst_insurance_type.typecode','mst_insurance_type.typename','tran_insurance_header.policynumber')
+            ->select('tran_insurance_payment.*','tran_insurance_payment.status as status_payment','mst_insurance_broker.brokercode','mst_insurance_broker.brokername','mst_insurance_insurer.insurercode','mst_insurance_insurer.insurername','mst_insurance_type.typecode','mst_insurance_type.typename','tran_insurance_header.policynumber')
             ->orderByDesc('tran_insurance_payment.duedate')
             ->get();
 
@@ -50,6 +51,7 @@ class InsurancePaymentController extends Controller
                 $today = Carbon::now();
                 $dueDate = Carbon::parse($data->duedate);
                 $selisihHari = $dueDate->diffInDays($today);
+                $status_payment = $data->status_payment;
                 // $time = Carbon::now()->diff($data->duedate);
                 // $dPrev60_date = date('Y-m-d', strtotime('-60 days', strtotime($today)));
                 // $dPrev31_date = date('Y-m-d', strtotime('-31 days', strtotime($today)));
@@ -59,7 +61,7 @@ class InsurancePaymentController extends Controller
                 // $dNext10_date = date('Y-m-d', strtotime('+10 days', strtotime($today)));
                 // return '-60Days:'.$dPrev60_date.', -31Days:'.$dPrev31_date.'';
                 // return $selisihHari;
-                if($selisihHari <= 60 AND $selisihHari >= 31){
+                if($selisihHari <= 30 AND $selisihHari >= 16 AND $status_payment == 'pending'){
                     return '
                         <div class="progress progress-lg">
                             <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
@@ -67,14 +69,14 @@ class InsurancePaymentController extends Controller
 
                     ';
                 }
-                elseif($selisihHari <= 30 AND $selisihHari >= 11){
+                elseif($selisihHari <= 15 AND $selisihHari >= 8 AND $status_payment == 'pending'){
                     return '
                         <div class="progress progress-lg">
                             <div class="progress-bar bg-warning" role="progressbar" style="width: 100%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     ';
                 }
-                elseif($selisihHari <= 10){
+                elseif($selisihHari <= 7 AND $status_payment == 'pending'){
                     return '
                         <div class="progress progress-lg">
                             <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
@@ -113,7 +115,8 @@ class InsurancePaymentController extends Controller
                 ]);
 
             DB::commit();
-            toast()->success('Data has been saved successfully!', 'Congrats');
+            // toast()->success('Data has been saved successfully!', 'Congrats');
+            Alert::success('Payment Date', 'Payment date has been update successfull !!!');
             return redirect()->back();
 
         } catch (\Throwable $th) {

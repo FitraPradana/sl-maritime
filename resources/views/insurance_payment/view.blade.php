@@ -31,7 +31,7 @@
                         <h3 class="page-title">Insurance Payment Monitoring</h3>
                         <ul class="breadcrumb">
                             {{-- <li class="breadcrumb-item"><a href="index.html">Master Administration</a></li> --}}
-                            <li class="breadcrumb-item active">Renewal Monitoring</li>
+                            <li class="breadcrumb-item active">Payment Monitoring</li>
                         </ul>
                     </div>
                     {{-- <div class="btn-group">
@@ -107,7 +107,7 @@
                                     <th>Broker</th>
                                     <th>Insurer</th>
                                     <th>Payment Status</th>
-                                    <th>Remarks</th>
+                                    {{-- <th>Remarks</th> --}}
                                     <th>Remark</th>
                                 </tr>
                             </thead>
@@ -195,10 +195,10 @@
                         data: 'status',
                         name: 'status'
                     },
-                    {
-                        data: 'remark',
-                        name: 'remark'
-                    },
+                    // {
+                    //     data: 'remark',
+                    //     name: 'remark'
+                    // },
                     {
                         data: 'remark_color',
                         name: 'remark_color'

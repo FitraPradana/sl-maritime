@@ -70,7 +70,5 @@ class MSTInsuranceBrokerController extends Controller
             toast()->success('Import Data BROKER has been saved successfully!', 'Congrats');
             return redirect('broker');
         }
-
-
     }
 }

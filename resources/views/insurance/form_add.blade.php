@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Form Addd Data Renewal Insurance')
+@section('title', 'Create Renewal Insurance')
 
 @section('content')
 
@@ -44,7 +44,7 @@
                                 <div class="form-group">
                                     <label>Policy Number <span class="text-danger">*</span></label>
                                     <input class="form-control" type="text" id="policy_number" name="policy_number"
-                                        value="{{ old('policy_number') }}" required>
+                                        value="{{ old('policy_number', $PoliceInsuranceAuto) }}" required readonly>
                                 </div>
                             </div>
                             <div class="col-sm-6 col-md-3">
@@ -58,7 +58,6 @@
                                     </select>
                                 </div>
                             </div>
-
 
                             <div class="col-sm-6 col-md-2">
                                 <div class="form-group">
@@ -163,8 +162,9 @@
                                                 <td><input type="text" class="form-control" id="installment"
                                                         name="installment[]" value="1" readonly></td>
                                                 <td><input type="number" class="form-control" id="line_amount"
-                                                        name="amount[]"></td>
-                                                <td><input type="date" class="form-control" id="duedate"
+                                                        name="line_amount[]"></td>
+                                                <td>
+                                                    <input type="date" class="form-control" id="duedate"
                                                         name="duedate[]"></td>
                                                 <td></td>
                                             </tr>
@@ -226,9 +226,11 @@
     {{-- <link rel="stylesheet" href="{{ asset('/') }}template_hrsm/assets/css/select2.min.css"> --}}
     <script type="text/javascript">
         $(document).ready(function() {
-            var paid_yes = $('input[name="fully_paid"][value="yes"]').prop('checked', true);
+            // var paid_yes = $('input[name="fully_paid"][value="yes"]').prop('checked', true);
             $(".table-review").hide();
+            $("#fully_paid").prop('required', true);
             // console.log(radioValue);
+            // fullypaidjq();
             $(".fully_paid").change(function() {
                 var radioValue = $(".fully_paid:checked").val();
                 if (radioValue == "no") {
@@ -236,13 +238,23 @@
                     $("#total_amount").prop('readonly', true);
                     $("#line_amount").prop('required', true);
                     $("#duedate").prop('required', true);
+
+                    $(".btn-add-row").show();
+                    $("#installment").val(1);
                 } else if (radioValue == "yes") {
-                    $(".table-review").hide();
+                    $(".table-review").show();
                     $("#total_amount").prop('readonly', false);
                     $("#line_amount").prop('required', false);
                     $("#duedate").prop('required', false);
+
+
+                    $(".btn-add-row").hide();
+                    $("#installment").val('Fully Paid');
+                    $('.table-review tbody tr').not(':first').remove();
                 }
             });
+
+
 
             // SELECT2
             // $('#insurance_type').select2({
@@ -252,21 +264,14 @@
             // Menambahkan event onBlur ke input text
             $('#inception_date').on('change', function(){
                 // Mengambil nilai tanggal saat ini dari DateTimePicker
-                var currentDate = $(this).val();
-                var newDate = new Date(currentDate);
+                var inception_date = new Date($(this).val());
+                output_f=new Date(inception_date.setDate(inception_date.getDate()+365)).toISOString().split('.');
+                console.log(output_f);
 
-                // Menambah satu tahun
-                newDate.setFullYear(newDate.getFullYear() + 1);
-
-                // var newDates = dateObject.toISOString().slice(0, 10);
-
-                // Set nilai DateTimePicker dengan tanggal yang telah diubah
-                // $(this).datetimepicker('setDate', newDate);
-                format = $(this).datetimepicker('setDate', newDate);
-                // $('#expiry_date').datepicker({ dateFormat: "mm/dd/yy" }).val(newDate)
-
-                alert(format);
+                output_s = output_f[0].split('T');
+                $('#expiry_date').val(output_s[0]);
             });
+
 
 
 
@@ -344,7 +349,7 @@
                 return '<td>' + rowsLength + '</td>' +
                     '<td><input type="text" id="installment" name = "installment[]" class="form-control" value = "' +
                     rowsLength + '" readonly></td>' +
-                    '<td><input type="number" id="line_amount" name = "amount[]" class="form-control" value = ""></td>' +
+                    '<td><input type="number" id="line_amount" name = "line_amount[]" class="form-control" value = ""></td>' +
                     '<td><input type="date" id="duedate" name = "duedate[]" class="form-control" value = ""></td>' +
                     '<td><button type="button" class="btn btn-danger" id="comments_remove"><i class="fa fa-trash-o"></i></button></td>'
             }

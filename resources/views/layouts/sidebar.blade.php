@@ -34,17 +34,14 @@
                     <span>Insurance</span>
                 </li>
                 @role(['Super-Admin','Insurance'])
-                <li>
-                    <a class="{{ request()->is('Insurance/Broker') ? 'active' : '' }}" href="{{ url('Insurance/Broker') }}"><i class="la la-object-ungroup"></i> <span> Broker</span></a>
-                </li>
-                <li>
-                    <a class="{{ request()->is('Insurance/Insurer') ? 'active' : '' }}" href="{{ url('Insurance/Insurer') }}"><i class="la la-object-ungroup"></i> <span> Insurer</span></a>
-                </li>
-                <li>
-                    <a class="{{ request()->is('Insurance/Type') ? 'active' : '' }}" href="{{ url('Insurance/Type') }}"><i class="la la-object-ungroup"></i> <span> Type</span></a>
-                </li>
-                <li>
-                    <a class="{{ request()->is('NavCompany') ? 'active' : '' }}" href="{{ url('NavCompany') }}"><i class="la la-object-ungroup"></i> <span> Entity</span></a>
+                <li class="submenu">
+                    <a href="#"><i class="la la-object-ungroup"></i> <span> Master Data Insurance</span> <span class="menu-arrow"></span></a>
+                    <ul style="display: none;">
+                        <a class="{{ request()->is('Insurance/Broker') ? 'active' : '' }}" href="{{ url('Insurance/Broker') }}"><i class="la la-object-ungroup"></i> <span> Broker</span></a>
+                        <a class="{{ request()->is('Insurance/Insurer') ? 'active' : '' }}" href="{{ url('Insurance/Insurer') }}"><i class="la la-object-ungroup"></i> <span> Insurer</span></a>
+                        <a class="{{ request()->is('Insurance/Type') ? 'active' : '' }}" href="{{ url('Insurance/Type') }}"><i class="la la-object-ungroup"></i> <span> Type</span></a>
+                        <a class="{{ request()->is('NavCompany') ? 'active' : '' }}" href="{{ url('NavCompany') }}"><i class="la la-object-ungroup"></i> <span> Entity</span></a>
+                    </ul>
                 </li>
                 @endrole
                 <li class="submenu">

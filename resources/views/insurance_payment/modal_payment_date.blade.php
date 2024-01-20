@@ -19,7 +19,9 @@
                             <input type="hidden" value="{{ $val->id }}" name="id_insurancepayment">
                             <div class="form-group">
                                 <label>Payment Date</label>
-                                <input class="form-control datetimepicker" type="text" name="payment_date" required>
+                                <div class="cal-icon">
+                                    <input class="form-control datetimepicker" type="text" name="payment_date" required>
+                                </div>
                             </div>
                         </div>
                     </div>

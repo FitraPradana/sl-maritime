@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('broker')->nullable();
             $table->string('insurer')->nullable();
             $table->string('installment_ke')->nullable();
+            $table->decimal('amount', 15, 2)->default(0);
+            $table->decimal('total_amount', 15, 2)->default(0);
             $table->datetime('duedate')->nullable();
             $table->datetime('paymentdate')->nullable();
             $table->string('durations')->nullable();
