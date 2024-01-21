@@ -18,19 +18,15 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        $user = User::all();
-        $role = Role::all();
-        return view('user.view', compact('user','role'));
-    }
+        if ($request->ajax()) {
+            $user = User::query();
 
-    public function json(Request $request)
-    {
+            // Tambahkan filter sesuai kebutuhan
+            if ($request->has('filter_name')) {
+                $user->where('name', 'like', '%' . $request->filter_name . '%');
+            }
 
-        $user = collect(User::all());
-
-        // if($request->)
-
-        return DataTables::of($user)
+            return DataTables::of($user)
             ->addColumn('checkbox', function ($data) {
                 return '
                 <input type="checkbox" name="cb-head"><br>
@@ -80,7 +76,13 @@ class UserController extends Controller
             })
             ->rawColumns(['action','name','active_status','checkbox'])
             ->make(true);
+        }
+
+        $user = User::all();
+        $role = Role::all();
+        return view('user.view', compact('user','role'));
     }
+
 
     public function store(Request $request)
     {
@@ -126,44 +128,55 @@ class UserController extends Controller
     }
 
 
-
-    public function user_has_roles()
+    public function user_has_roles(Request $request)
     {
-        return view('user.userHasRoles.view');
+        if ($request->ajax()) {
+            $userHasRoles = DB::connection('mysql')
+                ->table('users')
+                ->join('model_has_roles','users.id','model_has_roles.model_id')
+                ->join('roles','model_has_roles.role_id','roles.id')
+                ->select('users.*','roles.name as RolesName','model_has_roles.role_id')
+                ->orderByDesc('users.updated_at');
+                // ->get();
+
+            // Tambahkan filter sesuai kebutuhan
+            if ($request->cb_role_search != '') {
+                $userHasRoles->where('model_has_roles.role_id', $request->cb_role_search);
+            }
+            if ($request->username_search != '') {
+                $userHasRoles->where('users.name', 'like', '%'.$request->username_search.'%' );
+            }
+
+            $query = $userHasRoles->get();
+
+
+            return DataTables::of($query)
+                ->addColumn('action', function ($data) {
+                return '
+                    <div class="dropdown dropdown-action">
+                        <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_role' . $data->id . '"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_role' . $data->id . '"><i class="fa fa-trash m-r-5"></i> Delete</a>
+                            </div>
+                    </div>
+                ';
+                })
+                ->addColumn('RolesName', function ($data) {
+                    return $data->RolesName;
+                })
+                ->addColumn('created_at', function ($data) {
+                    return Carbon::parse($data->created_at)->format('d M Y H:i:s');
+                })
+                ->addColumn('updated_at', function ($data) {
+                    return Carbon::parse($data->updated_at)->format('d M Y H:i:s');
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+
+        $role = Role::all();
+        return view('user.userHasRoles.view', compact('role'));
     }
 
-    public function user_has_roles_json()
-    {
-        $userHasRoles = DB::connection('mysql')
-            ->table('users')
-            ->join('model_has_roles','users.id','model_has_roles.model_id')
-            ->join('roles','model_has_roles.role_id','roles.id')
-            ->select('users.*','roles.name as RolesName')
-            ->orderByDesc('users.updated_at')
-            ->get();
-
-        return DataTables::of($userHasRoles)
-        ->addColumn('action', function ($data) {
-            return '
-                <div class="dropdown dropdown-action">
-                    <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_role' . $data->id . '"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_role' . $data->id . '"><i class="fa fa-trash m-r-5"></i> Delete</a>
-                        </div>
-                </div>
-            ';
-            })
-            ->addColumn('RolesName', function ($data) {
-                return $data->RolesName;
-            })
-            ->addColumn('created_at', function ($data) {
-                return Carbon::parse($data->created_at)->format('d M Y H:i:s');
-            })
-            ->addColumn('updated_at', function ($data) {
-                return Carbon::parse($data->updated_at)->format('d M Y H:i:s');
-            })
-            ->rawColumns(['action'])
-            ->make(true);
-    }
 }

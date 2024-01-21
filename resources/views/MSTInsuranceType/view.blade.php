@@ -34,10 +34,10 @@
                             <li class="breadcrumb-item active">Insurance Type</li>
                         </ul>
                     </div>
-                    <div class="btn-group">
+                    {{-- <div class="btn-group">
                         <a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_ins_type"><i
                                 class="fa fa-plus"></i> Add Insurance Type</a>
-                    </div>
+                    </div> --}}
                     {{-- <div class="col-auto float-right ml-auto">
                         <div class="btn-group">
                             <button type="button" class="btn btn-dark btn-rounded dropdown-toggle" data-toggle="dropdown"

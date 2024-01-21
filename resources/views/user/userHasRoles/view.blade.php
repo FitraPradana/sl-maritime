@@ -54,6 +54,45 @@
             </div>
             <!-- /Page Header -->
 
+            <!-- Search Filter -->
+            <form>
+                <div class="row filter-row">
+                    <div class="col-sm-6 col-md-3">
+                        <div class="form-group form-focus">
+                            <input type="text" id="username_search" name="username_search" class="form-control floating">
+                            <label class="focus-label">Search Username</label>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <div class="form-group form-focus select-focus">
+                            <select class="select floating" id="cb_role_search" name="cb_role_search">
+                                <option value="">Select Role</option>
+                                @foreach ($role as $val)
+                                    <option value="{{ $val->id }}">{{ $val->name }}</option>
+                                @endforeach
+                            </select>
+                            <label class="focus-label">Role</label>
+                        </div>
+                    </div>
+                    {{-- <div class="col-sm-6 col-md-3">
+                        <div class="form-group form-focus select-focus">
+                            <select class="select floating">
+                                <option>Select Roll</option>
+                                <option>Web Developer</option>
+                                <option>Web Designer</option>
+                                <option>Android Developer</option>
+                                <option>Ios Developer</option>
+                            </select>
+                            <label class="focus-label">Role</label>
+                        </div>
+                    </div> --}}
+                    <div class="col-sm-6 col-md-3">
+                        <a href="#" class="btn btn-success btn-block" id="btnFilter"> Search </a>
+                    </div>
+                </div>
+            </form>
+        <!-- /Search Filter -->
+
 
             <div class="row">
                 <div class="col-md-12">
@@ -119,12 +158,26 @@
     {{-- <link rel="stylesheet" href="{{ asset('/') }}assets/css/select2.min.css"> --}}
     <script type="text/javascript">
         $(function() {
+            // GLOBAL SETUP
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
 
-            $('#datatables').DataTable({
+            var table = $('#datatables').DataTable({
                 processing: true,
                 serverSide: true,
                 destroy: true,
-                ajax: "{{ url('userHasRoles/json') }}",
+                ajax: {
+                    url: "{{ route('user_has_roles') }}",
+                    type: "POST",
+                    data: function(d) {
+                        d.username_search = $('#username_search').val(),
+                        d.cb_role_search = $('#cb_role_search').val()
+                        // return d
+                    }
+                },
                 columns: [
                     // {
                     //     data: 'action',
@@ -183,6 +236,23 @@
                     'print'
                 ],
             });
+
+
+            // $('#cb_role_search').on('change', function() {
+            // $("#cb_role_search").change(function(){
+            //     table.ajax.reload();
+            //     console.log($('#cb_role_search').val())
+            // });
+
+            // $("#username_search").keyup(function(){
+            //     table.ajax.reload();
+            //     console.log($('#username_search').val())
+            // });
+
+            $('#btnFilter').on('click', function() {
+                table.ajax.reload();
+            });
+
         });
     </script>
 

@@ -203,7 +203,7 @@
                             <button class="btn btn-primary submit-btn" type="submit"
                                 onclick="validateTgl()">Save</button>
                             <a class="btn btn-primary submit-btn m-r-10"
-                                href="{{ route('insurance_renewal_monitoring.index') }}">Cancel</a>
+                                href="{{ route('insurance.renewal_monitoring') }}">Cancel</a>
                         </div>
                     </form>
                 </div>
@@ -254,8 +254,6 @@
                 }
             });
 
-
-
             // SELECT2
             // $('#insurance_type').select2({
             //     width: 50%
@@ -272,46 +270,6 @@
                 $('#expiry_date').val(output_s[0]);
             });
 
-
-
-
-            // $('#line_amount').keyup(function(){
-            //     lineAmount = parseFloat($("#line_amount").val());
-            //     // $("#line_amount").each(function() {
-            //         sum += parseFloat($(this).val());
-            //         $("#total_amount").val("");
-            //         total = $("#total_amount").val(sum.toFixed(2));
-            //     // });
-            //     // sum = sum(lineAmount)
-            //     console.log(sum)
-            // });
-
-            // $('#line_amount').mask('#,###.##',{reverse : true });
-
-            // $('#BtnSubmitBroker').click(function() {
-            //     // Ambil data dari formulir
-            //     var formData = $('#form-broker').serialize();
-            //     // Kirim data ke server menggunakan Ajax
-            //     $.ajax({
-            //         type: 'POST',
-            //         url: '{{ url('insurance/renewal_monitoring/saveBroker') }}',
-            //         data: formData,
-            //         dataType: 'json',
-            //         success: function(response) {
-            //             $('add_broker').hide();
-            //             Swal.fire({
-            //                 title: "Data Broker Berhasil ditambahkan!",
-            //                 text: "You clicked the button!",
-            //                 icon: "success"
-            //             })
-            //         },
-            //         // error: function(error) {
-            //         //     // Tangani kesalahan jika ada
-            //         //     console.log(error);
-            //         //     alert('Terjadi kesalahan saat menyimpan data');
-            //         // }
-            //     });
-            // });
         });
 
 
@@ -323,9 +281,6 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-
-
-
 
             $(document).on("click", '.btn-add-row', function() {
                 var id = $(this).closest("table.table-review").attr('id'); // Id of particular table
@@ -354,52 +309,33 @@
                     '<td><button type="button" class="btn btn-danger" id="comments_remove"><i class="fa fa-trash-o"></i></button></td>'
             }
 
-            // $(document).on("submit", "#form-add", function() {
-            //     var e = this;
-            //     $(this).find("[type='submit']").html("Save...");
-            //     $.ajax({
-            //         url: $(this).attr('action'),
-            //         data: $(this).serialize(),
-            //         type: "POST",
-            //         dataType: 'json',
-            //         success: function (data) {
-            //             $(e).find("[type='submit']").html("Save");
-            //             if (data.status) {
-            //                 window.location = data.redirect;
-            //             }else{
-            //                 $(".alert").remove();
-            //                 $.each(data.errors, function (key, val) {
-            //                     $("#errors-list").append("<div class='alert alert-danger'>" + val + "</div>");
-            //                     Swal.fire({
-            //                         icon: "error",
-            //                         title: "Oops...",
-            //                         text: ""+val+".",
-            //                     });
-            //                 });
-            //             }
-            //         }
-            //     });
+            // ADD BROKER
+            $('#BtnSubmitBroker').click(function() {
+                // Ambil data dari formulir
+                var formData = $('#form-broker').serialize();
+                // Kirim data ke server menggunakan Ajax
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ url('insurance/renewal_monitoring/saveBroker') }}',
+                    data: formData,
+                    dataType: 'json',
+                    success: function(response) {
+                        $('#add_broker').hide();
 
-            //     return false;
-            // });
-
-            // $("#line_amount").on("keyup keydown", function() {
-            //     $("#line_amount").each(function() {
-            //         if(!isNaN(this.value) && this.value.length!=0) {
-            //             sum += parseFloat(this.value);
-            //         }
-            //     });
-            //     $("#total_amount").val(sum);
-            // });
-
-            // function calculateSum() {
-            //     var sum = 0;
-            //     $("#line_amount").each(function() {
-            //         sum += parseFloat($(this).val());
-            //         $("#total_amount").val("");
-            //         $("#total_amount").val(sum);
-            //     });
-            // }
+                        Swal.fire({
+                            title: "Data Broker Berhasil ditambahkan!",
+                            text: "You clicked the button!",
+                            icon: "success"
+                        })
+                    },
+                    error: function(error) {
+                        // Tangani kesalahan jika ada
+                        console.log(error);
+                        alert('Terjadi kesalahan saat menyimpan data');
+                    }
+                });
+            });
+            // END ADD BROKER
         });
     </script>
 

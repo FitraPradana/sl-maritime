@@ -107,9 +107,9 @@
         <!-- /Page Content -->
 
 
-        <!-- Add Role Modal -->
-        {{-- @include('role.add_modal') --}}
-        <!-- /Add Role Modal -->
+        <!-- Add Broker Modal -->
+        @include('broker.add_modal')
+        <!-- /Add Broker Modal -->
 
         <!-- Add Role Modal -->
         {{-- @include('role.edit_modal') --}}

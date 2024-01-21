@@ -35,28 +35,37 @@ class InsuranceController extends Controller
         return $nomer;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $ins_type = DB::connection('mysql')->table('mst_insurance_type')->get();
-        $ins_broker = DB::connection('mysql')->table('mst_insurance_broker')->get();
-        $ins_insurer = DB::connection('mysql')->table('mst_insurance_insurer')->get();
-        $company = DB::connection('mysql')->table('ms_nav_companies')->where('companycode', '!=', '---')->get();
+        if ($request->ajax()) {
+            $insurance = DB::connection('mysql')
+                ->table('tran_insurance_header')
+                ->leftJoin('mst_insurance_broker','tran_insurance_header.broker','mst_insurance_broker.brokercode')
+                ->leftJoin('mst_insurance_insurer','mst_insurance_insurer.insurercode','tran_insurance_header.insurer')
+                ->leftJoin('mst_insurance_type','mst_insurance_type.typecode','tran_insurance_header.insurancetype')
+                // ->select('tran_insurance_header.*','mst_insurance_broker.*','mst_insurance_insurer.*')
+                ->orderByDesc('tran_insurance_header.inceptiondate');
 
-        return view('insurance.view', compact('ins_type','ins_broker','ins_insurer','company'));
-    }
+            // Tambahkan filter sesuai kebutuhan
+            if ($request->policynumber_filter != '') {
+                $insurance->where('tran_insurance_header.policynumber', 'like', '%' . $request->policynumber_filter . '%');
+            }
+            if ($request->company_filter != '') {
+                $insurance->where('tran_insurance_header.company', $request->company_filter);
+            }
+            if ($request->broker_filter != '') {
+                $insurance->where('tran_insurance_header.broker', $request->broker_filter);
+            }
+            if ($request->insurer_filter != '') {
+                $insurance->where('tran_insurance_header.insurer', $request->insurer_filter);
+            }
+            if ($request->status_filter != '') {
+                $insurance->where('tran_insurance_header.status', $request->status_filter);
+            }
 
-    public function json()
-    {
-        $insurance = DB::connection('mysql')
-            ->table('tran_insurance_header')
-            ->leftJoin('mst_insurance_broker','tran_insurance_header.broker','mst_insurance_broker.brokercode')
-            ->leftJoin('mst_insurance_insurer','mst_insurance_insurer.insurercode','tran_insurance_header.insurer')
-            ->leftJoin('mst_insurance_type','mst_insurance_type.typecode','tran_insurance_header.insurancetype')
-            // ->select('tran_insurance_header.*','mst_insurance_broker.*','mst_insurance_insurer.*')
-            ->orderByDesc('tran_insurance_header.inceptiondate')
-            ->get();
+            $query = $insurance->get();
 
-        return DataTables::of($insurance)
+            return DataTables::of($query)
             ->addColumn('action', function ($data) {
                 return '
                 <div class="dropdown dropdown-action">
@@ -120,6 +129,23 @@ class InsuranceController extends Controller
             })
             ->rawColumns(['action','status','remark_color'])
             ->make(true);
+        }
+
+
+
+        $today = Carbon::now()->format('Y-m-d');
+        $ins_type = DB::connection('mysql')->table('mst_insurance_type')->get();
+        $ins_broker = DB::connection('mysql')->table('mst_insurance_broker')->get();
+        $ins_insurer = DB::connection('mysql')->table('mst_insurance_insurer')->get();
+        $company = DB::connection('mysql')->table('ms_nav_companies')->where('companycode', '!=', '---')->get();
+        $activeIns = DB::connection('mysql')->table('tran_insurance_header')->where('status', '=', 'active')->count();
+        $needActionIns = DB::connection('mysql')->table('tran_insurance_header')->where('status', '=', 'need_action')->count();
+        $ExpiredIns = DB::connection('mysql')->table('tran_insurance_header')->where('status', '=', 'expired')->count();
+        $todayActiveIns = DB::connection('mysql')->table('tran_insurance_header')->where('status', '=', 'active')->whereDate('createat', now()->toDateString())->count();
+        $totalIns = DB::connection('mysql')->table('tran_insurance_header')->count();
+
+        // return $needActionIns;
+        return view('insurance.view', compact('ins_type','ins_broker','ins_insurer','company','activeIns','needActionIns','ExpiredIns','todayActiveIns','totalIns'));
     }
 
     public function form_add_renewal()
@@ -246,11 +272,11 @@ class InsuranceController extends Controller
             // Alert::success('Success', 'Data Renewal insurance telah ditambahkan');
             toast()->success('Data has been saved successfully!', 'Congrats');
             // return redirect()->back();
-            return redirect('insurance/renewal_monitoring')->with('success', 'Data Renewal Insurance "'.$request->policy_number.'" berhasil di Tambahkan !');
+            return redirect('Insurance/RenewalMonitoring')->with('success', 'Data Renewal Insurance "'.$request->policy_number.'" berhasil di Tambahkan !');
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
-            // return redirect('insurance/renewal_monitoring')->with(['error' => 'Data Renewal Insurance gagal di Tambahkan !']);
+            // return redirect('Insurance/RenewalMonitoring')->with(['error' => 'Data Renewal Insurance gagal di Tambahkan !']);
         }
     }
 
@@ -283,9 +309,159 @@ class InsuranceController extends Controller
 
         // Berikan respons
         return response()->json([
-            "redirect" => url("insurance/form_add_renewal"),
+            // "redirect" => url("insurance/form_add_renewal"),
             'message' => 'Data berhasil disimpan',
             'data' => $SaveBroker
         ]);
+    }
+
+    public function get_renewal()
+    {
+        $result = TranInsuranceHeader::
+            select(
+                'id',
+                DB::raw('DATE_SUB(expirydate, INTERVAL 60 DAY) as date_before_60_days'),
+                DB::raw('CURDATE() as today'),
+                'expirydate',
+                'policynumber',
+                'oldtransnumber',
+                'insurancetype',
+                'company',
+                'inceptiondate',
+                'expirydate',
+                'durations',
+            )
+            ->get();
+
+        // return $result;
+
+        foreach ($result as $item) {
+            $filtered = $result->where('date_before_60_days', '<=', $item->today);
+            $filteredEnd = $filtered->where('expirydate', '>=', $item->today);
+
+            $oldtransnumber[] = $item->oldtransnumber;
+            $filteredValidation = $filteredEnd->whereNotIn('policynumber', $oldtransnumber);
+        }
+        // return $filteredEnd;
+
+        DB::beginTransaction();
+        try {
+
+            if ($filteredValidation->isEmpty()) {
+                return response()->json([
+                    'message' => 'Data Renewal insurance tidak ada yang perlu diperpanjang !!',
+                    'icon' => 'error',
+                ]);
+            }
+
+            foreach ($filteredValidation as $value) {
+                $dueTglPerpanjang = date('Y-m-d', strtotime('+1 years', strtotime($value->expirydate)));
+                # code...
+                $SLMInsurance = SLMInsurance::create([
+                    'policynumber'      => $this->PoliceInsuranceAuto(),
+                    'oldtransnumber'    => $value->policynumber,
+                    'insurancetype'     => $value->insurancetype,
+                    'company'           => $value->company,
+                    'inceptiondate'     => $value->expirydate,
+                    'expirydate'        => $dueTglPerpanjang,
+                    'durations'         => '0',
+                    'broker'            => '',
+                    'insurer'           => '',
+                    'status'            => 'need_action',
+                    'fullypaid'         => '',
+                    'remark'            => '',
+                    'createat'          => Carbon::now(),
+                    'createby'          => auth()->user()->name,
+                    'updateat'          => Carbon::now(),
+                    'updateby'          => auth()->user()->name,
+                ]);
+                $lastInsertid_Insurance = $SLMInsurance->id;
+            }
+            DB::commit();
+            // Berikan respons
+            return response()->json([
+                // "redirect" => url("insurance/form_add_renewal"),
+                // 'message' => 'Data '.$DateNow.' and '.$endDateNow.' berhasil disimpan',
+                'message' => 'Data Renewal Insurance berhasil di Generate !!',
+                'icon' => 'success',
+                // 'data' => $SaveBroker
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function testing(Request $request)
+    {
+        $result = TranInsuranceHeader::
+            select(
+                'id',
+                DB::raw('DATE_SUB(expirydate, INTERVAL 60 DAY) as date_before_60_days'),
+                DB::raw('CURDATE() as today'),
+                'expirydate',
+                'policynumber',
+                'oldtransnumber',
+                'insurancetype',
+                'company',
+                'inceptiondate',
+                'expirydate',
+                'durations',
+            )
+            ->get();
+
+        // return $result;
+
+        foreach ($result as $item) {
+            // $expirydate[] = $item->expirydate;
+            $expirydate[] = Carbon::parse($item->expirydate)->format('Y-m-d');
+            $date_before_60_days[] = $item->date_before_60_days;
+            $today[] = $item->today;
+            $policynumber[] = $item->policynumber;
+            $oldtransnumber[] = $item->oldtransnumber;
+
+            $filtered = $result->where('date_before_60_days', '<=', $item->today);
+            $filteredEnd = $filtered->where('expirydate', '>=', $item->today);
+            $filteredValidation = $filteredEnd->whereNotIn('policynumber', $oldtransnumber);
+            // return "Date: {$item->date}, Date Before 60 Days: {$item->date_before_60_days}, Today: {$item->today}<br>";
+        }
+        return $filteredValidation;
+
+        DB::beginTransaction();
+        try {
+            foreach ($filteredEnd as $value) {
+                $dueTglPerpanjang = date('Y-m-d', strtotime('+1 years', strtotime($value->expirydate)));
+                # code...
+                $SLMInsurance = SLMInsurance::create([
+                    'policynumber'      => $this->PoliceInsuranceAuto(),
+                    'oldtransnumber'    => $value->policynumber,
+                    'insurancetype'     => $value->insurancetype,
+                    'company'           => $value->company,
+                    'inceptiondate'     => $value->expirydate,
+                    'expirydate'        => $dueTglPerpanjang,
+                    'durations'         => '0',
+                    'broker'            => '',
+                    'insurer'           => '',
+                    'status'            => 'need_action',
+                    'fullypaid'         => '',
+                    'remark'            => '',
+                    'createat'          => Carbon::now(),
+                    'createby'          => auth()->user()->name,
+                    'updateat'          => Carbon::now(),
+                    'updateby'          => auth()->user()->name,
+                ]);
+                $lastInsertid_Insurance = $SLMInsurance->id;
+            }
+            DB::commit();
+            // Berikan respons
+            return response()->json([
+                // "redirect" => url("insurance/form_add_renewal"),
+                // 'message' => 'Data '.$DateNow.' and '.$endDateNow.' berhasil disimpan',
+                'message' => 'Data Renewal Insurance berhasil di Generate !!',
+                // 'data' => $SaveBroker
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+
     }
 }

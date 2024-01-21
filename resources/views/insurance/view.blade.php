@@ -35,9 +35,17 @@
                         </ul>
                     </div>
                     <div class="btn-group">
-                        <a href="{{ route('insurance.form_add_renewal') }}" class="btn add-btn"><i
-                                class="fa fa-plus"></i> Create Insurance</a>
+                        <a href="{{ route('insurance.form_add_renewal') }}" class="btn add-btn"><i class="fa fa-plus"></i>
+                            Create Insurance</a>
+                    </div>&nbsp;&nbsp;&nbsp;
+                    <div class="btn-group">
+                        <a href="#" class="btn btn-dark btn-rounded btn-sm get-btn"><i class="fa fa-cloud"></i> Get
+                            Renewal Insurance</a>
                     </div>
+                    {{-- <form action="{{ route('insurance.testing') }}">
+                    @csrf
+                        <button class="btn add-btn" type="submit">TESTING</button>
+                    </form> --}}
                     {{-- <div class="col-auto float-right ml-auto">
                         <div class="btn-group">
                             <button type="button" class="btn btn-dark btn-rounded dropdown-toggle" data-toggle="dropdown"
@@ -54,6 +62,135 @@
             </div>
             <!-- /Page Header -->
 
+            <!-- Insurance Statistics -->
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="stats-info">
+                        <h6>Active</h6>
+                        <h4>{{ $activeIns }} / {{ $totalIns }}</h4>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-info">
+                        <h6>Need Action</h6>
+                        <h4>{{ $needActionIns }}</h4>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-info">
+                        <h6>Expired</h6>
+                        <h4>{{ $ExpiredIns }}</h4>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-info">
+                        <h6>New Active Today</h6>
+                        <h4>{{ $todayActiveIns }}</h4>
+                    </div>
+                </div>
+            </div>
+            <!-- /Insurance Statistics -->
+
+            <!-- Search Filter -->
+            <div class="row filter-row">
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <div class="form-group form-focus">
+                        <input type="text" class="form-control floating" id="policynumber_filter">
+                        <label class="focus-label">Policy Number</label>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <div class="form-group form-focus select-focus">
+                        <select class="select floating" id="ins_type_filter">
+                            <option value=""> -- Select -- </option>
+                            @foreach ($ins_type as $val)
+                                <option value="{{ $val->typecode }}">{{ $val->typename }}</option>
+                            @endforeach
+                        </select>
+                        <label class="focus-label">Insurance Type</label>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <div class="form-group form-focus select-focus">
+                        <select class="select floating" id="company_filter">
+                            <option value=""> -- Select -- </option>
+                            @foreach ($company as $val)
+                                <option value="{{ $val->companycode }}">{{ $val->companyname }}</option>
+                            @endforeach
+                        </select>
+                        <label class="focus-label">Company</label>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <div class="form-group form-focus select-focus">
+                        <select class="select floating" id="broker_filter">
+                            <option value=""> -- Select -- </option>
+                            @foreach ($ins_broker as $val)
+                                <option value="{{ $val->brokercode }}">{{ $val->brokername }}</option>
+                            @endforeach
+                        </select>
+                        <label class="focus-label">Broker</label>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <a href="#" class="btn btn-success btn-block" id="btnFilter"> Search </a>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <a href="#" class="btn btn-danger btn-block" id="btnReset"> Reset </a>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <div class="form-group form-focus select-focus">
+                        <select class="select floating" id="insurer_filter">
+                            <option value=""> -- Select -- </option>
+                            @foreach ($ins_insurer as $val)
+                                <option value="{{ $val->insurercode }}">{{ $val->insurername }}</option>
+                            @endforeach
+                        </select>
+                        <label class="focus-label">Insurer</label>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <div class="form-group form-focus select-focus">
+                        <select class="select floating" id="status_filter">
+                            <option value=""> -- Select Status -- </option>
+                            <option value="active"> Active </option>
+                            <option value="need_action"> Need Action </option>
+                            <option value="expired"> Expired</option>
+                        </select>
+                        <label class="focus-label">Status</label>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <div class="form-group form-focus select-focus">
+                        <select class="select floating" id="flag_filter">
+                            <option value=""> -- Select Flag -- </option>
+                            <option value="green"> H-60 s/d H-31 (Green)</option>
+                            <option value="yellow"> H-30 s/d H-11 (Yellow)</option>
+                            <option value="red"> H-10 s/d H+10 (Red)</option>
+                        </select>
+                        <label class="focus-label">Flag</label>
+                    </div>
+                </div>
+                {{-- <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <div class="form-group form-focus">
+                        <div class="cal-icon">
+                            <input class="form-control floating datetimepicker" type="text">
+                        </div>
+                        <label class="focus-label">From</label>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <div class="form-group form-focus">
+                        <div class="cal-icon">
+                            <input class="form-control floating datetimepicker" type="text">
+                        </div>
+                        <label class="focus-label">To</label>
+                    </div>
+                </div> --}}
+
+
+            </div><br>
+            <!-- /Search Filter -->
 
 
             <div class="row">
@@ -100,6 +237,7 @@
                                     {{-- <th>Action</th> --}}
                                     <th>#</th>
                                     <th>Policy Number</th>
+                                    <th>Reference Policy Number</th>
                                     <th>Insurance Type</th>
                                     <th>Entity</th>
                                     <th>Inception Date</th>
@@ -140,15 +278,33 @@
         $(function() {
 
             // SELECT2
-            $('#ins_type').select2({width: '100%'});
-            $('#entity').select2({width: '100%'});
-            $('#broker').select2({width: '100%'});
+            $('#ins_type').select2({
+                width: '100%'
+            });
+            $('#entity').select2({
+                width: '100%'
+            });
+            $('#broker').select2({
+                width: '100%'
+            });
 
-            $('#datatables').DataTable({
+            table = $('#datatables').DataTable({
                 processing: true,
                 serverSide: true,
                 destroy: true,
-                ajax: "{{ url('insurance/renewal_monitoring/json') }}",
+                ajax: {
+                    url: "{{ route('insurance.renewal_monitoring') }}",
+                    // type: "POST",
+                    data: function(d) {
+                        d.policynumber_filter = $('#policynumber_filter').val(),
+                        d.ins_type_filter = $('#ins_type_filter').val(),
+                        d.company_filter = $('#company_filter').val(),
+                        d.broker_filter = $('#broker_filter').val(),
+                        d.insurer_filter = $('#insurer_filter').val(),
+                        d.status_filter = $('#status_filter').val(),
+                        d.flag_filter = $('#flag_filter').val()
+                    }
+                },
                 columns: [
                     // {
                     //     data: 'action',
@@ -164,6 +320,10 @@
                     {
                         data: 'policynumber',
                         name: 'policynumber'
+                    },
+                    {
+                        data: 'oldtransnumber',
+                        name: 'oldtransnumber'
                     },
                     {
                         data: 'typename',
@@ -226,10 +386,41 @@
             });
 
 
+            // get-btn
+            $('.get-btn').click(function() {
+                $.ajax({
+                    type: 'GET',
+                    url: '{{ url('insurance/get_renewal') }}',
+                    // data: formData,
+                    dataType: 'json',
+                    success: function(response) {
+                        table.ajax.reload();
+                        Swal.fire({
+                            title: response.message,
+                            text: "You clicked the button!",
+                            icon: response.icon,
+                        })
+                    },
+                    error: function(error) {
+                        // Tangani kesalahan jika ada
+                        console.log(error);
+                        Swal.fire({
+                            title: response.message,
+                            text: "You clicked the button!",
+                            icon: "error"
+                        })
+                    }
+                });
+            });
 
+            $('#btnFilter').on('click', function() {
+                table.ajax.reload();
+            });
+            $('#btnReset').on('click', function() {
+                location.reload();
+            });
 
         });
-
     </script>
 
 @endsection

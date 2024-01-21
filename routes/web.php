@@ -58,12 +58,12 @@ Route::get('/permission/json', [App\Http\Controllers\PermissionCpanelController:
 
 
 // MST USER
-Route::get('/user', [App\Http\Controllers\UserController::class, 'index'])->name('user.index')->middleware('auth');
+// Route::get('/user', [App\Http\Controllers\UserController::class, 'index'])->name('user.index')->middleware('auth');
+Route::match(['get', 'post'], 'user', [UserController::class, 'index'])->name('user.index')->middleware('auth');
 Route::match(['get', 'post'], 'user/json', [UserController::class, 'json'])->name('user.json')->middleware('auth');
 Route::match(['get', 'post'], 'user/store', [UserController::class, 'store'])->name('user.store')->middleware('auth');
 Route::match(['get', 'put'], 'User/ChangePassword/{id}', [UserController::class, 'changePassword'])->name('user.change_password')->middleware('auth');
-Route::get('/userHasRoles', [App\Http\Controllers\UserController::class, 'user_has_roles'])->name('user_has_roles')->middleware('auth');
-Route::get('/userHasRoles/json', [App\Http\Controllers\UserController::class, 'user_has_roles_json'])->name('user_has_roles')->middleware('auth');
+Route::match(['get', 'post'], 'userHasRoles', [UserController::class, 'user_has_roles'])->name('user_has_roles')->middleware('auth');
 
 // MST Employee
 Route::get('/employee', [App\Http\Controllers\EmployeeController::class, 'index'])->middleware('auth');
@@ -95,11 +95,12 @@ Route::get('/ticketing', [App\Http\Controllers\TicketingController::class, 'inde
 Route::get('/ticketing/json', [App\Http\Controllers\TicketingController::class, 'json'])->name('ticketing.index')->middleware('auth');
 
 // MST INSURANCE
-Route::get('/insurance/renewal_monitoring', [App\Http\Controllers\InsuranceController::class, 'index'])->name('insurance_renewal_monitoring.index')->middleware('auth');
-Route::get('/insurance/renewal_monitoring/json', [App\Http\Controllers\InsuranceController::class, 'json'])->name('insurance.json')->middleware('auth');
+Route::match(['get', 'post'], '/Insurance/RenewalMonitoring', [InsuranceController::class, 'index'])->name('insurance.renewal_monitoring')->middleware('auth');
 Route::get('/insurance/form_add_renewal', [App\Http\Controllers\InsuranceController::class, 'form_add_renewal'])->name('insurance.form_add_renewal')->middleware('auth');
 Route::match(['get', 'post'], 'insurance/renewal_monitoring/store', [InsuranceController::class, 'store'])->name('insurance.store')->middleware('auth');
 Route::post('/insurance/renewal_monitoring/saveBroker', [App\Http\Controllers\InsuranceController::class, 'saveBroker'])->name('insurance.saveBroker')->middleware('auth');
+Route::match(['get', 'post'], 'insurance/get_renewal', [InsuranceController::class, 'get_renewal'])->name('insurance.get_renewal')->middleware('auth');
+Route::match(['get', 'post'], 'insurance/testing', [InsuranceController::class, 'testing'])->name('insurance.testing')->middleware('auth');
 
 Route::get('/insurance/payment_monitoring', [App\Http\Controllers\InsurancePaymentController::class, 'index'])->name('insurance_payment_monitoring.index')->middleware('auth');
 Route::get('/insurance/payment_monitoring/json', [App\Http\Controllers\InsurancePaymentController::class, 'json'])->name('insurance_payment_monitoring.json')->middleware('auth');

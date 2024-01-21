@@ -48,7 +48,7 @@
                     <a href="#"><i class="la la-file-pdf-o"></i> <span> Insurance</span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
                         @can('lihat-insurance-renewal')
-                            <a class="{{ request()->is('insurance/renewal_monitoring') ? 'active' : '' }}" href="{{ url('insurance/renewal_monitoring') }}"> <span>Insurance Monitoring</span></a>
+                            <a class="{{ request()->is('Insurance/RenewalMonitoring') ? 'active' : '' }}" href="{{ url('Insurance/RenewalMonitoring') }}"> <span>Insurance Monitoring</span></a>
                         @endcan
                         @can('lihat-insurance-payment')
                             <a class="{{ request()->is('insurance/payment_monitoring') ? 'active' : '' }}" href="{{ url('insurance/payment_monitoring') }}"> <span>Insurance Payment Monitoring</span></a>

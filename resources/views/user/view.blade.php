@@ -32,10 +32,10 @@
             <div class="col-sm-6 col-md-3">
                 <div class="form-group form-focus">
                     <input type="text" id="filter_name" name="filter_name" class="form-control floating">
-                    <label class="focus-label">Name</label>
+                    <label class="focus-label">Search Name</label>
                 </div>
             </div>
-            <div class="col-sm-6 col-md-3">
+            {{-- <div class="col-sm-6 col-md-3">
                 <div class="form-group form-focus select-focus">
                     <select class="select floating">
                         <option>Select Company</option>
@@ -56,9 +56,9 @@
                     </select>
                     <label class="focus-label">Role</label>
                 </div>
-            </div>
+            </div> --}}
             <div class="col-sm-6 col-md-3">
-                <a href="#" class="btn btn-success btn-block"> Search </a>
+                <a href="#" class="btn btn-success btn-block" id="btnFilter"> Search </a>
             </div>
         </div>
         <!-- /Search Filter -->
@@ -149,13 +149,12 @@
                 processing: true,
                 serverSide: true,
                 destroy: true,
-                // ajax: "{{ url('/user/json') }}",
                 ajax: {
-                    url: "{{ route('user.json') }}",
+                    url: "{{ route('user.index') }}",
                     type: "POST",
                     data: function(d) {
                         d.filter_name = $('#filter_name').val()
-                        return d
+                        // return d
                     }
                 },
                 columns: [
@@ -230,12 +229,14 @@
                 ],
             });
 
-            // $("#filter_name").keyup(function(){
-            //     table.draw();
-            //     console.log($('#filter_name').val())
-            // });
+            $("#filter_name").keyup(function(){
+                table.ajax.reload();
+                console.log($('#filter_name').val())
+            });
 
-            $('')
+            $("#btnFilter").click(function(){
+                table.ajax.reload();
+            });
 
 
         });

@@ -34,10 +34,10 @@
                             <li class="breadcrumb-item active">Master Insurer</li>
                         </ul>
                     </div>
-                    <div class="btn-group">
+                    {{-- <div class="btn-group">
                         <a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_ins_insurer"><i
                                 class="fa fa-plus"></i> Add Master Insurer</a>
-                    </div>
+                    </div> --}}
                     {{-- <div class="col-auto float-right ml-auto">
                         <div class="btn-group">
                             <button type="button" class="btn btn-dark btn-rounded dropdown-toggle" data-toggle="dropdown"
