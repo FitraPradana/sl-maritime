@@ -41,7 +41,6 @@ class PhishingController extends Controller
                 ->addColumn('action', function ($data) {
                     return '
                 <div class="form group" align="center">
-                    <a href="#" class="edit btn btn-xs btn-info btn-flat btn-sm" data-toggle="modal" data-target="#edit_role' . $data->id . '"><i class="fa fa-pencil"></i></a>
                     <button type="button" onclick="deleteData(`' . route('phisingdetected.delete', $data->id) . '`)" class="btn btn-xs btn-danger btn-sm"><i class="fa fa-trash"></i></button>
                 </div>
             ';
