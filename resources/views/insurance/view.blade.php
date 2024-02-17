@@ -37,11 +37,15 @@
                     <div class="btn-group">
                         <a href="{{ route('insurance.form_add_renewal') }}" class="btn add-btn"><i class="fa fa-plus"></i>
                             Create Insurance</a>
-                    </div>&nbsp;&nbsp;&nbsp;
-                    <div class="btn-group">
                         <a href="#" class="btn btn-dark btn-rounded btn-sm get-btn"><i class="fa fa-cloud"></i> Get
                             Renewal Insurance</a>
+                        <a href="{{ url('getRenewalInsurance-mail') }}" class="btn btn-info btn-rounded btn-sm"><i class="fa fa-cloud"></i> Get
+                            Send Mail Renewal Insurance</a>
                     </div>
+                    {{-- <div class="btn-group">
+                        <a href="#" class="btn btn-dark btn-rounded btn-sm get-btn"><i class="fa fa-cloud"></i> Get
+                            Renewal Insurance</a>
+                    </div> --}}
                     {{-- <form action="{{ route('insurance.testing') }}">
                     @csrf
                         <button class="btn add-btn" type="submit">TESTING</button>
@@ -78,16 +82,17 @@
                 </div>
                 <div class="col-md-3">
                     <div class="stats-info">
-                        <h6>Expired</h6>
-                        <h4>{{ $ExpiredIns }}</h4>
+                        <h6>Existing Policy</h6>
+                        <h4>{{ $ExistingIns }}</h4>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="stats-info">
-                        <h6>New Active Today</h6>
-                        <h4>{{ $todayActiveIns }}</h4>
+                        <h6>Expired</h6>
+                        <h4>{{ $ExpiredIns }}</h4>
                     </div>
                 </div>
+
             </div>
             <!-- /Insurance Statistics -->
 
@@ -95,7 +100,7 @@
             <div class="row filter-row">
                 <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
                     <div class="form-group form-focus">
-                        <input type="text" class="form-control floating" id="policynumber_filter">
+                        <input type="text" class="form-control floating" value="" id="policynumber_filter">
                         <label class="focus-label">Policy Number</label>
                     </div>
                 </div>
@@ -132,12 +137,7 @@
                         <label class="focus-label">Broker</label>
                     </div>
                 </div>
-                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
-                    <a href="#" class="btn btn-success btn-block" id="btnFilter"> Search </a>
-                </div>
-                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
-                    <a href="#" class="btn btn-danger btn-block" id="btnReset"> Reset </a>
-                </div>
+
                 <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
                     <div class="form-group form-focus select-focus">
                         <select class="select floating" id="insurer_filter">
@@ -171,6 +171,12 @@
                         <label class="focus-label">Flag</label>
                     </div>
                 </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <a href="#" class="btn btn-success btn-block" id="btnFilter"> Search </a>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <a href="#" class="btn btn-danger btn-block" id="btnReset"> Reset </a>
+                </div>
                 {{-- <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
                     <div class="form-group form-focus">
                         <div class="cal-icon">
@@ -190,6 +196,8 @@
 
 
             </div><br>
+
+
             <!-- /Search Filter -->
 
 
@@ -234,18 +242,21 @@
                         <table id="datatables" class="table table-striped custom-table datatable">
                             <thead>
                                 <tr>
-                                    {{-- <th>Action</th> --}}
+                                    <th>Action</th>
+                                    <th>Remarks</th>
+                                    <th>Status</th>
                                     <th>#</th>
                                     <th>Policy Number</th>
-                                    <th>Reference Policy Number</th>
+                                    <th>ID</th>
+                                    {{-- <th>Reference Policy Number</th> --}}
                                     <th>Insurance Type</th>
                                     <th>Entity</th>
                                     <th>Inception Date</th>
+                                    <th>date_before_60_days</th>
                                     <th>Expiry Date</th>
+                                    <th>Selisih Hari</th>
                                     <th>Broker</th>
                                     <th>Insurer</th>
-                                    <th>Status</th>
-                                    <th>Remarks</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -277,6 +288,13 @@
     <script type="text/javascript">
         $(function() {
 
+            // GLOBAL SETUP
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
             // SELECT2
             $('#ins_type').select2({
                 width: '100%'
@@ -288,13 +306,13 @@
                 width: '100%'
             });
 
-            table = $('#datatables').DataTable({
+            var table = $('#datatables').DataTable({
                 processing: true,
                 serverSide: true,
                 destroy: true,
                 ajax: {
                     url: "{{ route('insurance.renewal_monitoring') }}",
-                    // type: "POST",
+                    type: "POST",
                     data: function(d) {
                         d.policynumber_filter = $('#policynumber_filter').val(),
                         d.ins_type_filter = $('#ins_type_filter').val(),
@@ -306,12 +324,22 @@
                     }
                 },
                 columns: [
-                    // {
-                    //     data: 'action',
-                    //     name: 'action',
-                    //     searchable: false,
-                    //     sortable: false
-                    // },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        searchable: false,
+                        sortable: false
+                    },
+                    {
+                        data: 'remark_color',
+                        name: 'remark_color',
+                        searchable: false,
+                        sortable: false
+                    },
+                    {
+                        data: 'status',
+                        name: 'status'
+                    },
                     {
                         render: function(data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
@@ -322,9 +350,10 @@
                         name: 'policynumber'
                     },
                     {
-                        data: 'oldtransnumber',
-                        name: 'oldtransnumber'
+                        data: 'id',
+                        name: 'id'
                     },
+
                     {
                         data: 'typename',
                         name: 'typename'
@@ -338,8 +367,16 @@
                         name: 'inceptiondate'
                     },
                     {
+                        data: 'date_before_60_days',
+                        name: 'date_before_60_days'
+                    },
+                    {
                         data: 'expirydate',
                         name: 'expirydate'
+                    },
+                    {
+                        data: 'selisihDays',
+                        name: 'selisihDays'
                     },
                     {
                         data: 'brokername',
@@ -350,18 +387,12 @@
                         name: 'insurername'
                     },
 
-                    {
-                        data: 'status',
-                        name: 'status'
-                    },
+
                     // {
                     //     data: 'remark',
                     //     name: 'remark'
                     // },
-                    {
-                        data: 'remark_color',
-                        name: 'remark_color'
-                    },
+
                 ],
                 dom: 'Bfrtip',
                 lengthMenu: [
@@ -388,6 +419,14 @@
 
             // get-btn
             $('.get-btn').click(function() {
+
+                // disable button
+                // $(this).prop("disabled", true);
+                // add spinner to button
+                // $(this).html(
+                //     `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...`
+                // );
+
                 $.ajax({
                     type: 'GET',
                     url: '{{ url('insurance/get_renewal') }}',
@@ -421,17 +460,18 @@
             });
 
             // Menangani tindakan POST saat tombol diklik
-            $('#datatables tbody').on('click', '.btn-need-action', function () {
-                var Id = $(this).data('id');
+            // $('#datatables tbody').on('click', '.btn-need-action', function () {
+            //     var policynumber = $(this).data('id');
+            //     console.log(policynumber);
 
-                // Redirect ke halaman lain dan kirim nilai menggunakan formulir
-                var form = $('<form action="{{ route("insurance.form_update_renewal") }}" method="POST">' +
-                                '<input type="hidden" name="_token" value="{{ csrf_token() }}">' +
-                                '<input type="hidden" name="transinsheader_id" value="' + Id + '">' +
-                             '</form>');
-                $('body').append(form);
-                form.submit();
-            });
+            //     // Redirect ke halaman lain dan kirim nilai menggunakan formulir
+            //     var form = $('<form action="{{ route("insurance.form_update_needAction") }}" method="POST">' +
+            //                     '<input type="hidden" name="_token" value="{{ csrf_token() }}">' +
+            //                     '<input type="hidden" name="policynumber" value="' + policynumber + '">' +
+            //                  '</form>');
+            //     $('body').append(form);
+            //     form.submit();
+            // });
 
         });
     </script>

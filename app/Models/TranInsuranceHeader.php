@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class TranInsuranceHeader extends Model
 {
@@ -11,8 +12,12 @@ class TranInsuranceHeader extends Model
 
     protected $connection = 'mysql';
     protected $table = "tran_insurance_header";
-    protected $primaryKey = "id";
+    protected $primaryKey = "policynumber";
     protected $fillable = [
+        'id',
+        'policynumber',
+        // 'oldtransnumber_id',
+        // 'oldpolicynumber',
         'insurancetype',
         'company',
         'inceptiondate',
@@ -21,6 +26,7 @@ class TranInsuranceHeader extends Model
         'broker',
         'insurer',
         'status',
+        'fullypaid',
         'remark',
         'deleteflag',
         'deleteat',
@@ -31,4 +37,39 @@ class TranInsuranceHeader extends Model
     ];
 
     public $timestamps = false;
+
+    /**
+     * Kita override boot method
+     *
+     * Mengisi primary key secara otomatis dengan UUID ketika membuat record
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            if (empty($model->{$model->getKeyName()})) {
+                $model->{$model->getKeyName()} = Str::uuid()->toString();
+            }
+        });
+    }
+
+    /**
+     * Kita override getIncrementing method
+     *
+     * Menonaktifkan auto increment
+     */
+    public function getIncrementing()
+    {
+        return false;
+    }
+
+    /**
+     * Kita override getKeyType method
+     *
+     * Memberi tahu laravel bahwa model ini menggunakan primary key bertipe string
+     */
+    public function getKeyType()
+    {
+        return 'string';
+    }
 }

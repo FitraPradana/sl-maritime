@@ -54,6 +54,50 @@
             </div>
             <!-- /Page Header -->
 
+            <!-- Search Filter -->
+            <div class="row filter-row">
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <div class="form-group form-focus">
+                        <input type="text" class="form-control floating" id="permission_name_filter">
+                        <label class="focus-label">Permission Name</label>
+                    </div>
+                </div>
+                {{-- <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <div class="form-group form-focus select-focus">
+                        <select class="select floating">
+                            <option> -- Select -- </option>
+                            <option> Pending </option>
+                            <option> Approved </option>
+                            <option> Returned </option>
+                        </select>
+                        <label class="focus-label">Status</label>
+                    </div>
+                </div> --}}
+                {{-- <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                <div class="form-group form-focus">
+                    <div class="cal-icon">
+                        <input class="form-control floating datetimepicker" id="from_date" name="from_date" type="text">
+                    </div>
+                    <label class="focus-label">From</label>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                <div class="form-group form-focus">
+                    <div class="cal-icon">
+                        <input class="form-control floating datetimepicker" id="to_date" name="to_date" type="text">
+                    </div>
+                    <label class="focus-label">To</label>
+                </div>
+            </div> --}}
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <a href="#" class="btn btn-success btn-block" id="btnFilter"> Search </a>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <a href="#" class="btn btn-danger btn-block" id="btnReset"> Reset </a>
+                </div>
+            </div>
+            <!-- /Search Filter -->
+
 
             <div class="row">
                 <div class="col-md-12">
@@ -110,7 +154,7 @@
 
 
         <!-- Add Permission Modal -->
-        {{-- @include('permission.add_modal') --}}
+        @include('permission.add_modal')
         <!-- /Add Permission Modal -->
 
         <!-- Add Permission Modal -->
@@ -129,13 +173,25 @@
     <script type="text/javascript">
         $(function() {
 
-            $('#datatables').DataTable({
+            // GLOBAL SETUP
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            var table = $('#datatables').DataTable({
                 processing: true,
                 serverSide: true,
                 destroy: true,
-                ajax: "{{ url('permission/json') }}",
-                columns: [
-                    {
+                ajax: {
+                    url: "{{ route('permissions.index') }}",
+                    type: "POST",
+                    data: function(d) {
+                        d.permission_name_filter = $('#permission_name_filter').val()
+                    }
+                },
+                columns: [{
                         data: 'action',
                         name: 'action',
                         searchable: false,
@@ -183,6 +239,12 @@
                     },
                     'print'
                 ],
+            });
+            $('#btnFilter').on('click', function() {
+                table.ajax.reload();
+            });
+            $('#btnReset').on('click', function() {
+                location.reload();
             });
         });
     </script>

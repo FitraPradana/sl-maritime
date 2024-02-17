@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Data Insurance Payment')
+@section('title', 'Transaksi Insurance Payment')
 
 @section('content')
 
@@ -54,6 +54,25 @@
             </div>
             <!-- /Page Header -->
 
+            <!-- Search Filter -->
+            <div class="row filter-row">
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <div class="form-group form-focus">
+                        <input type="text" class="form-control floating" value="" id="policynumber_filter">
+                        <label class="focus-label">Policy Number</label>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <a href="#" class="btn btn-success btn-block" id="btnFilter"> Search </a>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <a href="#" class="btn btn-danger btn-block" id="btnReset"> Reset </a>
+                </div>
+            </div>
+
+            <br>
+            <!-- /Search Filter -->
+
 
             <div class="row">
                 <div class="col-md-12">
@@ -98,6 +117,8 @@
                                 <tr>
                                     {{-- <th>Action</th> --}}
                                     <th>#</th>
+                                    <th>Remark</th>
+                                    <th>Payment Status</th>
                                     <th>Policy Number</th>
                                     <th>Insurance Type</th>
                                     <th>Entity</th>
@@ -106,9 +127,7 @@
                                     <th>Payment Date</th>
                                     <th>Broker</th>
                                     <th>Insurer</th>
-                                    <th>Payment Status</th>
-                                    {{-- <th>Remarks</th> --}}
-                                    <th>Remark</th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -137,15 +156,28 @@
 
 
 @section('under_body')
-    <link rel="stylesheet" href="{{ asset('/') }}assets/css/select2.min.css">
+    {{-- <link rel="stylesheet" href="{{ asset('/') }}assets/css/select2.min.css"> --}}
     <script type="text/javascript">
         $(function() {
 
-            $('#datatables').DataTable({
+            // GLOBAL SETUP
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            var table = $('#datatables').DataTable({
                 processing: true,
                 serverSide: true,
                 destroy: true,
-                ajax: "{{ url('insurance/payment_monitoring/json') }}",
+                ajax: {
+                    url: "{{ route('insurance_payment_monitoring.index') }}",
+                    type: "POST",
+                    data: function(d) {
+                        d.policynumber_filter = $('#policynumber_filter').val()
+                    }
+                },
                 columns: [
                     // {
                     //     data: 'action',
@@ -157,6 +189,14 @@
                         render: function(data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
                         },
+                    },
+                    {
+                        data: 'remark_color',
+                        name: 'remark_color'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status'
                     },
                     {
                         data: 'policynumber',
@@ -191,18 +231,12 @@
                         name: 'insurername'
                     },
 
-                    {
-                        data: 'status',
-                        name: 'status'
-                    },
+
                     // {
                     //     data: 'remark',
                     //     name: 'remark'
                     // },
-                    {
-                        data: 'remark_color',
-                        name: 'remark_color'
-                    },
+
                 ],
                 dom: 'Bfrtip',
                 lengthMenu: [
@@ -224,6 +258,12 @@
                     },
                     'print'
                 ],
+            });
+            $('#btnFilter').on('click', function() {
+                table.ajax.reload();
+            });
+            $('#btnReset').on('click', function() {
+                location.reload();
             });
         });
     </script>

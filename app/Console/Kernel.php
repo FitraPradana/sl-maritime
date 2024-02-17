@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -13,8 +14,13 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('demo:cron')
-                 ->everyMinute();
+        $schedule->command('demo:cron')->everyTwoMinutes();
+
+        // $schedule->command('emails:send')->everyTenMinutes();
+
+        // $schedule->call(function () {
+        //     Log::info('Task Schedule by sl-maritime.com at : ' . date('Y-m-d H:i:s'));
+        // })->everyMinute();
     }
 
     /**

@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tran_insurance_payment', function (Blueprint $table) {
-            $table->id();
-            $table->string('tran_insurance_header_id')->nullable();
+            $table->uuid('id')->primary();
+            // $table->string('tran_insurance_header_id')->nullable();
+            $table->string('policynumber', 30);
             $table->string('insurancetype')->nullable();
             $table->string('company')->nullable();
             $table->string('broker')->nullable();
@@ -34,6 +35,8 @@ return new class extends Migration
             $table->datetime('updateat')->nullable();
             $table->string('updateby')->nullable();
             $table->timestamps();
+
+
         });
     }
 

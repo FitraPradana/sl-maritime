@@ -91,8 +91,8 @@
                         <table id="datatables" class="table table-striped custom-table datatable">
                             <thead>
                                 <tr>
-                                    {{-- <th>Action</th> --}}
-                                    <th>#</th>
+                                    <th width="80px">Action</th>
+                                    <th width="50px">#</th>
                                     <th>Code</th>
                                     <th>Name</th>
                                 </tr>
@@ -106,15 +106,13 @@
         </div>
         <!-- /Page Content -->
 
-
         <!-- Add Broker Modal -->
         @include('broker.add_modal')
         <!-- /Add Broker Modal -->
 
-        <!-- Add Role Modal -->
-        {{-- @include('role.edit_modal') --}}
-        <!-- /Add Role Modal -->
-
+        <!-- Add Broker Modal -->
+        @include('broker.modal_edit')
+        <!-- /Add Broker Modal -->
 
     </div>
     <!-- /Page Wrapper -->
@@ -124,26 +122,50 @@
 
 @section('under_body')
     {{-- <link rel="stylesheet" href="{{ asset('/') }}assets/css/select2.min.css"> --}}
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#form-add-broker").submit(function() {
+                $(".spinner-border").removeClass("d-none");
+                $(".submit").attr("disabled", true);
+                $(".btn-txt").text("Processing ...");
+            });
+
+            $("#form-edit-broker").submit(function() {
+                $(".spinner-border").removeClass("d-none");
+                $(".submitEdit").attr("disabled", true);
+                $(".btn-txt").text("Processing ...");
+            });
+        });
+    </script>
+
     <script type="text/javascript">
         $(function() {
 
-            $('#datatables').DataTable({
+            // GLOBAL SETUP
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            table = $('#datatables').DataTable({
                 processing: true,
                 serverSide: true,
                 destroy: true,
                 ajax: "{{ url('Insurance/Broker/json') }}",
-                columns: [
-                    // {
-                    //     data: 'action',
-                    //     name: 'action',
-                    //     searchable: false,
-                    //     sortable: false
-                    // },
+                columns: [{
+                        data: 'action',
+                        name: 'action',
+                        searchable: false,
+                        sortable: false
+                    },
                     {
                         render: function(data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
                         },
                     },
+
                     {
                         data: 'brokercode',
                         name: 'brokercode'
@@ -175,6 +197,27 @@
                 ],
             });
         });
+
+        function deleteData(url) {
+            if (confirm('Yakin ingin menghapus data terpilih?')) {
+                $.post(url, {
+                        '_token': $('[name=csrf-token]').attr('content'),
+                        '_method': 'delete'
+                    })
+                    .done((response) => {
+                        table.ajax.reload();
+                        Swal.fire(
+                            'has been successfully',
+                            'deleted data from the website!',
+                            'success'
+                        )
+                    })
+                    .fail((errors) => {
+                        alert('Tidak dapat menghapus data');
+                        return;
+                    });
+            }
+        }
     </script>
 
 @endsection

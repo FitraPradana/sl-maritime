@@ -1,142 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-        <meta name="description" content="Smarthr - Bootstrap Admin Template">
-		<meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern, accounts, invoice, html5, responsive, CRM, Projects">
-        <meta name="author" content="Dreamguys - Bootstrap Admin Template">
-        <meta name="robots" content="noindex, nofollow">
-        <title>SLM - Login</title>
 
-		<!-- Favicon -->
-        <link rel="shortcut icon" type="image/x-icon" href="{{ asset('/') }}template_hrsm/assets/img/people.png">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <meta name="description" content="Smarthr - Bootstrap Admin Template">
+    <meta name="keywords"
+        content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern, accounts, invoice, html5, responsive, CRM, Projects">
+    <meta name="author" content="Dreamguys - Bootstrap Admin Template">
+    <meta name="robots" content="noindex, nofollow">
+    <title>SLM - Login</title>
 
-		<!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="{{ asset('/') }}template_hrsm/assets/css/bootstrap.min.css">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('/') }}template_hrsm/assets/img/people.png">
 
-		<!-- Fontawesome CSS -->
-        <link rel="stylesheet" href="{{ asset('/') }}template_hrsm/assets/css/font-awesome.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ asset('/') }}template_hrsm/assets/css/bootstrap.min.css">
 
-		<!-- Main CSS -->
-        <link rel="stylesheet" href="{{ asset('/') }}template_hrsm/assets/css/style.css">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="{{ asset('/') }}template_hrsm/assets/css/font-awesome.min.css">
 
-		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-		<!--[if lt IE 9]>
-			<script src="{{ asset('/') }}template_hrsm/assets/js/html5shiv.min.js"></script>
-			<script src="{{ asset('/') }}template_hrsm/assets/js/respond.min.js"></script>
-		<![endif]-->
-    </head>
-    <body class="account-page">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{{ asset('/') }}template_hrsm/assets/css/style.css">
 
-		<!-- Main Wrapper -->
-        <div class="main-wrapper">
-			<div class="account-content">
-				{{-- <a href="job-list.html" class="btn btn-primary apply-btn">Apply Job</a> --}}
-				<div class="container">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+   <script src="{{ asset('/') }}template_hrsm/assets/js/html5shiv.min.js"></script>
+   <script src="{{ asset('/') }}template_hrsm/assets/js/respond.min.js"></script>
+  <![endif]-->
 
-					<!-- Account Logo -->
-					<div class="account-logo">
-						{{-- <a href="#"><img src="{{ asset('/') }}template_hrsm/assets/img/logo2.png" alt="Dreamguy's Technologies"></a> --}}
-					</div>
-					<!-- /Account Logo -->
+</head>
 
-					<div class="account-box">
-						<div class="account-wrapper">
-							<h3 class="account-title">Login</h3>
-							<p class="account-subtitle">Access to our dashboard</p>
+<body class="account-page">
 
-							<!-- Account Form -->
-							<form id="login-form" action="{{ route('cpanel_login_proses') }}" method="POST">
-                                @csrf
-								<div class="form-group">
-									<label>Email Address</label>
-									<input class="form-control" type="email" name="email">
-								</div>
-								<div class="form-group">
-									<div class="row">
-										<div class="col">
-											<label>Password</label>
-										</div>
-										<div class="col-auto">
-											{{-- <a class="text-muted" href="forgot-password.html">
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <div class="account-content">
+            {{-- <a href="job-list.html" class="btn btn-primary apply-btn">Apply Job</a> --}}
+            <div class="container">
+
+                <!-- Account Logo -->
+                <div class="account-logo">
+                    {{-- <a href="#"><img src="{{ asset('/') }}template_hrsm/assets/img/logo2.png" alt="Dreamguy's Technologies"></a> --}}
+                </div>
+                <!-- /Account Logo -->
+
+                <div class="account-box">
+                    <div class="account-wrapper">
+                        <h3 class="account-title">Login</h3>
+                        <p class="account-subtitle">Access to our dashboard</p>
+
+                        <!-- Account Form -->
+                        <form id="login-form" action="{{ route('cpanel_login_proses') }}" method="POST">
+                            @csrf
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input class="form-control" type="email" name="email">
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col">
+                                        <label>Password</label>
+                                    </div>
+                                    <div class="col-auto">
+                                        {{-- <a class="text-muted" href="forgot-password.html">
 												Forgot password?
 											</a> --}}
-										</div>
-									</div>
-									<input class="form-control" type="password" name="password">
-								</div>
-								<div class="form-group text-center">
-									<button class="btn btn-primary account-btn" type="submit">Login</button>
-								</div>
-								<div class="account-footer">
-									{{-- <p>Don't have an account yet? <a href="register.html">Register</a></p> --}}
-								</div>
-							</form>
-							<!-- /Account Form -->
+                                    </div>
+                                </div>
+                                <input class="form-control" type="password" name="password">
+                            </div>
 
-						</div>
-					</div>
-				</div>
-			</div>
+                            <div id="html_element" style="align-items: center; display: flex;"></div> <br><br><br>
+
+                            <div class="form-group text-center">
+                                <button class="btn btn-info account-btn" type="submit">
+                                    <span class="btn-txt">Login</span>
+                                    <span class="spinner-border spinner-border-sm d-none" role="status"
+                                        aria-hidden="true"></span>
+                                </button>
+                            </div>
+                            <div class="account-footer">
+                                {{-- <p>Don't have an account yet? <a href="register.html">Register</a></p> --}}
+                            </div>
+                        </form>
+                        <!-- /Account Form -->
+
+                    </div>
+                </div>
+            </div>
         </div>
-		<!-- /Main Wrapper -->
+    </div>
+    <!-- /Main Wrapper -->
 
-		<!-- jQuery -->
-        <script src="{{ asset('/') }}template_hrsm/assets/js/jquery-3.5.1.min.js"></script>
+    <!-- jQuery -->
+    <script src="{{ asset('/') }}template_hrsm/assets/js/jquery-3.5.1.min.js"></script>
 
-		<!-- Bootstrap Core JS -->
-        <script src="{{ asset('/') }}template_hrsm/assets/js/popper.min.js"></script>
-        <script src="{{ asset('/') }}template_hrsm/assets/js/bootstrap.min.js"></script>
+    <!-- Bootstrap Core JS -->
+    <script src="{{ asset('/') }}template_hrsm/assets/js/popper.min.js"></script>
+    <script src="{{ asset('/') }}template_hrsm/assets/js/bootstrap.min.js"></script>
 
-		<!-- Custom JS -->
-		<script src="{{ asset('/') }}template_hrsm/assets/js/app.js"></script>
+    <!-- Custom JS -->
+    <script src="{{ asset('/') }}template_hrsm/assets/js/app.js"></script>
 
-        <script type="text/javascript">
-            $(function () {
+    {{-- Sweet Alert 2 --}}
+    <script src="{{ asset('/') }}template_hrsm/assets/js/sweetalert2@11.js"></script>
 
-                $(document).on("submit", "#login-form", function() {
-                  var e = this;
+    <script type="text/javascript">
+        $(function() {
 
-                  $(this).find("[type='submit']").html("Login...");
+            $(document).on("submit", "#login-form", function() {
+                var e = this;
 
-                  $.ajax({
-                      url: $(this).attr('action'),
-                      data: $(this).serialize(),
-                      type: "POST",
-                      dataType: 'json',
-                      success: function (data) {
+                //   $(this).find("[type='submit']").html("Login...");
+                $(".spinner-border").removeClass("d-none");
+                $(".submit").attr("disabled", true);
+                $(".btn-txt").text("Processing ...");
+
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    data: $(this).serialize(),
+                    type: "POST",
+                    dataType: 'json',
+                    success: function(data) {
 
                         $(e).find("[type='submit']").html("Login");
 
                         if (data.status) {
                             window.location = data.redirect;
-                                Swal.fire({
-                                    title: "Anda Berhasil Login!",
-                                    text: "You clicked the button!",
-                                    icon: "success"
-                                })
-                        }else{
+                            Swal.fire({
+                                title: "Anda Berhasil Login!",
+                                text: "You clicked the button!",
+                                icon: "success"
+                            })
+                        } else {
                             $(".alert").remove();
-                            $.each(data.errors, function (key, val) {
-                                $("#errors-list").append("<div class='alert alert-danger'>" + val + "</div>");
+                            $.each(data.errors, function(key, val) {
+                                $("#errors-list").append(
+                                    "<div class='alert alert-danger'>" + val +
+                                    "</div>");
                                 Swal.fire({
                                     icon: "error",
                                     title: "Oops...",
-                                    text: ""+val+".",
+                                    text: "" + val + ".",
                                 });
                             });
 
                         }
 
-                      }
-                  });
+                    }
+                });
 
-                  return false;
-              });
-
+                return false;
             });
-        </script>
 
-    </body>
+        });
+    </script>
+
+<script type="text/javascript">
+    var onloadCallback = function() {
+      grecaptcha.render('html_element', {
+        'sitekey' : '6LcRECApAAAAAGLmJbs0iaKBKZmtyn2evq9LC7Cr'
+      });
+    };
+  </script>
+
+<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+async defer>
+</script>
+
+    @include('sweetalert::alert')
+
+</body>
+
 </html>

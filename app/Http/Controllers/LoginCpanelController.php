@@ -19,7 +19,8 @@ class LoginCpanelController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
+            // 'g-recaptcha-response' => 'recaptcha',
         ]);
 
         if ($validator->fails()){
@@ -56,6 +57,11 @@ class LoginCpanelController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    public function recaptcha()
+    {
+        return view('recaptcha');
     }
 
 }

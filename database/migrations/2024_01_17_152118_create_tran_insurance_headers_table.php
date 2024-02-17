@@ -12,9 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tran_insurance_header', function (Blueprint $table) {
-            $table->id();
-            $table->string('policynumber')->nullable();
-            $table->string('oldtransnumber')->nullable();
+            $table->string('id');
+            $table->string('policynumber', 30)->primary();
             $table->string('insurancetype')->nullable();
             $table->string('company')->nullable();
             $table->datetime('inceptiondate')->nullable();

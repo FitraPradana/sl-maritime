@@ -200,8 +200,12 @@
                         </div>
                         <div class="submit-section">
                             {{-- <button class="btn btn-primary submit-btn m-r-10">Save & Send</button> --}}
-                            <button class="btn btn-primary submit-btn" type="submit"
-                                onclick="validateTgl()">Save</button>
+                            <button class="btn btn-primary submit-btn submit" type="submit"
+                                onclick="validateTgl()">
+                                <span class="btn-txt">Save</span>
+                                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                            </button>
+
                             <a class="btn btn-primary submit-btn m-r-10"
                                 href="{{ route('insurance.renewal_monitoring') }}">Cancel</a>
                         </div>
@@ -226,6 +230,11 @@
     {{-- <link rel="stylesheet" href="{{ asset('/') }}template_hrsm/assets/css/select2.min.css"> --}}
     <script type="text/javascript">
         $(document).ready(function() {
+            $("#form-add").submit(function() {
+                $(".spinner-border").removeClass("d-none");
+                $(".submit").attr("disabled", true);
+                $(".btn-txt").text("Processing ...");
+            });
             // var paid_yes = $('input[name="fully_paid"][value="yes"]').prop('checked', true);
             $(".table-review").hide();
             $("#fully_paid").prop('required', true);
@@ -244,8 +253,8 @@
                 } else if (radioValue == "yes") {
                     $(".table-review").show();
                     $("#total_amount").prop('readonly', false);
-                    $("#line_amount").prop('required', false);
-                    $("#duedate").prop('required', false);
+                    $("#line_amount").prop('required', true);
+                    $("#duedate").prop('required', true);
 
 
                     $(".btn-add-row").hide();

@@ -15,12 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('absentno');
             $table->string('empname');
-            $table->string('sex');
-            $table->string('religioncode');
-            $table->string('bornplace');
-            $table->string('borndate');
-            $table->string('bloodtype');
-            $table->string('currentaddress');
+            $table->string('empemail');
+            $table->string('sex')->nullable();
+            $table->string('religioncode')->nullable();
+            $table->string('bornplace')->nullable();
+            $table->string('borndate')->nullable();
+            $table->string('bloodtype')->nullable();
+            $table->string('currentaddress')->nullable();
             $table->timestamps();
         });
     }

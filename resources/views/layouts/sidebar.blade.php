@@ -14,102 +14,134 @@
                     @endcan
                 @endcanany
 
-                @canany(['lihat-ticketing'])
+                @canany(['ticketing-read','phising-read'])
                 <li class="menu-title">
                     <span>Information Technology</span>
                 </li>
-                    @can('lihat-ticketing')
+                    @can('ticketing-read')
                     <li class="submenu">
                         <a href="#"><i class="la la-ticket"></i> <span> Tickets</span> <span class="menu-arrow"></span></a>
                         <ul style="display: none;">
-                            <li><a class="{{ request()->is('ticketing') ? 'active' : '' }}" href="{{ url('ticketing') }}">All Tickets</a></li>
+                            <li><a class="{{ request()->is('Ticketing') ? 'active' : '' }}" href="{{ url('Ticketing') }}">All Tickets</a></li>
                         </ul>
                     </li>
                     @endcan
+                    {{-- @can('phising-read') --}}
+                    <li class="submenu">
+                        <a href="#"><i class="la la-ticket"></i> <span> Phising</span> <span class="menu-arrow"></span></a>
+                        <ul style="display: none;">
+                            <li><a class="{{ request()->is('PhisingTarget') ? 'active' : '' }}" href="{{ url('PhisingTarget') }}">Phising Target</a></li>
+                            <li><a class="{{ request()->is('PhisingDetected') ? 'active' : '' }}" href="{{ url('PhisingDetected') }}">Phising Detected</a></li>
+                        </ul>
+                    </li>
+                    {{-- @endcan --}}
                 @endcanany
 
 
-                @canany(['lihat-insurance-renewal','lihat-insurance-payment'])
+                @canany(['mst-insurance-broker-read','mst-insurance-type-read','mst-insurance-insurer-read','mst-NAVCompany-read'])
                 <li class="menu-title">
                     <span>Insurance</span>
                 </li>
-                @role(['Super-Admin','Insurance'])
                 <li class="submenu">
                     <a href="#"><i class="la la-object-ungroup"></i> <span> Master Data Insurance</span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
-                        <a class="{{ request()->is('Insurance/Broker') ? 'active' : '' }}" href="{{ url('Insurance/Broker') }}"><i class="la la-object-ungroup"></i> <span> Broker</span></a>
-                        <a class="{{ request()->is('Insurance/Insurer') ? 'active' : '' }}" href="{{ url('Insurance/Insurer') }}"><i class="la la-object-ungroup"></i> <span> Insurer</span></a>
-                        <a class="{{ request()->is('Insurance/Type') ? 'active' : '' }}" href="{{ url('Insurance/Type') }}"><i class="la la-object-ungroup"></i> <span> Type</span></a>
-                        <a class="{{ request()->is('NavCompany') ? 'active' : '' }}" href="{{ url('NavCompany') }}"><i class="la la-object-ungroup"></i> <span> Entity</span></a>
-                    </ul>
-                </li>
-                @endrole
-                <li class="submenu">
-                    <a href="#"><i class="la la-file-pdf-o"></i> <span> Insurance</span> <span class="menu-arrow"></span></a>
-                    <ul style="display: none;">
-                        @can('lihat-insurance-renewal')
-                            <a class="{{ request()->is('Insurance/RenewalMonitoring') ? 'active' : '' }}" href="{{ url('Insurance/RenewalMonitoring') }}"> <span>Insurance Monitoring</span></a>
+                        @can('mst-insurance-broker-read')
+                            <a class="{{ request()->is('Insurance/Broker') ? 'active' : '' }}" href="{{ url('Insurance/Broker') }}"><i class="la la-object-ungroup"></i> <span> Broker</span></a>
                         @endcan
-                        @can('lihat-insurance-payment')
-                            <a class="{{ request()->is('insurance/payment_monitoring') ? 'active' : '' }}" href="{{ url('insurance/payment_monitoring') }}"> <span>Insurance Payment Monitoring</span></a>
+                        @can('mst-insurance-insurer-read')
+                            <a class="{{ request()->is('Insurance/Insurer') ? 'active' : '' }}" href="{{ url('Insurance/Insurer') }}"><i class="la la-object-ungroup"></i> <span> Insurer</span></a>
+                        @endcan
+                        @can('mst-insurance-type-read')
+                            <a class="{{ request()->is('Insurance/Type') ? 'active' : '' }}" href="{{ url('Insurance/Type') }}"><i class="la la-object-ungroup"></i> <span> Type</span></a>
+                        @endcan
+                        @can('mst-NAVCompany-read')
+                            <a class="{{ request()->is('NavCompany') ? 'active' : '' }}" href="{{ url('NavCompany') }}"><i class="la la-object-ungroup"></i> <span> Entity</span></a>
                         @endcan
                     </ul>
                 </li>
                 @endcanany
 
-                @canany(['lihat-crewing','report1-crewing'])
+                @canany(['insurance-renewal-read','insurance-payment-read'])
+                <li class="submenu">
+                    <a href="#"><i class="la la-file-pdf-o"></i> <span> Insurance</span> <span class="menu-arrow"></span></a>
+                    <ul style="display: none;">
+                        @can('insurance-renewal-read')
+                            <a class="{{ request()->is('Insurance/RenewalMonitoring') ? 'active' : '' }}" href="{{ url('Insurance/RenewalMonitoring') }}"> <span>Insurance Monitoring</span></a>
+                        @endcan
+                        @can('insurance-payment-read')
+                            <a class="{{ request()->is('Insurance/PaymentMonitoring') ? 'active' : '' }}" href="{{ url('Insurance/PaymentMonitoring') }}"> <span>Insurance Payment Monitoring</span></a>
+                        @endcan
+                    </ul>
+                </li>
+                @endcanany
+
+                @canany(['mst-crewing-read'])
                 <li class="menu-title">
                     <span>Crewing</span>
                 </li>
                 <li class="submenu">
                     <a href="#"><i class="las la-anchor"></i> <span> Crewing</span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
-                        @can('report1-crewing')
+                        @can('mst-crewing-report')
                             <a class="{{ request()->is('crewing/report') ? 'active' : '' }}" href="{{ url('crewing/report') }}"> <span>Report Crew</span></a>
                         @endcan
                     </ul>
                 </li>
                 @endcanany
 
-                @canany(['lihat-user','lihat-employee'])
-                <li class="menu-title">
-                    <span>Administration</span>
-                </li>
-                    @can('lihat-employee')
-                    <li class="submenu">
+                @canany(['mst-employee-read','mst-user-read','mst-userHasRole-read','mst-userHasPermission-read','mst-role-read','mst-roleHasPermission-read','mst-permission-read'])
+                    <li class="menu-title">
+                        <span>Administration</span>
+                    </li>
+                    @can('mst-employee-read')
+                    {{-- <li class="submenu">
                         <a href="#"><i class="la la-user"></i> <span> Employees</span> <span class="menu-arrow"></span></a>
                         <ul style="display: none;">
                             <li><a class="{{ request()->is('employee') ? 'active' : '' }}" href="{{ url('employee') }}">All Employees</a></li>
                         </ul>
-                    </li>
+                    </li> --}}
                     @endcan
-                    @can('lihat-user')
+                    @canany(['mst-user-read','mst-userHasRole-read','mst-userHasRole-read'])
                     <li class="submenu">
                         <a href="#"><i class="la la-user-plus"></i> <span> Users</span> <span class="menu-arrow"></span></a>
                         <ul style="display: none;">
-                            <li><a class="{{ request()->is('user') ? 'active' : '' }}" href="{{ url('user') }}">All Users</a></li>
-                            <li><a class="{{ request()->is('userHasRoles') ? 'active' : '' }}" href="{{ url('userHasRoles') }}">User Has Roles</a></li>
+                            @can('mst-user-read')
+                            <li><a class="{{ request()->is('Users') ? 'active' : '' }}" href="{{ url('Users') }}">All Users</a></li>
+                            @endcan
+                            @can('mst-userHasRole-read')
+                            <li><a class="{{ request()->is('UserHasRoles') ? 'active' : '' }}" href="{{ url('UserHasRoles') }}">User Has Roles</a></li>
+                            @endcan
+                            @can('mst-userHasPermission-read')
+                            <li><a class="{{ request()->is('UserHasPermission') ? 'active' : '' }}" href="{{ url('UserHasPermission') }}">User Has Permission</a></li>
+                            @endcan
                         </ul>
                     </li>
-                    @endcan
-                    @can('lihat-role')
+                    @endcanany
+
+                    @canany(['mst-role-read','mst-roleHasPermission-read'])
                     <li class="submenu">
                         <a href="#"><i class="la la-object-ungroup"></i> <span> Roles</span> <span class="menu-arrow"></span></a>
                         <ul style="display: none;">
-                            <li><a class="{{ request()->is('role') ? 'active' : '' }}" href="{{ url('role') }}">All Roles</a></li>
-                            <li><a class="{{ request()->is('roleHasPermission') ? 'active' : '' }}" href="{{ url('roleHasPermission') }}">Role has Permission</a></li>
+                            @can('mst-role-read')
+                            <li><a class="{{ request()->is('Roles') ? 'active' : '' }}" href="{{ url('Roles') }}">All Roles</a></li>
+                            @endcan
+                            @can('mst-roleHasPermission-read')
+                            <li><a class="{{ request()->is('RoleHasPermission') ? 'active' : '' }}" href="{{ url('RoleHasPermission') }}">Role has Permission</a></li>
+                            @endcan
                         </ul>
                     </li>
-                    @endcan
-                    @can('lihat-permission')
+                    @endcanany
+                    @canany(['mst-permission-read'])
                     <li class="submenu">
                         <a href="#"><i class="la la-object-ungroup"></i> <span> Permission</span> <span class="menu-arrow"></span></a>
                         <ul style="display: none;">
-                            <li><a class="{{ request()->is('permission') ? 'active' : '' }}" href="{{ url('permission') }}">All Permission</a></li>
+                            @can('mst-permission-read')
+                            <li><a class="{{ request()->is('Permissions') ? 'active' : '' }}" href="{{ url('Permissions') }}">All Permission</a></li>
+                            @endcan
                         </ul>
                     </li>
-                    @endcan
-                @endcanany
+                    @endcanany
+
                 {{-- <li>
                     <a href="#"><i class="la la-cog"></i> <span>Settings</span></a>
                 </li>
@@ -133,6 +165,7 @@
                         <li><a href="lock-screen.html"> Lock Screen </a></li>
                     </ul>
                 </li> --}}
+                @endcanany
             </ul>
         </div>
     </div>

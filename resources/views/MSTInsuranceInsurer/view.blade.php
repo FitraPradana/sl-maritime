@@ -34,10 +34,10 @@
                             <li class="breadcrumb-item active">Master Insurer</li>
                         </ul>
                     </div>
-                    {{-- <div class="btn-group">
+                    <div class="btn-group">
                         <a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_ins_insurer"><i
                                 class="fa fa-plus"></i> Add Master Insurer</a>
-                    </div> --}}
+                    </div>
                     {{-- <div class="col-auto float-right ml-auto">
                         <div class="btn-group">
                             <button type="button" class="btn btn-dark btn-rounded dropdown-toggle" data-toggle="dropdown"
@@ -91,8 +91,8 @@
                         <table id="datatables" class="table table-striped custom-table datatable">
                             <thead>
                                 <tr>
-                                    {{-- <th>Action</th> --}}
-                                    <th>#</th>
+                                    <th width="80px">Action</th>
+                                    <th width="50px">#</th>
                                     <th>Code</th>
                                     <th>Name</th>
                                 </tr>
@@ -108,11 +108,11 @@
 
 
         <!-- Add Role Modal -->
-        {{-- @include('role.add_modal') --}}
+        @include('MSTInsuranceInsurer.add_modal')
         <!-- /Add Role Modal -->
 
         <!-- Add Role Modal -->
-        {{-- @include('role.edit_modal') --}}
+        @include('MSTInsuranceInsurer.modal_edit')
         <!-- /Add Role Modal -->
 
 
@@ -123,22 +123,33 @@
 
 
 @section('under_body')
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#form-add-insurer").submit(function() {
+                $(".spinner-border").removeClass("d-none");
+                $(".submit").attr("disabled", true);
+                $(".btn-txt").text("Processing ...");
+            });
+        });
+    </script>
+
+
     {{-- <link rel="stylesheet" href="{{ asset('/') }}assets/css/select2.min.css"> --}}
     <script type="text/javascript">
         $(function() {
 
-            $('#datatables').DataTable({
+            table = $('#datatables').DataTable({
                 processing: true,
                 serverSide: true,
                 destroy: true,
                 ajax: "{{ url('Insurance/Insurer/json') }}",
-                columns: [
-                    // {
-                    //     data: 'action',
-                    //     name: 'action',
-                    //     searchable: false,
-                    //     sortable: false
-                    // },
+                columns: [{
+                        data: 'action',
+                        name: 'action',
+                        searchable: false,
+                        sortable: false
+                    },
                     {
                         render: function(data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
@@ -175,6 +186,27 @@
                 ],
             });
         });
+
+        function deleteData(url) {
+            if (confirm('Yakin ingin menghapus data terpilih?')) {
+                $.post(url, {
+                        '_token': $('[name=csrf-token]').attr('content'),
+                        '_method': 'delete'
+                    })
+                    .done((response) => {
+                        table.ajax.reload();
+                        Swal.fire(
+                            'has been successfully',
+                            'deleted data from the website!',
+                            'success'
+                        )
+                    })
+                    .fail((errors) => {
+                        alert('Tidak dapat menghapus data');
+                        return;
+                    });
+            }
+        }
     </script>
 
 @endsection

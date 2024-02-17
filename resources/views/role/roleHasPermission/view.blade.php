@@ -34,10 +34,10 @@
                             <li class="breadcrumb-item active">Role has Permission</li>
                         </ul>
                     </div>
-                    {{-- <div class="btn-group">
-                        <a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_role"><i
-                                class="fa fa-plus"></i> Add Role</a>
-                    </div> --}}
+                    <div class="btn-group">
+                        <a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_roleHasPermission"><i
+                                class="fa fa-plus"></i> Add Role has Permission</a>
+                    </div>
                     {{-- <div class="col-auto float-right ml-auto">
                         <div class="btn-group">
                             <button type="button" class="btn btn-dark btn-rounded dropdown-toggle" data-toggle="dropdown"
@@ -53,6 +53,39 @@
                 </div>
             </div>
             <!-- /Page Header -->
+
+            <!-- Search Filter -->
+            <div class="row filter-row">
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <div class="form-group form-focus select-focus">
+                        <select class="select floating" id="role_name_filter" name="role_name_filter">
+                            <option value=""> -- Select -- </option>
+                            @foreach ($role as $val)
+                                <option value="{{ $val->id }}">{{ $val->name }}</option>
+                            @endforeach
+                        </select>
+                        <label class="focus-label">Role Name</label>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <div class="form-group form-focus select-focus">
+                        <select class="select floating" id="permission_name_filter" name="permission_name_filter">
+                            <option value=""> -- Select -- </option>
+                            @foreach ($permission as $val)
+                                <option value="{{ $val->id }}">{{ $val->name }}</option>
+                            @endforeach
+                        </select>
+                        <label class="focus-label">Permission Name</label>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <a href="#" class="btn btn-success btn-block" id="btnFilter"> Search </a>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <a href="#" class="btn btn-danger btn-block" id="btnReset"> Reset </a>
+                </div>
+            </div>
+            <!-- /Search Filter -->
 
 
             <div class="row">
@@ -109,6 +142,10 @@
         <!-- /Page Content -->
     </div>
     <!-- /Page Wrapper -->
+
+    <!-- Add Role has Permission Modal -->
+    @include('role.roleHasPermission.add_modal')
+    <!-- /Add Role has Permission  Modal -->
 @endsection
 
 
@@ -118,11 +155,25 @@
     <script type="text/javascript">
         $(function() {
 
-            $('#datatables').DataTable({
+            // GLOBAL SETUP
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            var table = $('#datatables').DataTable({
                 processing: true,
                 serverSide: true,
                 destroy: true,
-                ajax: "{{ url('roleHasPermission/json') }}",
+                ajax: {
+                    url: "{{ route('role_has_permission.index') }}",
+                    type: "POST",
+                    data: function(d) {
+                        d.role_name_filter = $('#role_name_filter').val(),
+                        d.permission_name_filter = $('#permission_name_filter').val()
+                    }
+                },
                 columns: [
                     // {
                     //     data: 'action',
@@ -172,6 +223,12 @@
                     },
                     'print'
                 ],
+            });
+            $('#btnFilter').on('click', function() {
+                table.ajax.reload();
+            });
+            $('#btnReset').on('click', function() {
+                location.reload();
             });
         });
     </script>

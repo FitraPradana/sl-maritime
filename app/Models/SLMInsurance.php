@@ -11,8 +11,9 @@ class SLMInsurance extends Model
 
     protected $connection = 'mysql';
     protected $table = "tran_insurance_header";
-    protected $primaryKey = "id";
+    // protected $primaryKey = "policynumber";
     protected $fillable = [
+        'id',
         'policynumber',
         'oldtransnumber',
         'insurancetype',

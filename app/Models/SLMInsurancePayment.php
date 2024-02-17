@@ -13,11 +13,14 @@ class SLMInsurancePayment extends Model
     protected $primaryKey = "id";
     protected $fillable = [
         'tran_insurance_header_id',
+        'policynumber',
         'insurancetype',
         'company',
         'broker',
         'insurer',
         'installment_ke',
+        'amount',
+        'total_amount',
         'duedate',
         'durations',
         'status',

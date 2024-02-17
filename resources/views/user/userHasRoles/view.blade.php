@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Data User has Permission')
+@section('title', 'Data User has Role')
 
 @section('content')
 
@@ -34,10 +34,10 @@
                             <li class="breadcrumb-item active">User has Role</li>
                         </ul>
                     </div>
-                    {{-- <div class="btn-group">
-                        <a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_role"><i
-                                class="fa fa-plus"></i> Add Role</a>
-                    </div> --}}
+                    <div class="btn-group">
+                        <a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_userHasroles"><i
+                                class="fa fa-plus"></i> Add User has Role</a>
+                    </div>
                     {{-- <div class="col-auto float-right ml-auto">
                         <div class="btn-group">
                             <button type="button" class="btn btn-dark btn-rounded dropdown-toggle" data-toggle="dropdown"
@@ -64,14 +64,9 @@
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-3">
-                        <div class="form-group form-focus select-focus">
-                            <select class="select floating" id="cb_role_search" name="cb_role_search">
-                                <option value="">Select Role</option>
-                                @foreach ($role as $val)
-                                    <option value="{{ $val->id }}">{{ $val->name }}</option>
-                                @endforeach
-                            </select>
-                            <label class="focus-label">Role</label>
+                        <div class="form-group form-focus">
+                            <input type="text" id="role_search" name="role_search" class="form-control floating">
+                            <label class="focus-label">Search Roles</label>
                         </div>
                     </div>
                     {{-- <div class="col-sm-6 col-md-3">
@@ -86,8 +81,11 @@
                             <label class="focus-label">Role</label>
                         </div>
                     </div> --}}
-                    <div class="col-sm-6 col-md-3">
+                    <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
                         <a href="#" class="btn btn-success btn-block" id="btnFilter"> Search </a>
+                    </div>
+                    <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                        <a href="#" class="btn btn-danger btn-block" id="btnReset"> Reset </a>
                     </div>
                 </div>
             </form>
@@ -133,8 +131,8 @@
                                     {{-- <th>Action</th> --}}
                                     <th>#</th>
                                     <th>Username</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
+                                    {{-- <th>Name</th>
+                                    <th>Email</th> --}}
                                     <th>Roles</th>
                                     <th>Created Date</th>
                                     <th>Updated Date</th>
@@ -150,6 +148,13 @@
         <!-- /Page Content -->
     </div>
     <!-- /Page Wrapper -->
+
+
+<!-- Add User has Role Modal -->
+@include('user.userHasRoles.add_modal')
+<!-- /Add User has Role Modal -->
+
+
 @endsection
 
 
@@ -165,17 +170,21 @@
                 }
             });
 
+            // SELECT2
+            $('#role').select2({
+                width: '100%'
+            });
+
             var table = $('#datatables').DataTable({
                 processing: true,
                 serverSide: true,
                 destroy: true,
                 ajax: {
-                    url: "{{ route('user_has_roles') }}",
+                    url: "{{ route('user_has_roles.index') }}",
                     type: "POST",
                     data: function(d) {
                         d.username_search = $('#username_search').val(),
-                        d.cb_role_search = $('#cb_role_search').val()
-                        // return d
+                        d.role_search = $('#role_search').val()
                     }
                 },
                 columns: [
@@ -194,14 +203,14 @@
                         data: 'username',
                         name: 'username'
                     },
-                    {
-                        data: 'name',
-                        name: 'name'
-                    },
-                    {
-                        data: 'email',
-                        name: 'email'
-                    },
+                    // {
+                    //     data: 'name',
+                    //     name: 'name'
+                    // },
+                    // {
+                    //     data: 'email',
+                    //     name: 'email'
+                    // },
                     {
                         data: 'RolesName',
                         name: 'RolesName'
@@ -236,23 +245,12 @@
                     'print'
                 ],
             });
-
-
-            // $('#cb_role_search').on('change', function() {
-            // $("#cb_role_search").change(function(){
-            //     table.ajax.reload();
-            //     console.log($('#cb_role_search').val())
-            // });
-
-            // $("#username_search").keyup(function(){
-            //     table.ajax.reload();
-            //     console.log($('#username_search').val())
-            // });
-
             $('#btnFilter').on('click', function() {
                 table.ajax.reload();
             });
-
+            $('#btnReset').on('click', function() {
+                location.reload();
+            });
         });
     </script>
 

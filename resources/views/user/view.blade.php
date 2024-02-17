@@ -96,10 +96,10 @@
                     <table id="datatables" class="table table-striped custom-table datatable">
                         <thead>
                             <tr>
-                                <th>
+                                {{-- <th>
                                     <input type="checkbox"><br>
                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_department"><i class="fa fa-trash-o m-r-5"></i>
-                                </th>
+                                </th> --}}
                                 <th class="text-right">Action</th>
                                 <th>No</th>
                                 <th>Name</th>
@@ -131,6 +131,7 @@
 @include('user.modal_ChangePassword')
 <!-- /Change Password Modal -->
 
+
 @endsection
 
 
@@ -150,7 +151,7 @@
                 serverSide: true,
                 destroy: true,
                 ajax: {
-                    url: "{{ route('user.index') }}",
+                    url: "{{ route('users.index') }}",
                     type: "POST",
                     data: function(d) {
                         d.filter_name = $('#filter_name').val()
@@ -158,12 +159,12 @@
                     }
                 },
                 columns: [
-                    {
-                        data: 'checkbox',
-                        name: 'checkbox',
-                        searchable: false,
-                        sortable: false
-                    },
+                    // {
+                    //     data: 'checkbox',
+                    //     name: 'checkbox',
+                    //     searchable: false,
+                    //     sortable: false
+                    // },
                     {
                         data: 'action',
                         name: 'action',
@@ -203,9 +204,6 @@
                         data: 'updated_at',
                         name: 'updated_at'
                     },
-
-
-
                 ],
                 dom: 'Bfrtip',
                 lengthMenu: [
