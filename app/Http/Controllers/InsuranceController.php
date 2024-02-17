@@ -43,7 +43,7 @@ class InsuranceController extends Controller
                 ->leftJoin('mst_insurance_broker','tran_insurance_header.broker','mst_insurance_broker.brokercode')
                 ->leftJoin('mst_insurance_insurer','mst_insurance_insurer.insurercode','tran_insurance_header.insurer')
                 ->leftJoin('mst_insurance_type','mst_insurance_type.typecode','tran_insurance_header.insurancetype')
-                // ->select('tran_insurance_header.*','mst_insurance_broker.*','mst_insurance_insurer.*')
+                ->select('tran_insurance_header.*','tran_insurance_header.id as IdTranInsHeader','mst_insurance_broker.brokercode','mst_insurance_broker.brokername','mst_insurance_insurer.insurercode','mst_insurance_insurer.insurername','mst_insurance_type.typecode','mst_insurance_type.typename','tran_insurance_header.policynumber')
                 ->orderByDesc('tran_insurance_header.inceptiondate');
 
             // Tambahkan filter sesuai kebutuhan
@@ -91,7 +91,8 @@ class InsuranceController extends Controller
                 if ($edit_status->status == 'not_active') {
                     return '<span class="badge bg-inverse-danger">NOT ACTIVE</span>';
                 } elseif ($edit_status->status == 'need_action') {
-                    return '<a href="#">NEED ACTION</a>';
+                    // return '<a href="#">NEED ACTION</a>';
+                    return '<button class="btn btn-info btn-sm btn-need-action" data-id="' . $edit_status->IdTranInsHeader . '">NEED ACTION</button>';
                     // return '<a href="#"><span class="badge bg-inverse-info">NEED ACTION</span></a>';
                     // return '<span class="badge bg-inverse-info">NEED ACTION</span>';
                 } elseif ($edit_status->status == 'expired') {
@@ -463,5 +464,10 @@ class InsuranceController extends Controller
             throw $th;
         }
 
+    }
+
+    public function form_update_renewal(Request $request){
+        //
+        return 'FORM UDPATE RENEWAL DENGAN ID = '.$request->input('transinsheader_id').'';
     }
 }

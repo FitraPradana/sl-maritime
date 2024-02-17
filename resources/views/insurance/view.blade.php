@@ -420,6 +420,19 @@
                 location.reload();
             });
 
+            // Menangani tindakan POST saat tombol diklik
+            $('#datatables tbody').on('click', '.btn-need-action', function () {
+                var Id = $(this).data('id');
+
+                // Redirect ke halaman lain dan kirim nilai menggunakan formulir
+                var form = $('<form action="{{ route("insurance.form_update_renewal") }}" method="POST">' +
+                                '<input type="hidden" name="_token" value="{{ csrf_token() }}">' +
+                                '<input type="hidden" name="transinsheader_id" value="' + Id + '">' +
+                             '</form>');
+                $('body').append(form);
+                form.submit();
+            });
+
         });
     </script>
 

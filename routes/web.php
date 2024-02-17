@@ -101,6 +101,8 @@ Route::match(['get', 'post'], 'insurance/renewal_monitoring/store', [InsuranceCo
 Route::post('/insurance/renewal_monitoring/saveBroker', [App\Http\Controllers\InsuranceController::class, 'saveBroker'])->name('insurance.saveBroker')->middleware('auth');
 Route::match(['get', 'post'], 'insurance/get_renewal', [InsuranceController::class, 'get_renewal'])->name('insurance.get_renewal')->middleware('auth');
 Route::match(['get', 'post'], 'insurance/testing', [InsuranceController::class, 'testing'])->name('insurance.testing')->middleware('auth');
+Route::match(['get', 'post'], '/Insurance/UpdateRenewal', [InsuranceController::class, 'form_update_renewal'])->name('insurance.form_update_renewal')->middleware('auth');
+Route::match(['get', 'put'], 'Insurance/renewal_monitoring/update_need_action/{id}', [InsuranceController::class, 'update_need_action'])->name('insurance.update_need_action')->middleware('auth');
 
 Route::get('/insurance/payment_monitoring', [App\Http\Controllers\InsurancePaymentController::class, 'index'])->name('insurance_payment_monitoring.index')->middleware('auth');
 Route::get('/insurance/payment_monitoring/json', [App\Http\Controllers\InsurancePaymentController::class, 'json'])->name('insurance_payment_monitoring.json')->middleware('auth');
