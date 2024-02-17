@@ -94,11 +94,16 @@ class RolePermissionSeeder extends Seeder
         Permission::create(['name'=>'ticketing-add']);
         Permission::create(['name'=>'ticketing-edit']);
         Permission::create(['name'=>'ticketing-delete']);
-        // Phising
-        Permission::create(['name'=>'phising-read']);
-        Permission::create(['name'=>'phising-add']);
-        Permission::create(['name'=>'phising-edit']);
-        Permission::create(['name'=>'phising-delete']);
+        // Phising Target
+        Permission::create(['name'=>'phising-target-read']);
+        Permission::create(['name'=>'phising-target-add']);
+        Permission::create(['name'=>'phising-target-edit']);
+        Permission::create(['name'=>'phising-target-delete']);
+        // Phising Detected
+        Permission::create(['name'=>'phising-detected-read']);
+        Permission::create(['name'=>'phising-detected-add']);
+        Permission::create(['name'=>'phising-detected-edit']);
+        Permission::create(['name'=>'phising-detected-delete']);
 
 
         //Create Role
@@ -197,9 +202,13 @@ class RolePermissionSeeder extends Seeder
         $roleIT->givePermissionTo('ticketing-add');
         $roleIT->givePermissionTo('ticketing-edit');
         $roleIT->givePermissionTo('ticketing-delete');
-        $roleIT->givePermissionTo('phising-read');
-        $roleIT->givePermissionTo('phising-add');
-        $roleIT->givePermissionTo('phising-edit');
-        $roleIT->givePermissionTo('phising-delete');
+        $roleIT->givePermissionTo('phising-target-read');
+        $roleIT->givePermissionTo('phising-target-add');
+        $roleIT->givePermissionTo('phising-target-edit');
+        $roleIT->givePermissionTo('phising-target-delete');
+        $roleIT->givePermissionTo('phising-detected-read');
+        $roleIT->givePermissionTo('phising-detected-add');
+        $roleIT->givePermissionTo('phising-detected-edit');
+        $roleIT->givePermissionTo('phising-detected-delete');
     }
 }

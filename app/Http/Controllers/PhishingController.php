@@ -108,7 +108,7 @@ class PhishingController extends Controller
                     if ($data->is_sendMail == 'no') {
                         return '
                         <div class="form group" align="center">
-                            <button type="button" onclick="sendEmail(`' . route('phisingtarget.mail', $data->id) . '`)" class="btn btn-xs btn-dark btn-sm"><i class="fa fa-external-link"></i> Send Email</button>
+                            <button type="button" onclick="sendEmail(`' . route('phisingtarget.mail', $data->id) . '`)" class="btn btn-xs btn-dark btn-sm"><i class="fa fa-paper-plane"></i> Send Email</button>
                             <button type="button" onclick="deleteData(`' . route('phisingtarget.delete', $data->id) . '`)" class="btn btn-xs btn-danger btn-sm"><i class="fa fa-trash"></i></button>
                         </div>
                         ';
