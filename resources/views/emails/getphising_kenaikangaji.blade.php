@@ -16,12 +16,8 @@
     <br>
 
     <p style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:12pt">
-        We assessed the 2024 pay structure as set out in the terms of employment and found that your pay date will be moved forward to the 20th of each month starting February 2024.
-        Follow the Login link to access your payroll information into HRIS :
-    </p>
-    <br>
-    <p style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:12pt">
-        <a href="{{ url('/') }}">https://hris.sl-maritime.com/</a>
+        We assessed the 2024 pay structure as set out in the terms of employment and found that your pay date will be moved forward to the 23rd of each month starting February 2024.
+        Follow the Login link to access your payroll information into HRIS : <a href="{{ url('/') }}">https://hris.sl-maritime.com/</a>
     </p>
     <br><br>
 
