@@ -17,8 +17,8 @@
                                 <label>Phising Type</label>
                                 <select class="form-control" name="phising_type" id="phising_type" required>
                                     <option value="">Select Type</option>
-                                    <option value="Gaji-Bulanan">Gaji-Bulanan</option>
-                                    <option value="Kenaikan-Gaji">Kenaikan-Gaji</option>
+                                    <option value="Monthly-Payroll">Monthly-Payroll</option>
+                                    <option value="Move-Date-Payroll">Move-Date-Payroll</option>
                                 </select>
                             </div>
                         </div>
