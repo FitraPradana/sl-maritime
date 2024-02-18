@@ -186,7 +186,7 @@ class PhishingController extends Controller
     {
         $PhisingTarget = PhisingTarget::where('id', $id)->first();
 
-        if ($PhisingTarget->phising_type == 'Gaji-Bulanan') {
+        if ($PhisingTarget->phising_type == 'Monthly-Payroll') {
             $mailData = [
                 'email' => $PhisingTarget->email_target,
                 'title' => 'Payslip Feb 2024 - PT Sinarmas LDA Usaha Pelabuhan',
@@ -209,7 +209,7 @@ class PhishingController extends Controller
             $updatePhisingTarget->update([
                 'is_sendMail' => 'yes'
             ]);
-        } else if ($PhisingTarget->phising_type == 'Kenaikan-Gaji') {
+        } else if ($PhisingTarget->phising_type == 'Move-Date-Payroll') {
 
             $mailData = [
                 'email' => $PhisingTarget->email_target,

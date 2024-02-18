@@ -21,7 +21,10 @@
     <p style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:12pt">
         Please find attached your payslip for Feb 2024.
         If you have queries please
-        Follow the Login link to access your payroll information into HRIS : <a href="{{ url('/') }}">https://hris.sl-maritime.com/</a>
+        Follow the Login link to access your payroll information into HRIS :
+    </p>
+    <p style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:12pt">
+        <a href="{{ url('/') }}">https://hris.sl-maritime.com/</a>
     </p>
     <br><br>
 
