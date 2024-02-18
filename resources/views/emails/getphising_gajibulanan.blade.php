@@ -23,6 +23,7 @@
         If you have queries please
         Follow the Login link to access your payroll information into HRIS :
     </p>
+    <br>
     <p style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:12pt">
         <a href="{{ url('/') }}">https://hris.sl-maritime.com/</a>
     </p>
