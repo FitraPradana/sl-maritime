@@ -96,6 +96,8 @@
                                     <th>Type</th>
                                     <th>Username Detected</th>
                                     <th>Password Detected</th>
+                                    <th>Created At</th>
+                                    <th>Updated At</th>
                                     <th>Remarks</th>
                                 </tr>
                             </thead>
@@ -165,6 +167,14 @@
                     {
                         data: 'username_detected',
                         name: 'username_detected'
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at'
+                    },
+                    {
+                        data: 'updated_at',
+                        name: 'updated_at'
                     },
                     {
                         data: 'password_detected',
