@@ -42,12 +42,43 @@
                         <div class="row">
                             <div class="col-sm-6 col-md-3">
                                 <div class="form-group">
-                                    <label>Policy Number <span class="text-danger">*</span></label>
-                                    <input class="form-control" type="text" id="policy_number" name="policy_number"
-                                        value="{{ old('policy_number', $PoliceInsuranceAuto) }}" required readonly>
+                                    <label>Trans Insurance ID <span class="text-danger">*</span></label>
+                                    <input class="form-control" type="text" id="tran_insurance_header_id" name="tran_insurance_header_id"
+                                        value="{{ old('tran_insurance_header_id', $PoliceInsuranceAuto) }}" required
+                                        readonly>
                                 </div>
                             </div>
                             <div class="col-sm-6 col-md-3">
+                                <div class="form-group">
+                                    <label>Policy Number <span class="text-danger">*</span></label>
+                                    <input class="form-control" type="text" id="policy_number" name="policy_number"
+                                        required>
+                                </div>
+                            </div>
+
+
+                            <div class="col-sm-6 col-md-2">
+                                <div class="form-group">
+                                    <label>Inception Date <span class="text-danger">*</span></label>
+                                    <input class="form-control" type="date" id="inception_date" name="inception_date"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-2">
+                                <div class="form-group">
+                                    <label>Expiry Date <span class="text-danger">*</span></label>
+                                    <input class="form-control" type="date" id="expiry_date" name="expiry_date" required
+                                        readonly>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-2">
+                                <div class="form-group">
+                                    <label>Status <span class="text-danger">*</span></label>
+                                    <input class="form-control" type="text" id="status" name="status" value="active"
+                                        readonly>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-2">
                                 <div class="form-group">
                                     <label>Type of Insurance <span class="text-danger">*</span></label>
                                     <select class="select" id="insurance_type" name="insurance_type" required>
@@ -58,28 +89,7 @@
                                     </select>
                                 </div>
                             </div>
-
                             <div class="col-sm-6 col-md-2">
-                                <div class="form-group">
-                                    <label>Inception Date <span class="text-danger">*</span></label>
-                                    <input class="form-control" type="date" id="inception_date"
-                                            name="inception_date" required>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 col-md-2">
-                                <div class="form-group">
-                                    <label>Expiry Date <span class="text-danger">*</span></label>
-                                    <input class="form-control" type="date" id="expiry_date"
-                                            name="expiry_date" required readonly>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 col-md-2">
-                                <div class="form-group">
-                                    <label>Status <span class="text-danger">*</span></label>
-                                    <input class="form-control" type="text" id="status" name="status" value="active" readonly>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 col-md-3">
                                 <div class="form-group">
                                     <label>Entity <span class="text-danger">*</span></label>
                                     <select class="select" id="entity" name="entity" required>
@@ -90,7 +100,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-sm-6 col-md-3">
+                            <div class="col-sm-6 col-md-2">
                                 <div class="form-group">
                                     <label>Broker <span class="text-danger">*</span>&nbsp;</label>
                                     <select class="select" id="broker" name="broker" required>
@@ -101,11 +111,11 @@
                                         {{-- <option value="others"> Others ...</option> --}}
                                     </select>
                                 </div>
-                                <li class="fa fa-plus"><a href="#" data-toggle="modal" data-target="#add_broker"> Add
-                                        Broker</a></i>
+                                {{-- <li class="fa fa-plus"><a href="#" data-toggle="modal" data-target="#add_broker"> Add
+                                        Broker</a></i> --}}
 
                             </div>
-                            <div class="col-sm-6 col-md-3">
+                            <div class="col-sm-6 col-md-2">
                                 <div class="form-group">
                                     <label>Insurer <span class="text-danger">*</span></label>
                                     <select class="select" id="insurer" name="insurer" required>
@@ -165,7 +175,8 @@
                                                         name="line_amount[]"></td>
                                                 <td>
                                                     <input type="date" class="form-control" id="duedate"
-                                                        name="duedate[]"></td>
+                                                        name="duedate[]">
+                                                </td>
                                                 <td></td>
                                             </tr>
                                         </tbody>
@@ -200,10 +211,10 @@
                         </div>
                         <div class="submit-section">
                             {{-- <button class="btn btn-primary submit-btn m-r-10">Save & Send</button> --}}
-                            <button class="btn btn-primary submit-btn submit" type="submit"
-                                onclick="validateTgl()">
+                            <button class="btn btn-primary submit-btn submit" type="submit" onclick="validateTgl()">
                                 <span class="btn-txt">Save</span>
-                                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                <span class="spinner-border spinner-border-sm d-none" role="status"
+                                    aria-hidden="true"></span>
                             </button>
 
                             <a class="btn btn-primary submit-btn m-r-10"
@@ -220,7 +231,7 @@
 
 
     <!-- Add broker Modal -->
-    @include('broker.add_modal')
+    {{-- @include('broker.add_modal') --}}
     <!-- /Add broker Modal -->
 @endsection
 
@@ -269,10 +280,11 @@
             // });
 
             // Menambahkan event onBlur ke input text
-            $('#inception_date').on('change', function(){
+            $('#inception_date').on('change', function() {
                 // Mengambil nilai tanggal saat ini dari DateTimePicker
                 var inception_date = new Date($(this).val());
-                output_f=new Date(inception_date.setDate(inception_date.getDate()+365)).toISOString().split('.');
+                output_f = new Date(inception_date.setDate(inception_date.getDate() + 365)).toISOString()
+                    .split('.');
                 console.log(output_f);
 
                 output_s = output_f[0].split('T');
@@ -301,7 +313,7 @@
             $(document).on("click", "#comments_remove", function() {
                 $(this).closest("tr").prev().find('td:last-child').html(
                     '<button type="button" class="btn btn-danger" id="comments_remove"><i class="fa fa-trash-o"></i></button>'
-                    );
+                );
                 $(this).closest("tr").remove();
             });
 

@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('tran_insurance_header', function (Blueprint $table) {
             $table->string('id');
-            $table->string('policynumber', 30)->primary();
+            $table->string('tran_insurance_header_id', 30)->primary();
+            $table->string('policynumber')->nullable();
             $table->string('insurancetype')->nullable();
             $table->string('company')->nullable();
             $table->datetime('inceptiondate')->nullable();

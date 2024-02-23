@@ -63,14 +63,94 @@
                     </div>
                 </div>
                 <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <div class="form-group form-focus select-focus">
+                        <select class="select floating" id="ins_type_filter">
+                            <option value=""> -- Select -- </option>
+                            @foreach ($ins_type as $val)
+                                <option value="{{ $val->typecode }}">{{ $val->typename }}</option>
+                            @endforeach
+                        </select>
+                        <label class="focus-label">Insurance Type</label>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <div class="form-group form-focus select-focus">
+                        <select class="select floating" id="company_filter">
+                            <option value=""> -- Select -- </option>
+                            @foreach ($company as $val)
+                                <option value="{{ $val->companycode }}">{{ $val->companyname }}</option>
+                            @endforeach
+                        </select>
+                        <label class="focus-label">Company</label>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <div class="form-group form-focus select-focus">
+                        <select class="select floating" id="broker_filter">
+                            <option value=""> -- Select -- </option>
+                            @foreach ($ins_broker as $val)
+                                <option value="{{ $val->brokercode }}">{{ $val->brokername }}</option>
+                            @endforeach
+                        </select>
+                        <label class="focus-label">Broker</label>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <div class="form-group form-focus select-focus">
+                        <select class="select floating" id="insurer_filter">
+                            <option value=""> -- Select -- </option>
+                            @foreach ($ins_insurer as $val)
+                                <option value="{{ $val->insurercode }}">{{ $val->insurername }}</option>
+                            @endforeach
+                        </select>
+                        <label class="focus-label">Insurer</label>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <div class="form-group form-focus select-focus">
+                        <select class="select floating" id="status_filter">
+                            <option value=""> -- Select Status -- </option>
+                            <option value="success"> Success </option>
+                            <option value="pending"> Pending </option>
+                        </select>
+                        <label class="focus-label">Status</label>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <div class="form-group form-focus select-focus">
+                        <select class="select floating" id="flag_filter">
+                            <option value=""> -- Select Flag -- </option>
+                            <option value="green"> H-30 s/d H-31 (Green)</option>
+                            <option value="yellow"> H-30 s/d H-11 (Yellow)</option>
+                            <option value="red"> H-10 s/d H+10 (Red)</option>
+                        </select>
+                        <label class="focus-label">Flag</label>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
                     <a href="#" class="btn btn-success btn-block" id="btnFilter"> Search </a>
                 </div>
                 <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
-                    <a href="#" class="btn btn-danger btn-block" id="btnReset"> Reset </a>
+                    <a href="#" class="btn btn-info btn-block" id="btnReset"> Clear </a>
                 </div>
-            </div>
-
-            <br>
+                {{-- <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <div class="form-group form-focus">
+                        <div class="cal-icon">
+                            <input class="form-control floating datetimepicker" type="text">
+                        </div>
+                        <label class="focus-label">From</label>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
+                    <div class="form-group form-focus">
+                        <div class="cal-icon">
+                            <input class="form-control floating datetimepicker" type="text">
+                        </div>
+                        <label class="focus-label">To</label>
+                    </div>
+                </div> --}}
+            </div><br>
             <!-- /Search Filter -->
 
 
@@ -157,6 +237,17 @@
 
 @section('under_body')
     {{-- <link rel="stylesheet" href="{{ asset('/') }}assets/css/select2.min.css"> --}}
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#form-payment-insurance").submit(function() {
+                $(".spinner-border").removeClass("d-none");
+                $(".submit").attr("disabled", true);
+                $(".btn-txt").text("Processing ...");
+            });
+        });
+    </script>
+
     <script type="text/javascript">
         $(function() {
 
@@ -175,7 +266,12 @@
                     url: "{{ route('insurance_payment_monitoring.index') }}",
                     type: "POST",
                     data: function(d) {
-                        d.policynumber_filter = $('#policynumber_filter').val()
+                        d.policynumber_filter = $('#policynumber_filter').val(),
+                        d.ins_type_filter = $('#ins_type_filter').val(),
+                        d.company_filter = $('#company_filter').val(),
+                        d.broker_filter = $('#broker_filter').val(),
+                        d.insurer_filter = $('#insurer_filter').val(),
+                        d.status_filter = $('#status_filter').val()
                     }
                 },
                 columns: [
@@ -195,8 +291,8 @@
                         name: 'remark_color'
                     },
                     {
-                        data: 'status',
-                        name: 'status'
+                        data: 'status_payment',
+                        name: 'status_payment'
                     },
                     {
                         data: 'policynumber',

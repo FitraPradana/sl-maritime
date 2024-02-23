@@ -1534,7 +1534,7 @@ table.dataTable thead > tr > td.sorting {
 	padding: 0 20px;
 }
 .sidebar-menu li a:hover {
-	color: #fff;
+	color: #ddbc29;
 }
 .sidebar-menu li.active a {
 	color: #fff;
@@ -1567,7 +1567,7 @@ table.dataTable thead > tr > td.sorting {
     padding: 10px 15px;
 }
 .sidebar-menu ul ul a.active {
-	color: #f43b48;
+	color: #faf7f7;
 	text-decoration: underline;
 }
 .mobile-user-menu {

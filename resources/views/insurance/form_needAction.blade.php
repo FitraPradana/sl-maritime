@@ -52,9 +52,11 @@
                             <div class="col-sm-6 col-md-3">
                                 <div class="form-group">
                                     <label>Type of Insurance <span class="text-danger">*</span></label>
-                                    <select class="select" id="insurance_type" name="insurance_type" readonly>
+                                    <select class="select" id="insurance_type" name="insurance_type" disabled>
                                         @foreach ($ins_type as $value)
-                                            <option value="{{ $value->typecode }}" {{ $value->typecode == $TranInsuranceHeader->insurancetype ? 'selected' : '' }}>{{ $value->typename }}</option>
+                                            <option value="{{ $value->typecode }}"
+                                                {{ $value->typecode == $TranInsuranceHeader->insurancetype ? 'selected' : '' }}>
+                                                {{ $value->typename }}</option>
                                             </option>
                                         @endforeach
                                     </select>
@@ -64,34 +66,36 @@
                             <div class="col-sm-6 col-md-2">
                                 <div class="form-group">
                                     <label>Inception Date <span class="text-danger">*</span></label>
-                                    <input class="form-control" type="date" id="inception_date"
-                                            name="inception_date" value="{{ date('Y-m-d', strtotime($TranInsuranceHeader->inceptiondate)) }}" readonly>
+                                    <input class="form-control" type="date" id="inception_date" name="inception_date"
+                                        value="{{ date('Y-m-d', strtotime($TranInsuranceHeader->inceptiondate)) }}"
+                                        readonly>
                                 </div>
                             </div>
                             <div class="col-sm-6 col-md-2">
                                 <div class="form-group">
                                     <label>Expiry Date <span class="text-danger">*</span></label>
-                                    <input class="form-control" type="date" id="expiry_date"
-                                            name="expiry_date" value="{{ date('Y-m-d', strtotime($TranInsuranceHeader->expirydate)) }}" readonly>
+                                    <input class="form-control" type="date" id="expiry_date" name="expiry_date"
+                                        value="{{ date('Y-m-d', strtotime($TranInsuranceHeader->expirydate)) }}" readonly>
                                 </div>
                             </div>
                             <div class="col-sm-6 col-md-2">
                                 <div class="form-group">
                                     <label>Status <span class="text-danger">*</span></label>
-                                    <input class="form-control" type="text" id="status" name="status" value="active" readonly>
+                                    <input class="form-control" type="text" id="status" name="status" value="active"
+                                        readonly>
                                 </div>
                             </div>
                             <div class="col-sm-6 col-md-3">
                                 <div class="form-group">
                                     <label>Entity <span class="text-danger">*</span></label>
-                                    <select class="select" id="entity" name="entity" required>
+                                    <select class="select" id="entity" name="entity" required disabled>
                                         <option value="">-- Pilih Entity--</option>
                                         @foreach ($company as $value)
-                                        <option value="{{ $value->companycode }}"
-                                            {{ $value->companycode == $TranInsuranceHeader->company ? 'selected' : '' }}>
-                                            {{ $value->companyname }}</option>
-                                        </option>
-                                    @endforeach
+                                            <option value="{{ $value->companycode }}"
+                                                {{ $value->companycode == $TranInsuranceHeader->company ? 'selected' : '' }}>
+                                                {{ $value->companyname }}</option>
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -108,8 +112,8 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <li class="fa fa-plus"><a href="#" data-toggle="modal" data-target="#add_broker"> Add
-                                        Broker</a></i>
+                                {{-- <li class="fa fa-plus"><a href="#" data-toggle="modal" data-target="#add_broker"> Add
+                                        Broker</a></i> --}}
 
                             </div>
                             <div class="col-sm-6 col-md-3">
@@ -118,11 +122,11 @@
                                     <select class="select" id="insurer" name="insurer" required>
                                         <option value="">-- Pilih Insurer --</option>
                                         @foreach ($ins_insurer as $value)
-                                        <option value="{{ $value->insurercode }}"
-                                            {{ $value->insurercode == $TranInsuranceHeader->insurer ? 'selected' : '' }}>
-                                            {{ $value->insurername }}</option>
-                                        </option>
-                                    @endforeach
+                                            <option value="{{ $value->insurercode }}"
+                                                {{ $value->insurercode == $TranInsuranceHeader->insurer ? 'selected' : '' }}>
+                                                {{ $value->insurername }}</option>
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -175,7 +179,8 @@
                                                         name="line_amount[]"></td>
                                                 <td>
                                                     <input type="date" class="form-control" id="duedate"
-                                                        name="duedate[]"></td>
+                                                        name="duedate[]">
+                                                </td>
                                                 <td></td>
                                             </tr>
                                         </tbody>
@@ -210,10 +215,10 @@
                         </div>
                         <div class="submit-section">
                             {{-- <button class="btn btn-primary submit-btn m-r-10">Save & Send</button> --}}
-                            <button class="btn btn-primary submit-btn" type="submit"
-                                onclick="validateTgl()">
+                            <button class="btn btn-primary submit-btn" type="submit" onclick="validateTgl()">
                                 <span class="btn-txt">Save</span>
-                                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                <span class="spinner-border spinner-border-sm d-none" role="status"
+                                    aria-hidden="true"></span>
                             </button>
                             <a class="btn btn-primary submit-btn m-r-10"
                                 href="{{ route('insurance.renewal_monitoring') }}">Cancel</a>
@@ -298,7 +303,7 @@
             $(document).on("click", "#comments_remove", function() {
                 $(this).closest("tr").prev().find('td:last-child').html(
                     '<button type="button" class="btn btn-danger" id="comments_remove"><i class="fa fa-trash-o"></i></button>'
-                    );
+                );
                 $(this).closest("tr").remove();
             });
 

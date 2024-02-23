@@ -12,9 +12,10 @@ class TranInsuranceHeader extends Model
 
     protected $connection = 'mysql';
     protected $table = "tran_insurance_header";
-    protected $primaryKey = "policynumber";
+    protected $primaryKey = "tran_insurance_header_id";
     protected $fillable = [
         'id',
+        'tran_insurance_header_id',
         'policynumber',
         // 'oldtransnumber_id',
         // 'oldpolicynumber',

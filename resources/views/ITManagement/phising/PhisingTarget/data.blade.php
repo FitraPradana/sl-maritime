@@ -36,7 +36,11 @@
                     </div>
                     <div class="btn-group">
                         <a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_phisingtarget"><i
-                            class="fa fa-plus"></i> Add Phising Target</a>
+                                class="fa fa-plus"></i> Add Phising Target</a>
+                    </div>
+                    <div class="btn-group">
+                        <a href="{{ url('PhisingTarget/Mail/SendMail') }}" class="btn btn-dark"><i class="fa fa-plus"></i> Send
+                            Mail Phising Target</a>
                     </div>
                     {{-- <div class="col-auto float-right ml-auto">
                         <div class="btn-group">
@@ -53,6 +57,9 @@
                 </div>
             </div>
             <!-- /Page Header -->
+
+            <a href="{{ url('PhisingTarget/Mail/SendMail') }}"><i class="fa fa-plus"></i> Send
+                Mail Phising Target</a>
 
 
             <div class="row">

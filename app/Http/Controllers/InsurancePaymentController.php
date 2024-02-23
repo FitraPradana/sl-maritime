@@ -19,10 +19,10 @@ class InsurancePaymentController extends Controller
                 ->join('mst_insurance_broker', 'tran_insurance_payment.broker', 'mst_insurance_broker.brokercode')
                 ->join('mst_insurance_insurer', 'mst_insurance_insurer.insurercode', 'tran_insurance_payment.insurer')
                 ->join('mst_insurance_type', 'mst_insurance_type.typecode', 'tran_insurance_payment.insurancetype')
-                ->join('tran_insurance_header', 'tran_insurance_header.policynumber', 'tran_insurance_payment.policynumber')
+                ->join('tran_insurance_header', 'tran_insurance_header.tran_insurance_header_id', 'tran_insurance_payment.tran_insurance_header_id')
                 ->select(
                     'tran_insurance_payment.*',
-                    'tran_insurance_payment.status as status_payment',
+                    'tran_insurance_payment.status_payment as status_payment',
                     'mst_insurance_broker.brokercode',
                     'mst_insurance_broker.brokername',
                     'mst_insurance_insurer.insurercode',
@@ -41,11 +41,26 @@ class InsurancePaymentController extends Controller
                 );
 
             // Tambahkan filter sesuai kebutuhan
-            // if ($request->policynumber_filter != '') {
-            //     $insurancePayment->where('tran_insurance_header.policynumber', 'like', '%' . $request->policynumber_filter . '%');
-            // }
+            if ($request->policynumber_filter != '') {
+                $insurancePayment->where('tran_insurance_payment.policynumber', 'like', '%' . $request->policynumber_filter . '%');
+            }
+            if ($request->ins_type_filter != '') {
+                $insurancePayment->where('tran_insurance_payment.insurancetype', $request->ins_type_filter);
+            }
+            if ($request->company_filter != '') {
+                $insurancePayment->where('tran_insurance_payment.company', $request->company_filter);
+            }
+            if ($request->broker_filter != '') {
+                $insurancePayment->where('tran_insurance_payment.broker', $request->broker_filter);
+            }
+            if ($request->insurer_filter != '') {
+                $insurancePayment->where('tran_insurance_payment.insurer', $request->insurer_filter);
+            }
+            if ($request->status_filter != '') {
+                $insurancePayment->where('tran_insurance_payment.status_payment', $request->status_filter);
+            }
 
-            $insurancePayment->orderByDesc('tran_insurance_header.policynumber');
+            $insurancePayment->orderByDesc('tran_insurance_payment.tran_insurance_header_id');
             $query = $insurancePayment->get();
 
             return DataTables::of($query)
@@ -98,26 +113,31 @@ class InsurancePaymentController extends Controller
                         return 'Expired lebih dari 7 hari';
                     }
                 })
-                ->editColumn('status', function ($edit_status) {
-                    if ($edit_status->status == 'pending') {
+                ->editColumn('status_payment', function ($edit_status) {
+                    if ($edit_status->status_payment == 'pending') {
                         return '<span class="badge bg-inverse-danger">PENDING</span>';
-                    } elseif ($edit_status->status == 'success') {
+                    } elseif ($edit_status->status_payment == 'success') {
                         return '<span class="badge bg-inverse-success">SUCCESS</span>';
                     }
                 })
                 ->addColumn('paymentdate', function ($paid) {
-                    if ($paid->paymentdate == null AND $paid->status == 'pending') {
+                    if ($paid->paymentdate == null AND $paid->status_payment == 'pending') {
                         return '<a class="btn btn-info btn-sm" href="#" data-toggle="modal" data-target="#update_payment_date' . $paid->id . '"><i class="fa fa-money m-r-5"></i>PAID</a>';
                     } else {
                         return Carbon::parse($paid->paymentdate)->format('d M Y');
                     }
                 })
-                ->rawColumns(['action', 'remark_color', 'status', 'paymentdate'])
+                ->rawColumns(['action', 'remark_color', 'status_payment', 'paymentdate'])
                 ->make(true);
         }
 
         $insurancePayment = TranInsurancePayment::all();
-        return view('insurance_payment.view', compact('insurancePayment'));
+        $ins_type = DB::connection('mysql')->table('mst_insurance_type')->get();
+        $ins_broker = DB::connection('mysql')->table('mst_insurance_broker')->get();
+        $ins_insurer = DB::connection('mysql')->table('mst_insurance_insurer')->get();
+        $company = DB::connection('mysql')->table('ms_nav_companies')->where('companycode', '!=', '---')->get();
+
+        return view('insurance_payment.view', compact('insurancePayment','ins_type','company','ins_broker','ins_insurer'));
     }
 
     public function update_payment_date(Request $request, $id)
@@ -129,7 +149,7 @@ class InsurancePaymentController extends Controller
             $insurancePayment = TranInsurancePayment::where('id', $id)->first();
             $insurancePayment->update([
                 'paymentdate'               => $request->payment_date,
-                'status'                    => 'success',
+                'status_payment'                    => 'success',
             ]);
 
             DB::commit();

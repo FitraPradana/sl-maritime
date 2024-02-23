@@ -77,19 +77,19 @@
                 <div class="col-md-3">
                     <div class="stats-info">
                         <h6>Need Action</h6>
-                        <h4>{{ $needActionIns }}</h4>
+                        <h4>{{ $needActionIns }} / {{ $totalIns }}</h4>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="stats-info">
                         <h6>Existing Policy</h6>
-                        <h4>{{ $ExistingIns }}</h4>
+                        <h4>{{ $ExistingIns }} / {{ $totalIns }}</h4>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="stats-info">
                         <h6>Expired</h6>
-                        <h4>{{ $ExpiredIns }}</h4>
+                        <h4>{{ $ExpiredIns }} / {{ $totalIns }}</h4>
                     </div>
                 </div>
 
@@ -175,7 +175,7 @@
                     <a href="#" class="btn btn-success btn-block" id="btnFilter"> Search </a>
                 </div>
                 <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
-                    <a href="#" class="btn btn-danger btn-block" id="btnReset"> Reset </a>
+                    <a href="#" class="btn btn-info btn-block" id="btnReset"> Clear </a>
                 </div>
                 {{-- <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
                     <div class="form-group form-focus">
@@ -252,9 +252,9 @@
                                     <th>Insurance Type</th>
                                     <th>Entity</th>
                                     <th>Inception Date</th>
-                                    <th>date_before_60_days</th>
+                                    {{-- <th>date_before_60_days</th> --}}
                                     <th>Expiry Date</th>
-                                    <th>Selisih Hari</th>
+                                    {{-- <th>Selisih Hari</th> --}}
                                     <th>Broker</th>
                                     <th>Insurer</th>
                                 </tr>
@@ -366,18 +366,18 @@
                         data: 'inceptiondate',
                         name: 'inceptiondate'
                     },
-                    {
-                        data: 'date_before_60_days',
-                        name: 'date_before_60_days'
-                    },
+                    // {
+                    //     data: 'date_before_60_days',
+                    //     name: 'date_before_60_days'
+                    // },
                     {
                         data: 'expirydate',
                         name: 'expirydate'
                     },
-                    {
-                        data: 'selisihDays',
-                        name: 'selisihDays'
-                    },
+                    // {
+                    //     data: 'selisihDays',
+                    //     name: 'selisihDays'
+                    // },
                     {
                         data: 'brokername',
                         name: 'brokername'

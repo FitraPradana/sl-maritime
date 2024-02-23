@@ -44,26 +44,21 @@
                         <input type="hidden" value="{{ $TranInsuranceHeader->id }}" name="id_trans">
                         <div class="col-sm-6 col-md-3">
                             <div class="form-group">
+                                <label>Trans Header ID <span class="text-danger">*</span></label>
+                                <input class="form-control" type="text" id="tran_insurance_header_id" name="tran_insurance_header_id"
+                                    value="{{ old('tran_insurance_header_id', $TranInsuranceHeader->tran_insurance_header_id) }}" required
+                                    readonly>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="form-group">
                                 <label>Policy Number <span class="text-danger">*</span></label>
                                 <input class="form-control" type="text" id="policy_number" name="policy_number"
                                     value="{{ old('policy_number', $TranInsuranceHeader->policynumber) }}" required
                                     readonly>
                             </div>
                         </div>
-                        <div class="col-sm-6 col-md-3">
-                            <div class="form-group">
-                                <label>Type of Insurance <span class="text-danger">*</span></label>
-                                <select class="select" id="insurance_type" name="insurance_type" required>
-                                    <option value="">-- Pilih Type--</option>
-                                    @foreach ($ins_type as $value)
-                                        <option value="{{ $value->typecode }}"
-                                            {{ $value->typecode == $TranInsuranceHeader->insurancetype ? 'selected' : '' }}>
-                                            {{ $value->typename }}</option>
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
+
 
                         <div class="col-sm-6 col-md-2">
                             <div class="form-group">
@@ -86,7 +81,21 @@
                                     readonly>
                             </div>
                         </div>
-                        <div class="col-sm-6 col-md-3">
+                        <div class="col-sm-6 col-md-2">
+                            <div class="form-group">
+                                <label>Type of Insurance <span class="text-danger">*</span></label>
+                                <select class="select" id="insurance_type" name="insurance_type" required>
+                                    <option value="">-- Pilih Type--</option>
+                                    @foreach ($ins_type as $value)
+                                        <option value="{{ $value->typecode }}"
+                                            {{ $value->typecode == $TranInsuranceHeader->insurancetype ? 'selected' : '' }}>
+                                            {{ $value->typename }}</option>
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-2">
                             <div class="form-group">
                                 <label>Entity <span class="text-danger">*</span></label>
                                 <select class="select" id="entity" name="entity" required>
@@ -100,7 +109,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-sm-6 col-md-3">
+                        <div class="col-sm-6 col-md-2">
                             <div class="form-group">
                                 <label>Broker <span class="text-danger">*</span>&nbsp;</label>
                                 <select class="select" id="broker" name="broker" required>
@@ -118,7 +127,7 @@
                                     Broker</a></i>
 
                         </div>
-                        <div class="col-sm-6 col-md-3">
+                        <div class="col-sm-6 col-md-2">
                             <div class="form-group">
                                 <label>Insurer <span class="text-danger">*</span></label>
                                 <select class="select" id="insurer" name="insurer" required>
@@ -175,16 +184,15 @@
                                     <tbody id="table_achievements_tbody">
                                         <?php $i = 1 ?>
                                         @foreach ($TranInsurancePayment as $val)
-
                                         <tr>
                                             <td>{{ $i++ }}</td>
                                             <td><input type="text" class="form-control" id="installment"
                                                     name="installment[]" value="{{ $val->installment_ke }}" readonly></td>
                                             <td><input type="number" class="form-control" id="line_amount"
-                                                    name="line_amount[]" value="{{ $val->amount }}"></td>
+                                                    name="line_amount[]" value="{{ $val->amount }}" required></td>
                                             <td>
                                                 <input type="date" class="form-control" id="duedate"
-                                                    name="duedate[]" value="{{ date('Y-m-d', strtotime($val->duedate)) }}">
+                                                    name="duedate[]" value="{{ date('Y-m-d', strtotime($val->duedate)) }}" required>
                                             </td>
                                             <td><button type="button" class="btn btn-danger" id="comments_remove"><i class="fa fa-trash-o"></i></button></td>
                                         </tr>

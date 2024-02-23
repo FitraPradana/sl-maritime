@@ -20,6 +20,7 @@
         "phpoffice/phpspreadsheet": "*",
         "realrashid/sweet-alert": "^7.1",
         "simplesoftwareio/simple-qrcode": "~4",
+        "spatie/laravel-backup": "^8.6",
         "spatie/laravel-permission": "^6.3",
         "yajra/laravel-datatables": "10.0",
         "yajra/laravel-datatables-oracle": "10.3.1"

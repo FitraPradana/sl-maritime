@@ -105,7 +105,7 @@ class InsuranceController extends Controller
 
             // Tambahkan pengurutan descending berdasarkan kolom tertentu
             // $insurance->orderBy('tran_insurance_header.policynumber', 'desc');
-            $insurance->orderByDesc('tran_insurance_header.policynumber');
+            $insurance->orderByDesc('tran_insurance_header.tran_insurance_header_id');
             // dd($insurance->toSql());
             $query = $insurance->get();
 
@@ -116,8 +116,8 @@ class InsuranceController extends Controller
                     <div class="dropdown dropdown-action">
                         <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
                             <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="'.route('insurance.edit', $data->policynumber).'"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_insurance' . $data->policynumber . '"><i class="fa fa-trash m-r-5"></i> Delete</a>
+                                <a class="dropdown-item" href="'.route('insurance.edit', $data->tran_insurance_header_id).'"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_insurance' . $data->tran_insurance_header_id . '"><i class="fa fa-trash m-r-5"></i> Delete</a>
                             </div>
                     </div>';
                 } elseif ($data->status == 'need_action') {
@@ -125,7 +125,7 @@ class InsuranceController extends Controller
                     <div class="dropdown dropdown-action">
                         <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
                             <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_insurance' . $data->policynumber . '"><i class="fa fa-trash m-r-5"></i> Delete</a>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_insurance' . $data->tran_insurance_header_id . '"><i class="fa fa-trash m-r-5"></i> Delete</a>
                             </div>
                     </div>';
                 } else {
@@ -245,7 +245,7 @@ class InsuranceController extends Controller
         DB::beginTransaction();
         try {
             $validator = Validator::make($request->all(), [
-                // 'id'                    => ['required'],
+                'tran_insurance_header_id'                    => ['required'],
                 'policy_number'         => ['required'],
                 'insurance_type'        => ['required'],
                 'inception_date'        => ['required'],
@@ -273,31 +273,31 @@ class InsuranceController extends Controller
             $selisih = $expiry_date->diffInDays($inception_date);
             // return $selisih;
             $SLMInsurance = TranInsuranceHeader::create([
-                'id'                => $this->IdAuto(),
-                'policynumber'      => $request->policy_number,
-                'insurancetype'     => $request->insurance_type,
-                'company'           => $request->entity,
-                'inceptiondate'     => $request->inception_date,
-                'expirydate'        => $request->expiry_date,
-                'durations'         => $selisih,
-                'broker'            => $request->broker,
-                'insurer'           => $request->insurer,
-                'status'            => $request->status,
-                'fullypaid'         => $request->fully_paid,
-                'remark'            => $request->remarks,
-                'createat'          => Carbon::now(),
-                'createby'          => auth()->user()->name,
-                'updateat'          => Carbon::now(),
-                'updateby'          => auth()->user()->name,
+                'id'                        => $this->IdAuto(),
+                'tran_insurance_header_id'  => $request->tran_insurance_header_id,
+                'policynumber'              => $request->policy_number,
+                'insurancetype'             => $request->insurance_type,
+                'company'                   => $request->entity,
+                'inceptiondate'             => $request->inception_date,
+                'expirydate'                => $request->expiry_date,
+                'durations'                 => $selisih,
+                'broker'                    => $request->broker,
+                'insurer'                   => $request->insurer,
+                'status'                    => $request->status,
+                'fullypaid'                 => $request->fully_paid,
+                'remark'                    => $request->remarks,
+                'createat'                  => Carbon::now(),
+                'createby'                  => auth()->user()->name,
+                'updateat'                  => Carbon::now(),
+                'updateby'                  => auth()->user()->name,
             ]);
             $lastInsertid_Insurance = $SLMInsurance->id;
 
             if($request->fully_paid == "no"){
                 for ($i=0; $i < count($request->installment); $i++) {
                     TranInsurancePayment::create([
-                        // 'tran_insurance_header_id'  => $lastInsertid_Insurance,
+                        'tran_insurance_header_id'  => $request->tran_insurance_header_id,
                         'insurancetype'             => $request->insurance_type,
-                        'policynumber'              => $request->policy_number,
                         'company'                   => $request->entity,
                         'broker'                    => $request->broker,
                         'insurer'                   => $request->insurer,
@@ -306,7 +306,7 @@ class InsuranceController extends Controller
                         'total_amount'              => $request->line_amount[$i],
                         'duedate'                   => $request->duedate[$i],
                         'durations'                 => $selisih,
-                        'status'                    => 'pending',
+                        // 'status'                    => 'pending',
                         'status_payment'            => 'pending',
                         'remark'                    => $request->remarks,
                         'createat'                  => Carbon::now(),
@@ -321,19 +321,16 @@ class InsuranceController extends Controller
             if($request->fully_paid == "yes"){
                 for ($i=0; $i < count($request->installment); $i++) {
                     TranInsurancePayment::create([
-                        // 'tran_insurance_header_id'  => $lastInsertid_Insurance,
+                        'tran_insurance_header_id'  => $request->tran_insurance_header_id,
                         'insurancetype'             => $request->insurance_type,
-                        'policynumber'              => $request->policy_number,
                         'company'                   => $request->entity,
                         'broker'                    => $request->broker,
                         'insurer'                   => $request->insurer,
                         'installment_ke'            => 'Fully Paid',
-                        // 'duedate'                   => Carbon::createFromFormat('m/d/Y', $request->expiry_date)->format('Y-m-d'),
                         'amount'                    => $request->line_amount[$i],
                         'total_amount'              => $request->line_amount[$i],
                         'duedate'                   => $request->duedate[$i],
                         'durations'                 => $selisih,
-                        'status'                    => 'pending',
                         'status_payment'            => 'pending',
                         'remark'                    => $request->remarks,
                         'createat'                  => Carbon::now(),
@@ -364,10 +361,10 @@ class InsuranceController extends Controller
         }
     }
 
-    public function edit(Request $request, $policynumber)
+    public function edit(Request $request, $tran_insurance_header_id)
     {
-        $TranInsuranceHeader = TranInsuranceHeader::where('policynumber', $policynumber)->first();
-        $TranInsurancePayment = TranInsurancePayment::where('policynumber', $policynumber)->orderby('installment_ke', 'asc')->get();
+        $TranInsuranceHeader = TranInsuranceHeader::where('tran_insurance_header_id', $tran_insurance_header_id)->first();
+        $TranInsurancePayment = TranInsurancePayment::where('tran_insurance_header_id', $tran_insurance_header_id)->orderby('installment_ke', 'asc')->get();
         $ins_type = DB::connection('mysql')->table('mst_insurance_type')->get();
         $ins_broker = DB::connection('mysql')->table('mst_insurance_broker')->get();
         $ins_insurer = DB::connection('mysql')->table('mst_insurance_insurer')->get();
@@ -409,32 +406,32 @@ class InsuranceController extends Controller
             // return $selisih;
             $updateInsurance = TranInsuranceHeader::where('id', $request->id_trans)->first();
             $updateInsurance->update([
-                'policynumber'      => $request->policy_number,
-                'insurancetype'     => $request->insurance_type,
-                'company'           => $request->entity,
-                'inceptiondate'     => $request->inception_date,
-                'expirydate'        => $request->expiry_date,
-                'broker'            => $request->broker,
-                'insurer'           => $request->insurer,
-                'status'            => $request->status,
-                'fullypaid'         => $request->fully_paid,
-                'remark'            => $request->remarks,
-                'createat'          => Carbon::now(),
-                'createby'          => auth()->user()->name,
-                'updateat'          => Carbon::now(),
-                'updateby'          => auth()->user()->name,
+                'tran_insurance_header_id'  => $request->tran_insurance_header_id,
+                'policynumber'              => $request->policy_number,
+                'insurancetype'             => $request->insurance_type,
+                'company'                   => $request->entity,
+                'inceptiondate'             => $request->inception_date,
+                'expirydate'                => $request->expiry_date,
+                'broker'                    => $request->broker,
+                'insurer'                   => $request->insurer,
+                'status'                    => $request->status,
+                'fullypaid'                 => $request->fully_paid,
+                'remark'                    => $request->remarks,
+                'createat'                  => Carbon::now(),
+                'createby'                  => auth()->user()->name,
+                'updateat'                  => Carbon::now(),
+                'updateby'                  => auth()->user()->name,
             ]);
             $lastInsertid_Insurance = $updateInsurance->id;
 
-            $deletePayment = TranInsurancePayment::where('tran_insurance_header_id', $request->id_trans)->get();
+            $deletePayment = TranInsurancePayment::where('tran_insurance_header_id', $request->tran_insurance_header_id)->get();
             $deletePayment->each->delete();
 
             if($request->fully_paid == "no"){
                 for ($i=0; $i < count($request->installment); $i++) {
                     TranInsurancePayment::create([
-                        'tran_insurance_header_id'  => $lastInsertid_Insurance,
+                        'tran_insurance_header_id'  => $request->tran_insurance_header_id,
                         'insurancetype'             => $request->insurance_type,
-                        'policynumber'              => $request->policy_number,
                         'company'                   => $request->entity,
                         'broker'                    => $request->broker,
                         'insurer'                   => $request->insurer,
@@ -443,7 +440,6 @@ class InsuranceController extends Controller
                         'total_amount'              => $request->line_amount[$i],
                         'duedate'                   => $request->duedate[$i],
                         'durations'                 => $selisih,
-                        'status'                    => 'pending',
                         'status_payment'            => 'pending',
                         'remark'                    => $request->remarks,
                         'createat'                  => Carbon::now(),
@@ -458,19 +454,16 @@ class InsuranceController extends Controller
             if($request->fully_paid == "yes"){
                 for ($i=0; $i < count($request->installment); $i++) {
                     TranInsurancePayment::create([
-                        'tran_insurance_header_id'  => $lastInsertid_Insurance,
+                        'tran_insurance_header_id'  => $request->tran_insurance_header_id,
                         'insurancetype'             => $request->insurance_type,
-                        'policynumber'              => $request->policy_number,
                         'company'                   => $request->entity,
                         'broker'                    => $request->broker,
                         'insurer'                   => $request->insurer,
                         'installment_ke'            => 'Fully Paid',
-                        // 'duedate'                   => Carbon::createFromFormat('m/d/Y', $request->expiry_date)->format('Y-m-d'),
                         'amount'                    => $request->line_amount[$i],
                         'total_amount'              => $request->line_amount[$i],
                         'duedate'                   => $request->duedate[$i],
                         'durations'                 => $selisih,
-                        'status'                    => 'pending',
                         'status_payment'            => 'pending',
                         'remark'                    => $request->remarks,
                         'createat'                  => Carbon::now(),

@@ -16,7 +16,6 @@
     {{-- <h1>{{ $mailData['title'] }}</h1>
     <p>{{ $mailData['body'] }}</p> --}}
 
-
     <p> Kindly reminder untuk proses pembayaran premi atas polis <b>({{ $mailData['insurancetype'] }})</b> Periode <b>{{ $mailData['period'] }}</b> . dengan nomor polis <b>({{ $mailData['policynumber'] }})</b>.
         Jika pembayaran sudah dilakukan, mohon dapat mengirimkan bukti pembayaran ke : <br><br> <b>gita.sari@sal-maritime.com</b> <br> <b>wijaya.kristian@sl-maritime.com</b>
 
@@ -24,13 +23,9 @@
 
     <h1>Thank you</h1>
     <br>
-    <a href="{{ url('/Insurance/RenewalMonitoring') }}"><button style="background-color: #007bff; color: #fff; padding: 10px 20px; border: none; border-radius: 3px; text-decoration: none; display: inline-block; font-size: 16px;">Click me</button></a>
+    {{-- <a href="{{ url('/Insurance/RenewalMonitoring') }}"><button style="background-color: #007bff; color: #fff; padding: 10px 20px; border: none; border-radius: 3px; text-decoration: none; display: inline-block; font-size: 16px;">Click me</button></a> --}}
     {{-- <button style="background-color: #eb0a0a; color: #fff; padding: 10px 20px; border: none; border-radius: 3px; text-decoration: none; display: inline-block; font-size: 16px;">Click me</button> --}}
     <br>
-
-
-
-
 
     <!-- JavaScript Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"

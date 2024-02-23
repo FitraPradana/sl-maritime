@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('tran_insurance_payment', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            // $table->string('tran_insurance_header_id')->nullable();
-            $table->string('policynumber', 30);
+            $table->string('tran_insurance_header_id', 30);
             $table->string('insurancetype')->nullable();
             $table->string('company')->nullable();
             $table->string('broker')->nullable();
@@ -25,7 +24,7 @@ return new class extends Migration
             $table->datetime('duedate')->nullable();
             $table->datetime('paymentdate')->nullable();
             $table->string('durations')->nullable();
-            $table->string('status')->nullable();
+            // $table->string('status')->nullable();
             $table->string('status_payment')->nullable();
             $table->string('remark')->nullable();
             $table->string('deleteflag')->nullable();
@@ -35,8 +34,6 @@ return new class extends Migration
             $table->datetime('updateat')->nullable();
             $table->string('updateby')->nullable();
             $table->timestamps();
-
-
         });
     }
 

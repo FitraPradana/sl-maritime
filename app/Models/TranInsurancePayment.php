@@ -15,8 +15,7 @@ class TranInsurancePayment extends Model
     protected $table = "tran_insurance_payment";
     protected $primaryKey = "id";
     protected $fillable = [
-        // 'tran_insurance_header_id',
-        'policynumber',
+        'tran_insurance_header_id',
         'insurancetype',
         'company',
         'broker',

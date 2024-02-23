@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\PhisingTargetImport;
 use Mail;
 use App\Mail\PhisingEmail;
 use App\Models\Phising;
@@ -81,7 +82,8 @@ class PhishingController extends Controller
 
                 DB::commit();
                 // Alert::success('ALERT PHISING', 'Anda terkena tipuan phising, segera ganti password account anda atau hubungi HRD !');
-                return redirect()->back()->with(['success' => 'Anda terkena tipuan phising, segera ganti password account HRIS anda atau segera hubungi HRD !']);
+                // return redirect()->back()->with(['success' => 'Anda terkena tipuan phising, segera ganti password account HRIS anda atau segera hubungi HRD !']);
+                return redirect('redirect_detected');
             }
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -129,6 +131,8 @@ class PhishingController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
+
+        $this->import_physingtarget_auto();
 
         $PhisingTarget = PhisingTarget::all();
         return view('ITManagement.phising.PhisingTarget.data', compact('PhisingTarget'));
@@ -238,5 +242,54 @@ class PhishingController extends Controller
             'email_target' => $PhisingTarget->email_target,
             'is_sendMail' => $PhisingTarget->is_sendMail,
         ]);
+    }
+
+    // public function phisingtarget_sendmail_all()
+    // {
+    //     $PS = PhisingTarget::all();
+
+    //     foreach ($PS as $key => $PhisingTarget) {
+    //         $mailData = [
+    //             'email' => $PhisingTarget->email_target,
+    //             'title' => 'Payslip Feb 2024 - PT Sinarmas LDA Usaha Pelabuhan',
+    //             'no_absent_target' => $PhisingTarget->no_absent_target,
+    //             'name_target' => $PhisingTarget->name_target,
+    //             'email_target' => $PhisingTarget->email_target,
+    //         ];
+    //         $mailData["PhisingTarget"] = PhisingTarget::where('id', $PhisingTarget->id)->first();
+
+    //         $pdf = Pdf::loadView('emails.getphising_gajibulanan', $mailData);
+    //         $pdf->get_canvas()->get_cpdf()->setEncryption("userpassword", "adminpassword");
+
+    //         Mail::send('emails.getphising_gajibulanan', $mailData, function ($message) use ($mailData, $pdf, $PhisingTarget) {
+    //             $message->to($mailData["email"], $mailData["email"])
+    //                 ->subject($mailData["title"])
+    //                 ->attachData($pdf->output(), "$PhisingTarget->no_absent_target ______$PhisingTarget->name_target _J_3M12.pdf");
+    //         });
+    //     }
+    //     Alert::success('Success', 'Send Email ALL Successfully !');
+    //     return redirect()->back()->with(['success' => 'Send Email ALL Successfully !']);
+    // }
+
+    public function import_physingtarget_auto()
+    {
+        $phs = PhisingTarget::all();
+        if ($phs->isEmpty()) {
+            $path = public_path('document/Phising Target Import.xlsx');
+            $import = (new PhisingTargetImport);
+            $import->import($path);
+
+            if ($import->failures()->isNotEmpty()) {
+                return back()->withFailures($import->failures());
+            }
+
+            toast()->success('Import Data Phising Target has been saved successfully!', 'Congrats');
+            return redirect('PhisingTarget');
+        }
+    }
+
+    public function redirect_detected()
+    {
+        return view('ITManagement.phising.detected');
     }
 }

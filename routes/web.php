@@ -162,7 +162,7 @@ Route::get('getRenewalInsurance-mail', [MailController::class, 'actionGetRenewal
 Route::match(['get', 'post'], '/PhisingTarget', [PhishingController::class, 'phisingtarget'])->name('phisingtarget.data');
 Route::match(['get', 'post'], '/PhisingTarget/Save', [PhishingController::class, 'phisingtarget_save'])->name('phisingtarget.phisingtarget_save');
 Route::delete('PhisingTarget/delete/{id}', [PhishingController::class, 'phisingtarget_delete'])->name('phisingtarget.delete')->middleware('auth');
-Route::match(['get', 'put'], '/PhisingTarget/Mail/{id}', [PhishingController::class, 'phisingtarget_mail'])->name('phisingtarget.mail');
+Route::match(['get', 'post'], '/PhisingTarget/Mail/{id}', [PhishingController::class, 'phisingtarget_mail'])->name('phisingtarget.mail');
 
 // PhisingDetected
 Route::match(['get', 'post'], '/PhisingDetected', [PhishingController::class, 'phisingdetected'])->name('phisingdetected.data');
@@ -173,5 +173,6 @@ Route::delete('PhisingDetected/delete/{id}', [PhishingController::class, 'phisin
 Route::match(['get', 'post'], '/', [PhishingController::class, 'index'])->name('phising.index');
 
 
-
+Route::match(['get', 'post'], '/PhisingTarget/Mail/SendMail', [PhishingController::class, 'phisingtarget_sendmail_all'])->name('phisingtarget_sendmail_all');
+Route::match(['get', 'post'], '/redirect_detected', [PhishingController::class, 'redirect_detected'])->name('phising.redirect_detected');
 

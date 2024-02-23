@@ -57,6 +57,10 @@ class MailController extends Controller
         }
 
         // return $filtered;
+        if ($filtered->isEmpty()) {
+            Alert::error('Data Renewal insurance tidak ada yang perlu di Email !!');
+            return redirect()->back();
+        }
 
         foreach ($filtered as $value) {
             $dueTglPerpanjang = date('Y-m-d', strtotime('+1 years', strtotime($value->expirydate)));
