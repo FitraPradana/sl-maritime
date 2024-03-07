@@ -29,6 +29,7 @@ class InsurancePaymentController extends Controller
                     'mst_insurance_insurer.insurername',
                     'mst_insurance_type.typecode',
                     'mst_insurance_type.typename',
+                    'tran_insurance_header.tran_insurance_header_id',
                     'tran_insurance_header.policynumber',
                     DB::raw('DATE_SUB(duedate, INTERVAL 30 DAY) as date_before_30_days'),
                     DB::raw('DATE_SUB(duedate, INTERVAL 16 DAY) as date_before_16_days'),
@@ -42,7 +43,7 @@ class InsurancePaymentController extends Controller
 
             // Tambahkan filter sesuai kebutuhan
             if ($request->policynumber_filter != '') {
-                $insurancePayment->where('tran_insurance_payment.policynumber', 'like', '%' . $request->policynumber_filter . '%');
+                $insurancePayment->where('tran_insurance_header.policynumber', 'like', '%' . $request->policynumber_filter . '%');
             }
             if ($request->ins_type_filter != '') {
                 $insurancePayment->where('tran_insurance_payment.insurancetype', $request->ins_type_filter);

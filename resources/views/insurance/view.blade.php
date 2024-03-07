@@ -246,6 +246,7 @@
                                     <th>Remarks</th>
                                     <th>Status</th>
                                     <th>#</th>
+                                    <th>Tran Insurance ID</th>
                                     <th>Policy Number</th>
                                     <th>ID</th>
                                     {{-- <th>Reference Policy Number</th> --}}
@@ -277,6 +278,11 @@
         @include('insurance.add_modal')
         <!-- /Add insurance Modal -->
 
+        @include('insurance.detail_modal')
+
+        <!-- Update Modal -->
+        @include('insurance_payment.modal_payment_date')
+        <!-- /Update Modal -->
     </div>
     <!-- /Page Wrapper -->
 @endsection
@@ -344,6 +350,10 @@
                         render: function(data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
                         },
+                    },
+                    {
+                        data: 'tran_insurance_header_id',
+                        name: 'tran_insurance_header_id'
                     },
                     {
                         data: 'policynumber',
@@ -474,6 +484,27 @@
             // });
 
         });
+
+        function deleteData(url) {
+            if (confirm('Yakin ingin menghapus data terpilih?')) {
+                $.post(url, {
+                        '_token': $('[name=csrf-token]').attr('content'),
+                        '_method': 'delete'
+                    })
+                    .done((response) => {
+                        table.ajax.reload();
+                        Swal.fire(
+                            'has been successfully',
+                            'deleted data from the website!',
+                            'success'
+                        )
+                    })
+                    .fail((errors) => {
+                        alert('Tidak dapat menghapus data');
+                        return;
+                    });
+            }
+        }
     </script>
 
 @endsection

@@ -24,72 +24,6 @@ class PhishingController extends Controller
         return view('ITManagement.phising.index');
     }
 
-    public function phisingdetected(Request $request)
-    {
-        if ($request->ajax()) {
-            $phisings = DB::connection('mysql')
-                ->table('phising_detecteds');
-
-            // Tambahkan filter sesuai kebutuhan
-            // if ($request->role_name_filter != '') {
-            //     $phisings->where('phisings.name', 'like', '%' . $request->role_name_filter . '%');
-            // }
-
-            $phisings->orderByDesc('phising_detecteds.updated_at');
-            $query = $phisings->get();
-
-            return DataTables::of($query)
-                ->addColumn('action', function ($data) {
-                    return '
-                <div class="form group" align="center">
-                    <button type="button" onclick="deleteData(`' . route('phisingdetected.delete', $data->id) . '`)" class="btn btn-xs btn-danger btn-sm"><i class="fa fa-trash"></i></button>
-                </div>
-            ';
-                })
-                ->addColumn('created_at', function ($data) {
-                    return Carbon::parse($data->created_at)->format('d M Y H:i:s');
-                })
-                ->addColumn('updated_at', function ($data) {
-                    return Carbon::parse($data->updated_at)->format('d M Y H:i:s');
-                })
-                ->rawColumns(['action'])
-                ->make(true);
-        }
-
-        return view('ITManagement.phising.PhisingDetected.data');
-    }
-
-    public function phisingdetected_save(Request $request)
-    {
-        DB::beginTransaction();
-        try {
-            $validator = Validator::make($request->all(), [
-                'username_detected' => 'required',
-                'password_detected' => 'required',
-                'g-recaptcha-response' => 'recaptcha',
-            ]);
-
-            if ($validator->fails()) {
-                Alert::error('recaptcha', 'Invalid reCAPTCHA response');
-                return redirect()->back()->with(['errors' => 'Invalid reCAPTCHA response']);
-            } else {
-                $dataPhising = PhisingDetected::create([
-                    'phising_type'      => 'HRIS SLM',
-                    'username_detected' => $request->input('username_detected'),
-                    'password_detected' => $request->input('password_detected'),
-                    'remarks_phising'   => '-'
-                ]);
-
-                DB::commit();
-                // Alert::success('ALERT PHISING', 'Anda terkena tipuan phising, segera ganti password account anda atau hubungi HRD !');
-                // return redirect()->back()->with(['success' => 'Anda terkena tipuan phising, segera ganti password account HRIS anda atau segera hubungi HRD !']);
-                return redirect('redirect_detected');
-            }
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            throw $th;
-        }
-    }
 
     public function phisingtarget(Request $request)
     {
@@ -171,21 +105,6 @@ class PhishingController extends Controller
         }
     }
 
-    public function phisingtarget_delete($id)
-    {
-        $data = PhisingTarget::find($id);
-        $del = $data->delete();
-        return response()->json([]);
-    }
-
-    public function phisingdetected_delete($id)
-    {
-        $data = PhisingDetected::find($id);
-        $del = $data->delete();
-        return response()->json([]);
-    }
-
-
     public function phisingtarget_mail($id)
     {
         $PhisingTarget = PhisingTarget::where('id', $id)->first();
@@ -244,6 +163,90 @@ class PhishingController extends Controller
         ]);
     }
 
+    public function phisingtarget_delete($id)
+    {
+        $data = PhisingTarget::find($id);
+        $del = $data->delete();
+        return response()->json([]);
+    }
+
+    public function phisingdetected(Request $request)
+    {
+        if ($request->ajax()) {
+            $phisings = DB::connection('mysql')
+                ->table('phising_detecteds');
+
+            // Tambahkan filter sesuai kebutuhan
+            // if ($request->role_name_filter != '') {
+            //     $phisings->where('phisings.name', 'like', '%' . $request->role_name_filter . '%');
+            // }
+
+            $phisings->orderByDesc('phising_detecteds.updated_at');
+            $query = $phisings->get();
+
+            return DataTables::of($query)
+                ->addColumn('action', function ($data) {
+                    return '
+                <div class="form group" align="center">
+                    <button type="button" onclick="deleteData(`' . route('phisingdetected.delete', $data->id) . '`)" class="btn btn-xs btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                </div>
+            ';
+                })
+                ->addColumn('created_at', function ($data) {
+                    return Carbon::parse($data->created_at)->format('d M Y H:i:s');
+                })
+                ->addColumn('updated_at', function ($data) {
+                    return Carbon::parse($data->updated_at)->format('d M Y H:i:s');
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+
+        return view('ITManagement.phising.PhisingDetected.data');
+    }
+
+    public function phisingdetected_save(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $validator = Validator::make($request->all(), [
+                'username_detected' => 'required',
+                'password_detected' => 'required',
+                'g-recaptcha-response' => 'recaptcha',
+            ]);
+
+            if ($validator->fails()) {
+                Alert::error('recaptcha', 'Invalid reCAPTCHA response');
+                return redirect()->back()->with(['errors' => 'Invalid reCAPTCHA response']);
+            } else {
+                $dataPhising = PhisingDetected::create([
+                    'phising_type'      => 'HRIS SLM',
+                    'username_detected' => $request->input('username_detected'),
+                    'password_detected' => $request->input('password_detected'),
+                    'remarks_phising'   => '-'
+                ]);
+
+                DB::commit();
+                // Alert::success('ALERT PHISING', 'Anda terkena tipuan phising, segera ganti password account anda atau hubungi HRD !');
+                // return redirect()->back()->with(['success' => 'Anda terkena tipuan phising, segera ganti password account HRIS anda atau segera hubungi HRD !']);
+                return redirect('AlertDetected');
+            }
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    public function phisingdetected_delete($id)
+    {
+        $data = PhisingDetected::find($id);
+        $del = $data->delete();
+        return response()->json([]);
+    }
+
+
+
+
     // public function phisingtarget_sendmail_all()
     // {
     //     $PS = PhisingTarget::all();
@@ -290,6 +293,6 @@ class PhishingController extends Controller
 
     public function redirect_detected()
     {
-        return view('ITManagement.phising.detected');
+        return view('ITManagement.phising.detected2');
     }
 }

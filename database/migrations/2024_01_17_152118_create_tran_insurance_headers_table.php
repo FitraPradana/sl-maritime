@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('status')->nullable();
             $table->string('fullypaid')->nullable();
             $table->string('remark')->nullable();
-            $table->string('deleteflag')->nullable();
+            $table->boolean('deleteflag')->default(0);
             $table->datetime('deleteat')->nullable();
             $table->datetime('createat')->nullable();
             $table->string('createby')->nullable();

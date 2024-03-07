@@ -55,7 +55,7 @@
                                 <label>Policy Number <span class="text-danger">*</span></label>
                                 <input class="form-control" type="text" id="policy_number" name="policy_number"
                                     value="{{ old('policy_number', $TranInsuranceHeader->policynumber) }}" required
-                                    readonly>
+                                    >
                             </div>
                         </div>
 
@@ -64,7 +64,7 @@
                             <div class="form-group">
                                 <label>Inception Date <span class="text-danger">*</span></label>
                                 <input class="form-control" type="date" id="inception_date" name="inception_date"
-                                value="{{ date('Y-m-d', strtotime($TranInsuranceHeader->inceptiondate)) }}" readonly>
+                                value="{{ date('Y-m-d', strtotime($TranInsuranceHeader->inceptiondate)) }}">
                             </div>
                         </div>
                         <div class="col-sm-6 col-md-2">
@@ -123,8 +123,8 @@
                                     {{-- <option value="others"> Others ...</option> --}}
                                 </select>
                             </div>
-                            <li class="fa fa-plus"><a href="#" data-toggle="modal" data-target="#add_broker"> Add
-                                    Broker</a></i>
+                            {{-- <li class="fa fa-plus"><a href="#" data-toggle="modal" data-target="#add_broker"> Add
+                                    Broker</a></i> --}}
 
                         </div>
                         <div class="col-sm-6 col-md-2">
@@ -229,8 +229,8 @@
                     </div>
                     <div class="submit-section">
                         {{-- <button class="btn btn-primary submit-btn m-r-10">Save & Send</button> --}}
-                        <button class="btn btn-primary submit-btn" type="submit">Update</button>
-                        <a class="btn btn-primary submit-btn m-r-10"
+                        <button class="btn btn-info submit-btn submit" type="submit">Update</button>
+                        <a class="btn btn-dark submit-btn m-r-10"
                             href="{{ route('insurance.renewal_monitoring') }}">Cancel</a>
                     </div>
                     </form>
@@ -244,7 +244,7 @@
 
 
     <!-- Add broker Modal -->
-    @include('broker.add_modal')
+    {{-- @include('broker.add_modal') --}}
     <!-- /Add broker Modal -->
 @endsection
 
@@ -254,6 +254,13 @@
     {{-- <link rel="stylesheet" href="{{ asset('/') }}template_hrsm/assets/css/select2.min.css"> --}}
     <script type="text/javascript">
         $(document).ready(function() {
+            $("#form-add").submit(function() {
+                $(".spinner-border").removeClass("d-none");
+                $(".submit").attr("disabled", true);
+                $(".btn-txt").text("Processing ...");
+            });
+
+
             getFullyPaid();
 
             $(".fully_paid").change(function() {
@@ -276,6 +283,25 @@
                     $(".btn-add-row").hide();
                     $("#installment").val('Fully Paid');
                     $('.table-review tbody tr').not(':first').remove();
+                }
+            });
+
+            // Menambahkan event onBlur ke input text
+            $('#inception_date').on('change', function() {
+                // Mengambil nilai tanggal saat ini dari DateTimePicker
+                var inception_date = new Date($(this).val());
+                output_f = new Date(inception_date.setDate(inception_date.getDate() + 365)).toISOString()
+                    .split('.');
+                console.log(output_f);
+
+                output_s = output_f[0].split('T');
+                $('#expiry_date').val(output_s[0]);
+
+                // // Membandingkan tanggal hari ini dengan tanggal due date
+                if (Date.parse(today) > Date.parse(output_s)) {
+                    $('#status').val("expired");
+                } else {
+                    $('#status').val("active");
                 }
             });
 

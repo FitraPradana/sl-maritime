@@ -2,10 +2,8 @@
 
 namespace App\Console;
 
-use App\Console\Commands\DatabaseBackup;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -14,15 +12,20 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
-        $schedule->command('demo:cron')->everyTwoMinutes();
-        $schedule->command(DatabaseBackup::class)->everyTwoMinutes(); // Backup setiap hari pukul 02:00
-
-        // $schedule->command('emails:send')->everyTenMinutes();
-
-        // $schedule->call(function () {
-        //     Log::info('Task Schedule by sl-maritime.com at : ' . date('Y-m-d H:i:s'));
-        // })->everyMinute();
+        // $schedule->command('demo:cron')->everyTwoMinutes();
+        // $schedule->command('app:send-emails')->everyTwoMinutes();
+        // $schedule->command('app:insurance-schedule-outomatic-h_60')->everyTwoMinutes();
+        $schedule->command('app:insurance-renewal-insert-need-action-command')->everyTenSeconds();
+        $schedule->command('app:insurance-renewal-notif-h_60-command')->everyteo();
+        $schedule->command('app:insurance-renewal-notif-h_30-command')->everyMinute();
+        $schedule->command('app:insurance-renewal-notif-h_10-command')->everyMinute();
+        // $schedule->command('app:insurance-payment-notif-h_30-command')->everyMinute();
+        // $schedule->command('app:insurance-payment-notif-h_15-command')->everyMinute();
+        // $schedule->command('app:insurance-payment-notif-h_30-command')->everyMinute();
+        // $schedule->command('app:insurance-payment-notif-h_15-command')->everyMinute();
+        // $schedule->command('app:insurance-payment-notif-h_7-command')->everyMinute();
+        $schedule->command('app:insurance-renewal-update-status-not-active-command')->everyMinute();
+        $schedule->command('app:insurance-renewal-update-status-expired-command')->everyMinute();
     }
 
     /**

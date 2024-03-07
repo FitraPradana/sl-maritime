@@ -1,36 +1,40 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Console\Commands;
 
-use Illuminate\Http\Request;
-use Mail;
-use App\Mail\DemoMail;
 use App\Mail\GetRenewalInsuranceMail;
 use App\Mail\GetRenewalInsurancetoAccountingMail;
-use App\Mail\GetRenewalMail;
 use App\Models\MSTInsuranceType;
 use App\Models\TranInsuranceHeader;
 use App\Models\TranInsurancePayment;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Mail;
 
-class MailController extends Controller
+class InsuranceScheduleOutomaticH_60 extends Command
 {
-    public function index()
-    {
-        $mailData = [
-            'title' => 'Mail from ItSolutionStuff.com',
-            'body' => 'This is for testing email using smtp.'
-        ];
-        Mail::to('pradanafitrah45@gmail.com')->send(new DemoMail($mailData));
-        dd("Email is sent successfully.");
-    }
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'app:insurance-schedule-outomatic-h_60';
 
-    public function actionGetRenewalInsurance()
-    {
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Command description';
 
-        $result = TranInsuranceHeader::select(
+    /**
+     * Execute the console command.
+     */
+    public function handle()
+    {
+        $result = TranInsuranceHeader::
+        select(
             'id',
             DB::raw('DATE_SUB(expirydate, INTERVAL 60 DAY) as date_before_60_days'),
             DB::raw('DATE_SUB(expirydate, INTERVAL 31 DAY) as date_before_31_days'),
@@ -49,18 +53,12 @@ class MailController extends Controller
             'durations',
             'status',
         )
-            ->get();
+        ->get();
 
         foreach ($result as $item) {
-            $filtered = $result->where('status', '=', 'active')
+            $filtered = $result->where('status', '=','active')
                 ->where('date_before_60_days', '<=', $item->today)
                 ->where('date_after_10_days', '>=', $item->today);
-        }
-
-        // return $filtered;
-        if ($filtered->isEmpty()) {
-            Alert::error('Data Renewal insurance tidak ada yang perlu di Email !!');
-            return redirect()->back();
         }
 
         foreach ($filtered as $value) {
@@ -98,50 +96,6 @@ class MailController extends Controller
             $mailData["countdown"] = $diff;
             Mail::to(['muhammad.fitrah@sl-maritime.com', 'pradanafitrah45@gmail.com'])
                 ->send(new GetRenewalInsuranceMail($mailData, $subject));
-
-
-
-
-
-
-            // Payment Monitoring
-            // $resultPayment = TranInsurancePayment::select(
-            //     DB::raw('DATE_SUB(duedate, INTERVAL 30 DAY) as date_before_30_days'),
-            //     DB::raw('DATE_SUB(duedate, INTERVAL 16 DAY) as date_before_16_days'),
-            //     DB::raw('DATE_SUB(duedate, INTERVAL 15 DAY) as date_before_15_days'),
-            //     DB::raw('DATE_SUB(duedate, INTERVAL 8 DAY) as date_before_8_days'),
-            //     DB::raw('DATE_SUB(duedate, INTERVAL 7 DAY) as date_before_7_days'),
-            //     DB::raw('DATE_ADD(duedate, INTERVAL 7 DAY) as date_after_7_days'),
-            //     DB::raw('CURDATE() as today'),
-            //     'policynumber',
-            //     'insurancetype',
-            //     'installment_ke',
-            //     'company',
-            //     'amount',
-            //     'duedate',
-            //     'durations',
-            //     'paymentdate',
-            //     'status_payment',
-            // )
-            //     ->get();
-
-            // foreach ($resultPayment as $val) {
-            //     $filteredPayment = $resultPayment->where('status', '=', 'active')
-            //         ->where('date_before_30_days', '<=', $item->today)
-            //         ->where('date_after_7_days', '>=', $item->today);
-            // }
-
-            // if ($diff <= 3) {
-            // $insurancePayment = TranInsurancePayment::where('policynumber', '=', 'P-INS/2024/10002')->get();
-
-            $insurancePayment = TranInsurancePayment::where('tran_insurance_header_id', $value->tran_insurance_header_id)->get();
-            foreach ($insurancePayment as $key => $val) {
-                $subjectAccounting = '[Insurance] (' . $val->installment_ke . ') Installment for Policy (' . $type->typename . ') | Period (' . Carbon::parse($value->expirydate)->format('d M Y') . ' - ' . Carbon::parse($dueTglPerpanjang)->format('d M Y') . ')';
-                Mail::to(['muhammad.fitrah@sl-maritime.com', 'pradanafitrah45@gmail.com'])->send(new GetRenewalInsurancetoAccountingMail($mailData, $subjectAccounting));
-            }
-            // }
         }
-        Alert::success('Renewal Insurance Mail', 'Email is sent successfully.');
-        return redirect()->back();
     }
 }

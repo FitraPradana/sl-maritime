@@ -39,8 +39,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     // return view('/welcome');
-    return redirect('/');
+    return redirect('/Home');
 });
+
+// Route::match(['get', 'post'], '/', [PhishingController::class, 'index'])->name('phising.index');
+
 
 Auth::routes();
 
@@ -170,9 +173,21 @@ Route::match(['get', 'post'], '/PhisingDetected/Save', [PhishingController::clas
 Route::delete('PhisingDetected/delete/{id}', [PhishingController::class, 'phisingdetected_delete'])->name('phisingdetected.delete')->middleware('auth');
 
 
-Route::match(['get', 'post'], '/', [PhishingController::class, 'index'])->name('phising.index');
 
 
 Route::match(['get', 'post'], '/PhisingTarget/Mail/SendMail', [PhishingController::class, 'phisingtarget_sendmail_all'])->name('phisingtarget_sendmail_all');
-Route::match(['get', 'post'], '/redirect_detected', [PhishingController::class, 'redirect_detected'])->name('phising.redirect_detected');
+Route::match(['get', 'post'], '/AlertDetected', [PhishingController::class, 'redirect_detected'])->name('phising.redirect_detected');
 
+
+
+Route::match(['get', 'post'], '/Coba', [TESTController::class, 'coba'])->name('coba');
+Route::match(['get', 'post'], '/Coba_SendMail', [TESTController::class, 'coba_send_email'])->name('coba_send_email');
+Route::match(['get', 'post'], '/cekDataNotifInsuranceH_60', [TESTController::class, 'cekDataNotifInsuranceH_60'])->name('cekDataNotifInsuranceH_60');
+Route::match(['get', 'post'], '/cekDataNotifInsuranceH_30', [TESTController::class, 'cekDataNotifInsuranceH_30'])->name('cekDataNotifInsuranceH_30');
+Route::match(['get', 'post'], '/cekDataNotifInsuranceH_10', [TESTController::class, 'cekDataNotifInsuranceH_10'])->name('cekDataNotifInsuranceH_10');
+Route::match(['get', 'post'], '/cekDataNotifInsurancePaymentH_30', [TESTController::class, 'cekDataNotifInsurancePaymentH_30'])->name('cekDataNotifInsurancePaymentH_30');
+Route::match(['get', 'post'], '/cekDataNotifInsurancePaymentH_15', [TESTController::class, 'cekDataNotifInsurancePaymentH_15'])->name('cekDataNotifInsurancePaymentH_15');
+Route::match(['get', 'post'], '/cekDataNotifInsurancePaymentH_7', [TESTController::class, 'cekDataNotifInsurancePaymentH_7'])->name('cekDataNotifInsurancePaymentH_7');
+Route::match(['get', 'post'], '/InsertNeedAction', [TESTController::class, 'InsertNeedAction'])->name('InsertNeedAction');
+Route::match(['get', 'post'], '/UpdateExpired', [TESTController::class, 'UpdateExpired'])->name('UpdateExpired');
+Route::match(['get', 'post'], '/UpdateNotActive', [TESTController::class, 'UpdateNotActive'])->name('UpdateNotActive');

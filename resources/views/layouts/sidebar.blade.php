@@ -72,7 +72,7 @@
                             @endcan
                             @can('mst-NAVCompany-read')
                                 <a class="{{ request()->is('NavCompany') ? 'active' : '' }}" href="{{ url('NavCompany') }}"><i
-                                        class="la la-object-ungroup"></i> <span> Entity</span></a>
+                                        class="la la-object-ungroup"></i> <span> Company</span></a>
                             @endcan
                         </ul>
                     </li>

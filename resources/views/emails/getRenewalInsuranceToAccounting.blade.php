@@ -17,7 +17,7 @@
     <p>{{ $mailData['body'] }}</p> --}}
 
     <p> Kindly reminder untuk proses pembayaran premi atas polis <b>({{ $mailData['insurancetype'] }})</b> Periode <b>{{ $mailData['period'] }}</b> . dengan nomor polis <b>({{ $mailData['policynumber'] }})</b>.
-        Jika pembayaran sudah dilakukan, mohon dapat mengirimkan bukti pembayaran ke : <br><br> <b>gita.sari@sal-maritime.com</b> <br> <b>wijaya.kristian@sl-maritime.com</b>
+        Jika pembayaran sudah dilakukan, mohon dapat mengirimkan bukti pembayaran ke : <br><br> <b>gita.sari@sl-maritime.com</b> <br> <b>wijaya.kristian@sl-maritime.com</b>
 
     </p>
 

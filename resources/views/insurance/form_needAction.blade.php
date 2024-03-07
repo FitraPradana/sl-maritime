@@ -44,22 +44,18 @@
                             {{-- <input type="hidden" value="{{ $TranInsuranceHeader->id }}" name="id_trans"> --}}
                             <div class="col-sm-6 col-md-3">
                                 <div class="form-group">
-                                    <label>Policy Number <span class="text-danger">*</span></label>
-                                    <input class="form-control" type="text" id="policy_number" name="policy_number"
-                                        value="{{ $TranInsuranceHeader->policynumber }}" readonly>
+                                    <label>Trans Header ID <span class="text-danger">*</span></label>
+                                    <input class="form-control" type="text" id="tran_insurance_header_id"
+                                        name="tran_insurance_header_id"
+                                        value="{{ old('tran_insurance_header_id', $TranInsuranceHeader->tran_insurance_header_id) }}"
+                                        required readonly>
                                 </div>
                             </div>
                             <div class="col-sm-6 col-md-3">
                                 <div class="form-group">
-                                    <label>Type of Insurance <span class="text-danger">*</span></label>
-                                    <select class="select" id="insurance_type" name="insurance_type" disabled>
-                                        @foreach ($ins_type as $value)
-                                            <option value="{{ $value->typecode }}"
-                                                {{ $value->typecode == $TranInsuranceHeader->insurancetype ? 'selected' : '' }}>
-                                                {{ $value->typename }}</option>
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <label>Policy Number <span class="text-danger">*</span></label>
+                                    <input class="form-control" type="text" id="policy_number" name="policy_number"
+                                        value="{{ old('policy_number', $TranInsuranceHeader->policynumber) }}" required>
                                 </div>
                             </div>
 
@@ -85,10 +81,25 @@
                                         readonly>
                                 </div>
                             </div>
-                            <div class="col-sm-6 col-md-3">
+                            <div class="col-sm-6 col-md-2">
+                                <div class="form-group">
+                                    <label>Type of Insurance <span class="text-danger">*</span></label>
+                                    <select class="select" id="insurance_type" disabled>
+                                        <option value="">-- Pilih Type--</option>
+                                        @foreach ($ins_type as $value)
+                                            <option value="{{ $value->typecode }}"
+                                                {{ $value->typecode == $TranInsuranceHeader->insurancetype ? 'selected' : '' }}>
+                                                {{ $value->typename }}</option>
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <input type="hidden" name="insurance_type" value="{{ $TranInsuranceHeader->insurancetype }}">
+                            </div>
+                            <div class="col-sm-6 col-md-2">
                                 <div class="form-group">
                                     <label>Entity <span class="text-danger">*</span></label>
-                                    <select class="select" id="entity" name="entity" required disabled>
+                                    <select class="select" id="entity" disabled>
                                         <option value="">-- Pilih Entity--</option>
                                         @foreach ($company as $value)
                                             <option value="{{ $value->companycode }}"
@@ -98,8 +109,9 @@
                                         @endforeach
                                     </select>
                                 </div>
+                                <input type="hidden" name="entity" value="{{ $TranInsuranceHeader->company }}">
                             </div>
-                            <div class="col-sm-6 col-md-3">
+                            <div class="col-sm-6 col-md-2">
                                 <div class="form-group">
                                     <label>Broker <span class="text-danger">*</span>&nbsp;</label>
                                     <select class="select" id="broker" name="broker" required>
@@ -116,7 +128,7 @@
                                         Broker</a></i> --}}
 
                             </div>
-                            <div class="col-sm-6 col-md-3">
+                            <div class="col-sm-6 col-md-2">
                                 <div class="form-group">
                                     <label>Insurer <span class="text-danger">*</span></label>
                                     <select class="select" id="insurer" name="insurer" required>
@@ -215,12 +227,12 @@
                         </div>
                         <div class="submit-section">
                             {{-- <button class="btn btn-primary submit-btn m-r-10">Save & Send</button> --}}
-                            <button class="btn btn-primary submit-btn" type="submit" onclick="validateTgl()">
-                                <span class="btn-txt">Save</span>
+                            <button class="btn btn-info submit-btn submit" type="submit" onclick="validateTgl()">
+                                <span class="btn-txt">Update Need Action</span>
                                 <span class="spinner-border spinner-border-sm d-none" role="status"
                                     aria-hidden="true"></span>
                             </button>
-                            <a class="btn btn-primary submit-btn m-r-10"
+                            <a class="btn btn-dark submit-btn m-r-10"
                                 href="{{ route('insurance.renewal_monitoring') }}">Cancel</a>
                         </div>
                     </form>
@@ -315,8 +327,8 @@
                 return '<td>' + rowsLength + '</td>' +
                     '<td><input type="text" id="installment" name = "installment[]" class="form-control" value = "' +
                     rowsLength + '" readonly></td>' +
-                    '<td><input type="number" id="line_amount" name = "line_amount[]" class="form-control" value = ""></td>' +
-                    '<td><input type="date" id="duedate" name = "duedate[]" class="form-control" value = ""></td>' +
+                    '<td><input type="number" id="line_amount" name="line_amount[]" class="form-control" value = ""></td>' +
+                    '<td><input type="date" id="duedate" name="duedate[]" class="form-control" value = ""></td>' +
                     '<td><button type="button" class="btn btn-danger" id="comments_remove"><i class="fa fa-trash-o"></i></button></td>'
             }
 

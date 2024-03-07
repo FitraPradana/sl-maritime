@@ -29,8 +29,8 @@ class InsuranceController extends Controller
             $urut = 10001;
             $nomer = 'P-INS-' . $now->year . '-' . $urut;
         } else {
-            $ambil = TranInsuranceHeader::orderBy('policynumber', 'desc')->first();
-            $urut = (int)substr($ambil->policynumber, -5) + 1;
+            $ambil = TranInsuranceHeader::orderBy('tran_insurance_header_id', 'desc')->first();
+            $urut = (int)substr($ambil->tran_insurance_header_id, -5) + 1;
             $nomer = 'P-INS-' . $now->year . '-' . $urut;
         }
         return $nomer;
@@ -93,7 +93,13 @@ class InsuranceController extends Controller
             }
             // if ($request->flag_filter != '') {
             //     if($request->flag_filter == 'green'){
-            //         $insurance->whereBetween('today', ['date_before_60_days, date_before_31_days']);
+            //         foreach ($insurance as $item) {
+            //             $insurance
+            //                 ->where('date_before_60_days', '<=', $item->today)
+            //                 ->where('date_before_30_days', '>', $item->today);
+            //         }
+            //         // $insurance->whereBetween('today', ['date_before_60_days, date_before_30_days']);
+            //             // ->where('today', '<', DB::raw('DATE_SUB(expirydate, INTERVAL 30 DAY) as date_before_30_days'));
             //     }
             //     elseif($request->flag_filter == 'yellow'){
             //         $insurance->whereBetween('today', ['date_before_30_days, date_before_11_days']);
@@ -111,7 +117,9 @@ class InsuranceController extends Controller
 
             return DataTables::of($query)
             ->addColumn('action', function ($data) {
-                if ($data->status == 'active') {
+                $countId = DB::connection('mysql')->table('tran_insurance_header')->where('id', $data->id)->count();
+
+                if ($data->status == 'active' AND $countId == 1) {
                     return '
                     <div class="dropdown dropdown-action">
                         <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
@@ -133,6 +141,17 @@ class InsuranceController extends Controller
                 }
 
                 // <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_department"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+            })
+            ->addColumn('tran_insurance_header_id', function ($data) {
+                // if($data->status != 'need_action'){
+                //     return '<a class="dropdown-item" href="#" data-toggle="modal" data-target="#detail_police' . $data->tran_insurance_header_id . '"><u>'.$data->tran_insurance_header_id.'</u></a>
+                //     ';
+                // } else {
+                //     return $data->tran_insurance_header_id;
+                // }
+
+                return '<a class="dropdown-item" href="#" data-toggle="modal" data-target="#detail_police' . $data->tran_insurance_header_id . '"><u>'.$data->tran_insurance_header_id.'</u></a>
+                    ';
             })
             ->addColumn('date_before_60_days', function ($data) {
                 return Carbon::parse($data->date_before_60_days)->format('d M Y');
@@ -156,7 +175,7 @@ class InsuranceController extends Controller
                     return '<span class="badge bg-inverse-secondary">NOT ACTIVE</span>';
                 } elseif ($edit_status->status == 'need_action') {
                     // return '<a href="#">NEED ACTION</a>';
-                    return '<a class="btn btn-info btn-sm btn-need-action" href="'.route('insurance.form_need_action', $edit_status->policynumber).'">NEED ACTION</a>';
+                    return '<a class="btn btn-info btn-sm btn-need-action" href="'.route('insurance.form_need_action', $edit_status->tran_insurance_header_id).'">NEED ACTION</a>';
                     // return '<a href="#"><span class="badge bg-inverse-info">NEED ACTION</span></a>';
                     // return '<span class="badge bg-inverse-info">NEED ACTION</span>';
                 } elseif ($edit_status->status == 'expired') {
@@ -170,12 +189,14 @@ class InsuranceController extends Controller
             ->addColumn('remark_color', function ($data) {
                 $today = $data->today;
                 $date_before_60_days = Carbon::parse($data->date_before_60_days);
+                $date_before_31_days = Carbon::parse($data->date_before_31_days);
                 $date_before_30_days = Carbon::parse($data->date_before_30_days);
                 $date_before_10_days = Carbon::parse($data->date_before_10_days);
                 $date_after_10_days = Carbon::parse($data->date_after_10_days);
                 $dueDate = Carbon::parse($data->expirydate);
                 $selisihHari = $dueDate->diffInDays($today);
-                if($today >= $date_before_60_days AND $today < $date_before_30_days){
+                $status = $data->status;
+                if($today >= $date_before_60_days AND $today < $date_before_30_days AND ($status != 'not_active')){
                     return '
                         <div class="progress progress-lg">
                             <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
@@ -183,18 +204,23 @@ class InsuranceController extends Controller
 
                     ';
                 }
-                elseif($today >= $date_before_30_days AND $today < $date_before_10_days){
+                elseif($today >= $date_before_30_days AND $today < $date_before_10_days AND ($status != 'not_active')){
                     return '
                         <div class="progress progress-lg">
                             <div class="progress-bar bg-warning" role="progressbar" style="width: 100%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     ';
                 }
-                elseif($today >= $date_before_10_days AND $today <= $date_after_10_days){
+                elseif($today >= $date_before_10_days AND $today <= $date_after_10_days AND ($status != 'not_active')){
                     return '
                         <div class="progress progress-lg">
                             <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
+                    ';
+                }
+                elseif($today >= $date_after_10_days){
+                    return '
+                        Lebih dari 10 hari
                     ';
                 }
                 // elseif($today >= $date_after_10_days){
@@ -206,7 +232,7 @@ class InsuranceController extends Controller
                 // }
             })
             // ->order([1, 'desc'])
-            ->rawColumns(['action','status','remark_color'])
+            ->rawColumns(['action','status','remark_color','tran_insurance_header_id'])
             ->make(true);
         }
 
@@ -223,9 +249,10 @@ class InsuranceController extends Controller
         $ExistingIns = DB::connection('mysql')->table('tran_insurance_header')->where('status', '=', 'existing')->count();
         $todayActiveIns = DB::connection('mysql')->table('tran_insurance_header')->where('status', '=', 'active')->whereDate('createat', now()->toDateString())->count();
         $totalIns = DB::connection('mysql')->table('tran_insurance_header')->count();
-
+        $trans_ins_header = DB::connection('mysql')->table('tran_insurance_header')->get();
+        $insurancePayment = DB::connection('mysql')->table('tran_insurance_payment')->get();
         // return $needActionIns;
-        return view('insurance.view', compact('ins_type','ins_broker','ins_insurer','company','activeIns','needActionIns','ExistingIns','ExpiredIns','todayActiveIns','totalIns'));
+        return view('insurance.view', compact('insurancePayment','trans_ins_header','ins_type','ins_broker','ins_insurer','company','activeIns','needActionIns','ExistingIns','ExpiredIns','todayActiveIns','totalIns'));
     }
 
     public function form_add_renewal()
@@ -404,9 +431,8 @@ class InsuranceController extends Controller
             $expiry_date = Carbon::parse($request->expiry_date);
             $selisih = $expiry_date->diffInDays($inception_date);
             // return $selisih;
-            $updateInsurance = TranInsuranceHeader::where('id', $request->id_trans)->first();
+            $updateInsurance = TranInsuranceHeader::where('tran_insurance_header_id', $request->tran_insurance_header_id)->first();
             $updateInsurance->update([
-                'tran_insurance_header_id'  => $request->tran_insurance_header_id,
                 'policynumber'              => $request->policy_number,
                 'insurancetype'             => $request->insurance_type,
                 'company'                   => $request->entity,
@@ -478,7 +504,7 @@ class InsuranceController extends Controller
             // Alert::success('Success', 'Data Renewal insurance telah ditambahkan');
             toast()->success('Data has been Update successfully!', 'Congrats '.auth()->user()->name.'');
             // return redirect()->back();
-            return redirect('Insurance/RenewalMonitoring')->with('success', 'Data Renewal Insurance "'.$request->policy_number.'" berhasil di Update !');
+            return redirect('Insurance/RenewalMonitoring')->with('success', 'Data Renewal Insurance "'.$request->tran_insurance_header_id.'" berhasil di Update !');
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
@@ -500,6 +526,7 @@ class InsuranceController extends Controller
                 DB::raw('DATE_SUB(expirydate, INTERVAL 10 DAY) as date_before_10_days'),
                 DB::raw('DATE_ADD(expirydate, INTERVAL 10 DAY) as date_after_10_days'),
                 DB::raw('CURDATE() as today'),
+                'tran_insurance_header_id',
                 'expirydate',
                 'policynumber',
                 'insurancetype',
@@ -535,7 +562,7 @@ class InsuranceController extends Controller
                 $selisihHari = $expDate->diffInDays($incDate);
 
                 // UPDATE EXISTING
-                $updateTransOld = TranInsuranceHeader::where('policynumber', $value->policynumber)->first();
+                $updateTransOld = TranInsuranceHeader::where('tran_insurance_header_id', $value->tran_insurance_header_id)->first();
                 // return $updateTransOld;
                 $updateTransOld->update([
                     'status' => 'existing',
@@ -543,7 +570,8 @@ class InsuranceController extends Controller
 
                 $TranInsuranceHeader = TranInsuranceHeader::create([
                     'id'                => $value->id,
-                    'policynumber'      => $this->PoliceInsuranceAuto(),
+                    'tran_insurance_header_id'      => $this->PoliceInsuranceAuto(),
+                    'policynumber'      => $value->policynumber,
                     'insurancetype'     => $value->insurancetype,
                     'company'           => $value->company,
                     'inceptiondate'     => $value->expirydate,
@@ -663,7 +691,7 @@ class InsuranceController extends Controller
         $ins_broker = DB::connection('mysql')->table('mst_insurance_broker')->get();
         $ins_insurer = DB::connection('mysql')->table('mst_insurance_insurer')->get();
         $company = DB::connection('mysql')->table('ms_nav_companies')->where('companycode', '!=', '---')->get();
-        $TranInsuranceHeader = DB::table('tran_insurance_header')->where('policynumber', $id)->first();
+        $TranInsuranceHeader = DB::table('tran_insurance_header')->where('tran_insurance_header_id', $id)->first();
 
         return view('insurance.form_needAction', compact('ins_type','ins_broker','ins_insurer','company','TranInsuranceHeader'));
     }
@@ -698,10 +726,10 @@ class InsuranceController extends Controller
             $expiry_date = Carbon::parse($request->expiry_date);
             $selisih = $expiry_date->diffInDays($inception_date);
             // return $selisih;
-            $updateInsurance = TranInsuranceHeader::where('policynumber', $request->policy_number)->first();
+            $updateInsurance = TranInsuranceHeader::where('tran_insurance_header_id', $request->tran_insurance_header_id)->first();
             // return $updateInsurance;
             $updateInsurance->update([
-                // 'policynumber'      => $request->policy_number,
+                'policynumber'      => $request->policy_number,
                 'insurancetype'     => $request->insurance_type,
                 'company'           => $request->entity,
                 'inceptiondate'     => $request->inception_date,
@@ -718,12 +746,10 @@ class InsuranceController extends Controller
             ]);
             // $lastInsertid_Insurance = $updateInsurance->id;
 
-            // $deletePayment = TranInsurancePayment::where('policynumber', $request->policynumber)->get();
-            // $deletePayment->each->delete();
-
             if($request->fully_paid == "no"){
                 for ($i=0; $i < count($request->installment); $i++) {
                     TranInsurancePayment::create([
+                        'tran_insurance_header_id'  => $request->tran_insurance_header_id,
                         'insurancetype'             => $request->insurance_type,
                         'policynumber'              => $request->policy_number,
                         'company'                   => $request->entity,
@@ -734,7 +760,6 @@ class InsuranceController extends Controller
                         'total_amount'              => $request->line_amount[$i],
                         'duedate'                   => $request->duedate[$i],
                         'durations'                 => $selisih,
-                        'status'                    => 'pending',
                         'status_payment'            => 'pending',
                         'remark'                    => $request->remarks,
                         'createat'                  => Carbon::now(),
@@ -749,6 +774,7 @@ class InsuranceController extends Controller
             if($request->fully_paid == "yes"){
                 for ($i=0; $i < count($request->installment); $i++) {
                     TranInsurancePayment::create([
+                        'tran_insurance_header_id'  => $request->tran_insurance_header_id,
                         'insurancetype'             => $request->insurance_type,
                         'policynumber'              => $request->policy_number,
                         'company'                   => $request->entity,
@@ -760,7 +786,6 @@ class InsuranceController extends Controller
                         'total_amount'              => $request->line_amount[$i],
                         'duedate'                   => $request->duedate[$i],
                         'durations'                 => $selisih,
-                        'status'                    => 'pending',
                         'status_payment'            => 'pending',
                         'remark'                    => $request->remarks,
                         'createat'                  => Carbon::now(),

@@ -43,7 +43,8 @@
                             <div class="col-sm-6 col-md-3">
                                 <div class="form-group">
                                     <label>Trans Insurance ID <span class="text-danger">*</span></label>
-                                    <input class="form-control" type="text" id="tran_insurance_header_id" name="tran_insurance_header_id"
+                                    <input class="form-control" type="text" id="tran_insurance_header_id"
+                                        name="tran_insurance_header_id"
                                         value="{{ old('tran_insurance_header_id', $PoliceInsuranceAuto) }}" required
                                         readonly>
                                 </div>
@@ -283,12 +284,20 @@
             $('#inception_date').on('change', function() {
                 // Mengambil nilai tanggal saat ini dari DateTimePicker
                 var inception_date = new Date($(this).val());
+                var today = new Date();
                 output_f = new Date(inception_date.setDate(inception_date.getDate() + 365)).toISOString()
                     .split('.');
                 console.log(output_f);
 
                 output_s = output_f[0].split('T');
                 $('#expiry_date').val(output_s[0]);
+
+                // // Membandingkan tanggal hari ini dengan tanggal due date
+                if (Date.parse(today) > Date.parse(output_s)) {
+                    $('#status').val("expired");
+                } else {
+                    $('#status').val("active");
+                }
             });
 
         });

@@ -195,7 +195,7 @@
                         <table id="datatables" class="table table-striped custom-table datatable">
                             <thead>
                                 <tr>
-                                    {{-- <th>Action</th> --}}
+                                    <th>Action</th>
                                     <th>#</th>
                                     <th>Remark</th>
                                     <th>Payment Status</th>
@@ -267,20 +267,19 @@
                     type: "POST",
                     data: function(d) {
                         d.policynumber_filter = $('#policynumber_filter').val(),
-                        d.ins_type_filter = $('#ins_type_filter').val(),
-                        d.company_filter = $('#company_filter').val(),
-                        d.broker_filter = $('#broker_filter').val(),
-                        d.insurer_filter = $('#insurer_filter').val(),
-                        d.status_filter = $('#status_filter').val()
+                            d.ins_type_filter = $('#ins_type_filter').val(),
+                            d.company_filter = $('#company_filter').val(),
+                            d.broker_filter = $('#broker_filter').val(),
+                            d.insurer_filter = $('#insurer_filter').val(),
+                            d.status_filter = $('#status_filter').val()
                     }
                 },
-                columns: [
-                    // {
-                    //     data: 'action',
-                    //     name: 'action',
-                    //     searchable: false,
-                    //     sortable: false
-                    // },
+                columns: [{
+                        "class": "details-control",
+                        "orderable": false,
+                        "data": null,
+                        "defaultContent": ""
+                    },
                     {
                         render: function(data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
