@@ -251,7 +251,6 @@ class InsuranceController extends Controller
         $totalIns = DB::connection('mysql')->table('tran_insurance_header')->count();
         $trans_ins_header = DB::connection('mysql')->table('tran_insurance_header')->get();
         $insurancePayment = DB::connection('mysql')->table('tran_insurance_payment')->get();
-        // return $needActionIns;
         return view('insurance.view', compact('insurancePayment','trans_ins_header','ins_type','ins_broker','ins_insurer','company','activeIns','needActionIns','ExistingIns','ExpiredIns','todayActiveIns','totalIns'));
     }
 
